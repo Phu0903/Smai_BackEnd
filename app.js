@@ -3,7 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var mongoose = require('mongoose')
+var connctDB = async() =>{
+  try {
+    await mongoose.connect('mongodb+srv://SmaiApp:h2xPkVSN8KZFTKKz@smaiapp.tltmy.mongodb.net/dbSmaiApp?retryWrites=true&w=majority',
+    {  useCreateIndex:true,
+        useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true});
+   console.log('Connected')
+  } catch (error) {
+    console.log(error.message);
+    process.exit(1)
+  }
+}
+connctDB();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
