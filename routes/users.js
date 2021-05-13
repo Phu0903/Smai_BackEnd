@@ -21,7 +21,7 @@ users.post('/register', async (req, res) => {
   }
 
   try {
-    var user = await Users.findOne({ UserName })
+    var user = await Users.findOne({'UserName':UserName })
     if (user)
       return res.
         status(400).
@@ -36,7 +36,9 @@ users.post('/register', async (req, res) => {
         'Password': hashedPassword,
         'CreateDay': `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
       })
-      var accessToken = jwt.sign({ userID: data._id }, process.env.ACCESS_TOKEN_SECRET)
+      var accessToken = jwt.sign(
+        { userID: data._id },
+         process.env.ACCESS_TOKEN_SECRET)
       data.save(function (err) {
         res.status(201)
           .json({
@@ -56,8 +58,56 @@ users.post('/register', async (req, res) => {
     });
   }
 }
-
-
 )
+
+//Login account
+users.post('/login',async(req,res)=>{
+  var {UserName,Password} = req.body
+
+  if( !UserName || !Password )
+      return res 
+            .status(400)
+            .json({
+              success:false,
+              message:"Missing user name or password"
+            })
+  try{
+    var user = await Users.findOne({'UserName':UserName})
+    if(!user) 
+      return res 
+             .status(400)
+             .json({
+               success:false,
+               message:'Incorrect username or password'
+             })
+    var passwordValid = await argon2d.verify(user.Password,Password)
+    if(!passwordValid)
+        return res 
+             .status(400)
+             .json({
+               success:false,
+               message:'Incorrect username or password'
+             })
+
+             var accessToken = jwt.sign(
+               { userID: data._id },
+                process.env.ACCESS_TOKEN_SECRET
+                )
+      res.json({
+        success:true,
+        message:'User logged in successfully',
+      })
+      
+  }catch(err)
+  {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+})
+
+
+
 
 module.exports = users;
