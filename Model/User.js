@@ -1,24 +1,36 @@
 var mongoose = require('mongoose');
-var users = new mongoose.Schema({
-    AccountID:mongoose.Schema.Types.ObjectId,
-    UserName:{
-        type:String,
-        require:true,
-        unique:true //Duy nhất
-    },
-    Password:
-    {
-        type:String,
-        require:true, //yêu cầu
+const Account = require('./Account');
+const Schema = mongoose.Schema
+
+var User = new mongoose.Schema({
+   FullName:{
+       type :String,
+      
+   },
+   BirthDay:{
+       type :String,
        
-    },
-    CreateDay:
-    {
-        type:Date,
-        default:Date.Now
-    }
-    
+   },
+   Address:{
+       type :String,
+   },
+   Gender:{
+       type:String,
+   },
+   PhoneNumber:{
+       type:Number,
+       ref:'Account'
+   },
+   AccountID:{
+        type: Schema.Types.ObjectId,
+      	ref: 'Account'
+   },
+   UserName:{
+       type:String,
+       ref:'Account'
+   }
+},{collection:'User',
+   versionKey: false
+});
 
-},{collection:'User'});
-
-module.exports = mongoose.model('User',users)
+module.exports = mongoose.model('User',User)

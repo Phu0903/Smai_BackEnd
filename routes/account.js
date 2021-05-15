@@ -1,16 +1,15 @@
 var argon2d  = require('argon2');
 var express = require('express');
-var Users = require('../Model/User');
-var users = express.Router();
+var Account = require('../Model/Account');
+var User = require('../Model/User')
+var account = express.Router();
 var jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 /* GET users listing. */
 /*Register Account User*/
-users.post('/register', async (req, res) => {
-  var post_data = req.body;
-  var UserName = post_data.username;
-  var Password = post_data.Password;
+account.post('/register', async (req, res) => {
+  var {UserName,Password,PhoneNumber} = req.body
   if (!UserName || !Password) {
     return res
       .status(400)
@@ -19,27 +18,45 @@ users.post('/register', async (req, res) => {
         message: "UserName or Password not exits"
       })
   }
+  if(!PhoneNumber)
+  {
+    return res 
+          .status(400)
+          .json({
+            success:false,
+            message:"PhoneNumber not exits"
+          })
+  }
 
   try {
-    var user = await Users.findOne({'UserName':UserName })
+    var user = await Account.findOne({'UserName':UserName })
+   
     if (user)
-      return res.
-        status(400).
-        json({
+      return res
+      .status(400)
+      .json({
           success: false,
           message: 'UserName already taken'
         })
+    
     else {
       var hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
-      var data = new Users({
+      var data = new Account({
         'UserName': UserName,
         'Password': hashedPassword,
+        'PhoneNumber' : PhoneNumber,
         'CreateDay': `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
+      })
+      var UserDetail = new User({
+        'UserName':UserName,
+        'PhoneNumber':PhoneNumber,
+        'AccountID': data._id
       })
       var accessToken = jwt.sign(
         { userID: data._id },
          process.env.ACCESS_TOKEN_SECRET)
       data.save(function (err) {
+        UserDetail.save(),
         res.status(201)
           .json({
             success: true,
@@ -48,6 +65,7 @@ users.post('/register', async (req, res) => {
            
           })
       });
+      
       
     }
 
@@ -61,9 +79,8 @@ users.post('/register', async (req, res) => {
 )
 
 //Login account
-users.post('/login',async(req,res)=>{
+account.post('/login',async(req,res)=>{
   var {UserName,Password} = req.body
-
   if( !UserName || !Password )
       return res 
             .status(400)
@@ -72,7 +89,7 @@ users.post('/login',async(req,res)=>{
               message:"Missing user name or password"
             })
   try{
-    var user = await Users.findOne({'UserName':UserName})
+    var user = await Account.findOne({'UserName':UserName})
     if(!user) 
       return res 
              .status(400)
@@ -89,13 +106,14 @@ users.post('/login',async(req,res)=>{
                message:'Incorrect username or password'
              })
 
-             var accessToken = jwt.sign(
-               { userID: data._id },
+    var accessToken = jwt.sign(
+               { userID: user._id },
                 process.env.ACCESS_TOKEN_SECRET
                 )
-      res.json({
+     res.json({
         success:true,
         message:'User logged in successfully',
+        accessToken
       })
       
   }catch(err)
@@ -110,4 +128,4 @@ users.post('/login',async(req,res)=>{
 
 
 
-module.exports = users;
+module.exports = account;

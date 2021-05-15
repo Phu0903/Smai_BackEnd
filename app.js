@@ -6,7 +6,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose')
 var connctDB = async() =>{
   try {
-    await mongoose.connect('mongodb+srv://SmaiApp:h2xPkVSN8KZFTKKz@smaiapp.tltmy.mongodb.net/dbSmaiApp?retryWrites=true&w=majority',
+    await mongoose.connect('mongodb+srv://dbAppSmai:WMZGnIzqoScefzRH@smaiapp.zdcd7.mongodb.net/dbSmai?retryWrites=true&w=majority',
     {  useCreateIndex:true,
         useNewUrlParser: true,
       useFindAndModify: false,
@@ -19,7 +19,8 @@ var connctDB = async() =>{
 }
 connctDB();
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var accountRouter = require('./routes/account');
+var userRouter = require('./routes/user')
 
 var app = express();
 
@@ -34,7 +35,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/account', accountRouter);
+app.use('/user',userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
