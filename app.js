@@ -19,8 +19,8 @@ var connctDB = async() =>{
 }
 connctDB();
 var indexRouter = require('./routes/index');
-var accountRouter = require('./routes/account');
-var userRouter = require('./routes/user')
+var accountRouter = require('./routes/router.account');
+var userRouter = require('./routes/router.user')
 
 var app = express();
 

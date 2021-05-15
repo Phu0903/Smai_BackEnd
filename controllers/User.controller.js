@@ -5,114 +5,70 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 module.exports ={
-     
-    //Login
-    login : async(req,res) => {
-        const {UserName,Password} = req.body
-        if( !UserName || !Password )
-            return res 
-                  .status(400)
-                  .json({
-                    success:false,
-                    message:"Missing user name or password"
-                  })
-        try{
-          const user = await Account.findOne({'UserName':UserName})
-          const passwordValid = await argon2d.verify(user.Password,Password)
-          if(!user || !passwordValid) 
-            return res 
-                   .status(400)
-                   .json({
-                     success:false,
-                     message:'Incorrect username or password'
-                   })
-          const accessToken = jwt.sign(
-                     { userID: user._id },
-                      process.env.ACCESS_TOKEN_SECRET
-                      )
-           res.json({
-              success:true,
-              message:'User logged in successfully',
-              accessToken
+//get info User
+getInfoUser: async(req,res)=>{
+    const userName = req.query.UserName;
+    const UserInfo = await  User.findOne({'UserName': userName})
+    if (!UserInfo){
+        res.status(400)
+            json({
+                success:false,
+                message:"UserName not exist"
             })
-            
-        }catch(err)
-        {
-          res.status(500).json({
-            success: false,
-            message: err.message
-          });
-        }
-      },
+    }
+    else{
+        res.status(201)
+           .json(UserInfo)
+    }
 
-
-      //register
-    register: async (req, res) => {
-        const {UserName,Password,PhoneNumber} = req.body
-        if (!UserName || !Password) {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message: "UserName or Password not exits"
-            })
-        }
-        if(!PhoneNumber)
-        {
-          return res 
+ },
+//Update profile usser
+UpdateProfile: async (req, res) => {
+    const {
+        FullName,
+        BirthDay,
+        Address,
+        Gender,
+        UserName
+    } = req.body
+    try {
+        if (!UserName) {
+            return res
                 .status(400)
                 .json({
-                  success:false,
-                  message:"PhoneNumber not exits"
+                    success: false,
+                    message: "UserName not exist"
                 })
         }
-      
-        try {
-          const user = await Account.findOne({'UserName':UserName })
-         
-          if (user)
+
+        var UserInfo = await User.findOne({ 'UserName': UserName })
+        if (!UserInfo)
             return res
-            .status(400)
-            .json({
-                success: false,
-                message: 'UserName already taken'
-              })
-          
-          else {
-            const hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
-            const data = new Account({
-              'UserName': UserName,
-              'Password': hashedPassword,
-              'PhoneNumber' : PhoneNumber,
-              'CreateDay': `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
-            })
-            const UserDetail = new User({
-              'UserName':UserName,
-              'PhoneNumber':PhoneNumber,
-              'AccountID': data._id
-            })
-            const accessToken = jwt.sign(
-              { userID: data._id },
-               process.env.ACCESS_TOKEN_SECRET)
-            data.save(function (err) {
-              UserDetail.save(),
-              res.status(201)
+                .status(400)
                 .json({
-                  success: true,
-                  message: "OK",
-                  "accessToken":accessToken, //Respone token for client user
-                 
+                    success: false,
+                    message: "don't have user"
                 })
-            });
-            
-            
-          }
-      
-        } catch (err) {
-          res.status(500).json({
-            success: false,
-            message: err.message
-          });
+        else {
+
+            User.updateOne({ _id: UserInfo._id },
+                {
+                    $set: {
+                        'FullName': FullName,
+                        'BirthDay': BirthDay,
+                        'Address': Address,
+                        'Gender': Gender
+                    }
+                }, function (error, data) {
+                    res.json(data)
+                }
+            )
         }
-      }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+  }
 }

@@ -1,7 +1,7 @@
 
-var express = require('express');
-var account = express.Router();
-var controller = require('../controllers/User.controller');
+const express = require('express');
+const account = express.Router();
+const controller = require('../controllers/account.controller');
 
 /* GET users listing. */
 /*Register Account User*/
