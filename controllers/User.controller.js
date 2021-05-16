@@ -5,11 +5,28 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 module.exports ={
-//get info User
+//get infor User
 getInfoUser: async(req,res)=>{
     const userName = req.query.UserName;
     const UserInfo = await  User.findOne({'UserName': userName})
     if (!UserInfo){
+        res.status(400)
+            json({
+                success:false,
+                message:"UserName not exist"
+            })
+    }
+    else{
+        res.status(201)
+           .json(UserInfo)
+    }
+
+ },
+ //get Infor User by Id 
+ getInfoUserById: async(req,res)=>{
+     const Id = req.query.Id;
+     const UserInfo = await User.findOne({'_id':Id})
+     if (!UserInfo){
         res.status(400)
             json({
                 success:false,
@@ -40,8 +57,7 @@ UpdateProfile: async (req, res) => {
                     message: "UserName not exist"
                 })
         }
-
-        var UserInfo = await User.findOne({ 'UserName': UserName })
+        const UserInfo = await User.findOne({ 'UserName': UserName })
         if (!UserInfo)
             return res
                 .status(400)

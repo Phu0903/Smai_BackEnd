@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Account = require('./Account');
 const Schema = mongoose.Schema
 
@@ -30,7 +30,8 @@ var User = new mongoose.Schema({
        ref:'Account'
    }
 },{collection:'User',
-   versionKey: false
+   versionKey: false,
+   timestamps:true
 });
 
 module.exports = mongoose.model('User',User)

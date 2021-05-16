@@ -54,7 +54,7 @@ module.exports ={
             .status(400)
             .json({
               success: false,
-              message: "UserName or Password not exits"
+              message: "UserName or Password not exist"
             })
         }
         if(!PhoneNumber)
@@ -82,7 +82,7 @@ module.exports ={
               'UserName': UserName,
               'Password': hashedPassword,
               'PhoneNumber' : PhoneNumber,
-              'CreateDay': `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
+              
             })
             const UserDetail = new User({
               'UserName':UserName,
@@ -92,6 +92,7 @@ module.exports ={
             const accessToken = jwt.sign(
               { userID: data._id },
                process.env.ACCESS_TOKEN_SECRET)
+             
             data.save(function (err) {
               UserDetail.save(),
               res.status(201)

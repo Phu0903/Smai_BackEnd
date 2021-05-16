@@ -1,6 +1,5 @@
-var mongoose = require('mongoose');
-var Account = new mongoose.Schema({
-    AccountID:mongoose.Schema.Types.ObjectId,
+const mongoose = require('mongoose');
+const Account = new mongoose.Schema({
     UserName:{
         type:String,
         require:true,
@@ -17,13 +16,11 @@ var Account = new mongoose.Schema({
         type:Number,
         require:true,
     },
-    CreateDay:
-    {
-        type:Date,
-        default:Date.Now
-    }
+  
     
 
-},{collection:'Account'});
+},{collection:'Account',
+   timestamps:true,
+});
 
 module.exports = mongoose.model('Account',Account)
