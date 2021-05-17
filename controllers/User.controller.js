@@ -76,7 +76,7 @@ UpdateProfile: async (req, res) => {
                         'Gender': Gender
                     }
                 }, function (error, data) {
-                    res.json(data)
+                    res.json("oke")
                 }
             )
         }

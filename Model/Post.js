@@ -1,44 +1,54 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const Post = new mongoose.Schema({
-    AccountID:{
+    AuthorID:{
         type: Schema.Types.ObjectId,
-      	ref: 'Account'
+        ref: 'User'
+   },
+
+   TypeAuthor:{
+    type :String,
+    require:true,
+    enum:['Cá nhân','Quỹ/Nhóm từ thiện','Tổ chức công ích "Chính quyền nhà thờ, nhà chùa,..."']
+   
+  },
+  NameAuthor:{
+     required:true,
+     type:String,
+    
+  },
+  address:{
+       required:true,
+       type:String,
+       
+      
+  },
+   
+  NameProduct:{
+    required:true,
+    type:String,
    },
    ProductID:{
-        type:Schema.Types.ObjectId,
+        required:true,
+        type:String,
    },
-   CreateDay:{
-    type:Date,
-    default:Date.Now
-   },
-   TypeAuthor:{
-     type :String,
-     require:true,
-     enum:['Cá nhân','Quỹ/Nhóm từ thiện','Tổ chức công ích "Chính quyền nhà thờ, nhà chùa,..."']
-    
-   },
-   NameAuthor:{
-      Type:String,
-      require:true,
-   },
-   Address:{
-        Type:String,
-        require:true,
-   },
-   TitlePost:{
-       Type:String,
-       require:true
-   },
-   NotePost:{
-       Type:String,
+  
+   title: {
+    type: String,
+    required: true
+    },
+   note:{
+       type:String,
        
    },
-   IDAuthor:{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-   }
+   expireAt: {
+    type: Date,
+    default: Date.now,
+    index: { expires: 400 }, // giới hạn thời gian 400s
+  },
+   
 },{collection:'Post',
   timestamps:true,
-  versionKey: false
-});
-module.exports =mongoose.model('Post',Account)
+  versionKey: false,
+})
+module.exports =mongoose.model('Post',Post)

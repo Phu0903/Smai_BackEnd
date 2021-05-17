@@ -20,7 +20,8 @@ var connctDB = async() =>{
 connctDB();
 var indexRouter = require('./routes/index');
 var accountRouter = require('./routes/router.account');
-var userRouter = require('./routes/router.user')
+var userRouter = require('./routes/router.user');
+var postRouter = require('./routes/router.post')
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/account', accountRouter);
 app.use('/user',userRouter);
+app.use('/post',postRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
