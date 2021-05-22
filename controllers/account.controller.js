@@ -27,7 +27,7 @@ module.exports ={
                      message:'Incorrect username or password'
                    })
           const accessToken = jwt.sign(
-                     { userID: user._id },
+                     { accountID: user._id },
                       process.env.ACCESS_TOKEN_SECRET
                       )
            res.json({
@@ -90,7 +90,7 @@ module.exports ={
               'AccountID': data._id
             })
             const accessToken = jwt.sign(
-              { userID: data._id },
+              { accountID: data._id },
                process.env.ACCESS_TOKEN_SECRET)
              
             data.save(function (err) {

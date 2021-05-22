@@ -13,7 +13,8 @@ const verifyToken = (req,res,next) =>{
            })
     try {
         const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
-        req.userID = decoded.userId
+        req.accountID = decoded.accountID
+      
         next() // cho qua
     } catch (error) {
         console.log(error)
