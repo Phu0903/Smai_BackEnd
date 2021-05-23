@@ -1,13 +1,13 @@
 
 const express = require('express');
 const users = express.Router();
-const UserController = require('../controllers/user.controller')
+const usercontroller = require('../controllers/user.controller')
 
 //get profile User
-users.get('/getInfoUser',UserController.getInfoUser)
+users.get('/getInfoUser',usercontroller.getInfoUser)
 
 //Update profile User 
-users.put('/profileUser',UserController.UpdateProfile)
+users.put('/profileUser',usercontroller.UpdateProfile)
 
 
 
