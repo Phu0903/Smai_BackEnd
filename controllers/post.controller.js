@@ -4,10 +4,15 @@ const Post = require('../Model/Post');
 const Schema = mongoose.Schema;
 const Product = require('../Model/Product')
 const User = require('../Model/User')
-module.exports = {
+const multer  = require('multer')
 
+
+
+module.exports = {
+    
     //Add post from User
     AddPost: async (req, res) => {
+     
         const {
             TitlePost,
             NotePost,
@@ -47,7 +52,7 @@ module.exports = {
                     'NameProduct': NameProduct,
                     'title': TitlePost,
                     'note': NotePost,
-                    'urlImage': ["1", "2", "3"]
+                    'urlImage':req.files
                 })
                 Product.create(dataPost.NameProduct, function (err, res) {
                     if (err) {
