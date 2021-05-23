@@ -1,7 +1,7 @@
 
 const express = require('express');
 const users = express.Router();
-const usercontroller = require('../controllers/user')
+const usercontroller = require('../controllers/user.controller')
 
 //get profile User
 users.get('/getInfoUser',usercontroller.getInfoUser)
