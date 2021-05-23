@@ -9,6 +9,7 @@ module.exports ={
 getInfoUser: async(req,res)=>{
     const userName = req.query.UserName;
     const UserInfo = await  User.findOne({'UserName': userName})
+    console.log(UserInfo)
     if (!UserInfo){
         res.status(400)
             json({
