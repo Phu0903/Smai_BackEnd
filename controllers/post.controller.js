@@ -12,11 +12,11 @@ module.exports = {
     
     //Add post from User
     AddPost: async (req, res) => {
-     
+     console.log(req.files)
         const {
             TitlePost,
             NotePost,
-            NameProduct,
+            ProductPost,
             TypeAuthor,
             NameAuthor,
             Address,
@@ -34,6 +34,7 @@ module.exports = {
             const findInfoAuthor = await User.findOne(
                 { 'AccountID': req.accountID }
             )
+            
            
             if (!findInfoAuthor) {
                 return res
@@ -49,10 +50,13 @@ module.exports = {
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
                     'address': Address || findInfoAuthor.Address,
-                    'NameProduct': NameProduct,
+                    'NameProduct': ProductPost,
                     'title': TitlePost,
                     'note': NotePost,
-                    'urlImage':req.files
+                    //map load path image in cloud from Post
+                    'urlImage':req.files.map(function (files) {
+                        return files.path
+                      })
                 })
                 Product.create(dataPost.NameProduct, function (err, res) {
                     if (err) {
@@ -87,6 +91,7 @@ module.exports = {
     GetInfoFullPost: async (req, res) => {
         try {
             const post = await Post.find({})
+            
             if (!post) {
                 return res
                     .status(400)
@@ -114,6 +119,7 @@ module.exports = {
     {
            try {
                 const PostByAddress = await Post.find({address:req.query.address})
+                console.log(PostByAddress.address)
                 if(!PostByAddress.address)
                 {
                     return res
@@ -145,6 +151,7 @@ module.exports = {
     {
     try {
         const PostByAuthor = await Post.find({TypeAuthor:req.query.typeauthor})
+     
         if (PostByAuthor == null)
         {
             res.status(400)
@@ -166,5 +173,27 @@ module.exports = {
             message: error.message
         });
     }
-    }
+    },
+
+
+    //get new post
+    GetNewPost : async(req,res)=>{
+      try {
+          const SortTime = {createdAt:-1};
+          Post.find({}).sort(SortTime).limit(12).exec(function(err,docs){
+              if(err) 
+              {
+                   res.json(err);
+              } 
+              else{
+                  res.json(docs)
+              }
+          })
+      } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+      }
+     }
 }

@@ -2,6 +2,7 @@ const argon2d  = require('argon2');
 const Account = require('../Model/Account');
 const User = require('../Model/User')
 const jwt = require('jsonwebtoken');
+const verifyToken = require('../middleware/auth')
 require("dotenv").config();
 
 module.exports ={
@@ -47,18 +48,12 @@ UpdateProfile: async (req, res) => {
         BirthDay,
         Address,
         Gender,
-        UserName
+       
     } = req.body
     try {
-        if (!UserName) {
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    message: "UserName not exist"
-                })
-        }
-        const UserInfo = await User.findOne({ 'UserName': UserName })
+    
+        const UserInfo = await User.findOne({ 'AccountID':req.accountID })
+        console.log(UserInfo._id)
         if (!UserInfo)
             return res
                 .status(400)
@@ -67,17 +62,17 @@ UpdateProfile: async (req, res) => {
                     message: "don't have user"
                 })
         else {
-
+            
             User.updateOne({ _id: UserInfo._id },
                 {
                     $set: {
-                        'FullName': FullName,
-                        'BirthDay': BirthDay,
-                        'Address': Address,
-                        'Gender': Gender
+                        'FullName': FullName ||UserInfo.FullName,
+                        'BirthDay': BirthDay || UserInfo.BirthDay,
+                        'Address': Address    || UserInfo.Address,
+                        'Gender': Gender      ||UserInfo.Gender,
                     }
                 }, function (error, data) {
-                    res.json("oke")
+                    res.json("Oke")
                 }
             )
         }
@@ -87,5 +82,37 @@ UpdateProfile: async (req, res) => {
             message: error.message
         });
     }
+  },
+
+
+  //get address
+  getAddress: async(req,res) =>{
+      try {
+          const getAddress = await User.findOne({'AccountID':req.accountID})
+          console.log(getAddress.Address)
+          if(!getAddress.Address)
+          {
+              res.status(400)
+                 .json({
+                     success:false,
+                     message:"no have address"
+                 })
+          }
+          else{
+              const temp = getAddress.Address
+              res.status(200)
+                  .json(
+                      {
+                          success:true,
+                           temp
+                      }
+                  )
+          }
+      } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+      }
   }
 }

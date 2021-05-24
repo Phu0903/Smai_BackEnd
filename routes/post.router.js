@@ -19,4 +19,6 @@ baipost.get('/getFullPostByLocation',controller.GetDetailPostByAddress);
 //Get Post by TypeAuthor
 baipost.get('/getPostByTypeAuthor',controller.GetPostByTypeAuthor);
 //TestUpload
+
+baipost.get('/getNewPost',controller.GetNewPost);
 module.exports = baipost;
