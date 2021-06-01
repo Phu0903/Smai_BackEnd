@@ -68,8 +68,8 @@ UpdateProfile: async (req, res) => {
                     $set: {
                         'FullName': FullName ||UserInfo.FullName,
                         'BirthDay': BirthDay || UserInfo.BirthDay,
-                        'Address': Address    || UserInfo.Address,
-                        'Gender': Gender      ||UserInfo.Gender,
+                        'Address': Address   || UserInfo.Address,
+                        'Gender': Gender     ||UserInfo.Gender,
                     }
                 }, function (error, data) {
                     res.json("Oke")

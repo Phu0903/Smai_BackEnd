@@ -6,6 +6,7 @@ const Product = require('../Model/Product')
 const User = require('../Model/User')
 const multer  = require('multer');
 const { json } = require('express');
+var ObjectID = require('mongodb').ObjectID;
 
 
 
@@ -89,6 +90,10 @@ module.exports = {
     //Update Product int Post
     UpdateProductInPost:async(req,res)=>{
             try {
+                
+              
+                const PostNew= await Post.findOne({'_id':req.body.id}) 
+               console.log(PostNew)
                 if(!req.body.ProductPost)
                 {
                     return res
@@ -99,16 +104,12 @@ module.exports = {
                           })
                 }
                 else {
-                    Post.updateOne({_id:req.body.id},{
+                    Post.updateOne({_id: PostNew._id},{
                         $set:{
                             'NameProduct':req.body.ProductPost
                         }
                     },function(err,data){
-                        if(err){
-                            json(err)
-                        }else{
-                            json("oke")
-                        }
+                        res.json("oke")
                     })
 
                 }
