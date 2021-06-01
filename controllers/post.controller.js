@@ -4,7 +4,8 @@ const Post = require('../Model/Post');
 const Schema = mongoose.Schema;
 const Product = require('../Model/Product')
 const User = require('../Model/User')
-const multer  = require('multer')
+const multer  = require('multer');
+const { json } = require('express');
 
 
 
@@ -85,6 +86,39 @@ module.exports = {
         }
 
     },
+    //Update Product int Post
+    UpdateProductInPost:async(req,res)=>{
+            try {
+                if(!req.body.ProductPost)
+                {
+                    return res
+                          .status(400)
+                          .json({
+                              success:false,
+                              message:"don't have Product"
+                          })
+                }
+                else {
+                    Post.updateOne({_id:req.body.id},{
+                        $set:{
+                            'NameProduct':req.body.ProductPost
+                        }
+                    },function(err,data){
+                        if(err){
+                            json(err)
+                        }else{
+                            json("oke")
+                        }
+                    })
+
+                }
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: error.message
+                });
+            }
+         },
 
 
     //Get Info Post
@@ -119,8 +153,8 @@ module.exports = {
     {
            try {
                 const PostByAddress = await Post.find({address:req.query.address})
-                console.log(PostByAddress.address)
-                if(!PostByAddress.address)
+                console.log(PostByAddress[0].address)
+                if(PostByAddress.address)
                 {
                     return res
                         .status(400)
@@ -144,9 +178,9 @@ module.exports = {
             });
            }
     },
-
+ 
     //Get Post by type Author
-
+     
     GetPostByTypeAuthor:async(req,res)=>
     {
     try {
