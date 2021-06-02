@@ -185,7 +185,11 @@ module.exports = {
     GetPostByTypeAuthor:async(req,res)=>
     {
     try {
-        const PostByAuthor = await Post.find({TypeAuthor:req.query.typeauthor})
+        if(req.query.typeauthor == 'tangcongdong')
+        {
+            typeauthor = 'Tặng cộng đồng'
+        }
+        const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
      
         if (PostByAuthor == null)
         {
