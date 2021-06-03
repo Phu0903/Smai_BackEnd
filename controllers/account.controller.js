@@ -24,7 +24,7 @@ module.exports ={
                    .status(400)
                    .json({
                      success:false,
-                     message:'Incorrect username or password'
+                     'message':'Incorrect username or password'
                    })
           const accessToken = jwt.sign(
                      { accountID: user._id },
@@ -32,8 +32,8 @@ module.exports ={
                       )
            res.json({
               success:true,
-              message:'User logged in successfully',
-              accessToken
+              "message": "OK",
+              "accessToken":accessToken,
             })
             
         }catch(err)
@@ -54,7 +54,7 @@ module.exports ={
             .status(400)
             .json({
               success: false,
-              message: "UserName or Password not exist"
+              "message": "UserName or Password not exist"
             })
         }
         if(!PhoneNumber)
@@ -63,7 +63,7 @@ module.exports ={
                 .status(400)
                 .json({
                   success:false,
-                  message:"PhoneNumber not exits"
+                  "message":"PhoneNumber not exits"
                 })
         }
             try {
@@ -73,7 +73,7 @@ module.exports ={
             .status(400)
             .json({
                 success: false,
-                message: 'UserName already taken'
+                "message": 'UserName already taken'
               })
           
           else {
@@ -98,7 +98,7 @@ module.exports ={
               res.status(201)
                 .json({
                   success: true,
-                  message: "OK",
+                  "message": "OK",
                   "accessToken":accessToken, //Respone token for client user
                  
                 })
@@ -107,7 +107,7 @@ module.exports ={
         } catch (err) {
           res.status(500).json({
             success: false,
-            message: err.message
+           "message": err.message
           });
         }
       }
