@@ -65,7 +65,7 @@ module.exports = {
 
         try {
 
-            if (!TitlePost) {
+            if (!title) {
                 return res
                     .status(400)
                     .json({
