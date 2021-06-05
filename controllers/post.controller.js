@@ -32,14 +32,14 @@ module.exports = {
      console.log(req.files);
     
         const {
-            TitlePost,
-            NotePost,
-            ProductPost,
+            title,
+            note,
+            NameProduct,
             TypeAuthor,
             NameAuthor,
-            Address,
+            address,
         } = req.body;
-        console.log(req.body.TitlePost);
+        console.log(TitlePost);
         console.log(NotePost);
         console.log(ProductPost);
         console.log(TypeAuthor);
@@ -71,10 +71,10 @@ module.exports = {
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
-                    'address': Address || findInfoAuthor.Address,
-                    'NameProduct': ProductPost,
-                    'title': TitlePost,
-                    'note': NotePost,
+                    'address': address || findInfoAuthor.Address,
+                    'NameProduct': NameProduct,
+                    'title': title,
+                    'note': note,
                     //map load path image in cloud from Post
                     'urlImage':req.files.map(function (files) {
                         return files.path
