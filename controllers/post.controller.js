@@ -15,6 +15,7 @@ module.exports = {
     TestToke:async(req,res)=>{
       try {
         res.json({
+
             'message':req.accountID,
         }) 
       } 
@@ -44,7 +45,7 @@ module.exports = {
                     .status(400)
                     .json({
                         success: false,
-                        'message': 'ID_user is not exist'
+                        'message': 'Title is not exist'
                     })
             }
             const findInfoAuthor = await User.findOne(
