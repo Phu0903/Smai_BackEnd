@@ -112,7 +112,7 @@ module.exports = {
                             .json({
                                 success: true,
                                 'message': "Oke",
-                                'data':dataPost._id,
+                                'IDPost':dataPost._id,
                             })
                     }
                 })
