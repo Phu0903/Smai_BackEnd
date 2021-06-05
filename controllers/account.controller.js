@@ -49,6 +49,7 @@ module.exports ={
       //register
     register: async (req, res) => {
         const {UserName,Password,PhoneNumber,Address,FullName} = req.body
+        console.log(req.body);
         if (!UserName || !Password) {
           console.log("1");
           return res
