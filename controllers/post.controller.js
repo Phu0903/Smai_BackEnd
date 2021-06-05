@@ -131,7 +131,7 @@ module.exports = {
             try {
                 
               
-                const PostNew= await Post.findOne({'_id':req.body.id}) 
+                const PostNew= await Post.findOne({'_id':req.query.IDPost}) 
                console.log(PostNew)
                 if(!req.body.ProductPost)
                 {
