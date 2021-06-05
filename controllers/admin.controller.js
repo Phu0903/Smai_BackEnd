@@ -76,5 +76,23 @@ module.exports = {
                 message: error.message
             });
         }
+    },
+    getAllUser: async (req, res, next) => {
+        User.find().then(data => {
+            if (!data) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message: "Accout requesting does not exist"
+                    })
+            }
+            return res
+                .status(400)
+                .json({
+                    success: true,
+                    data: data
+                })
+        });
     }
 }
