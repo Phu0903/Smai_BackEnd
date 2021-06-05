@@ -57,6 +57,7 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
+        console.log(req.body);
         console.log(title);
         console.log(note);
         console.log(NameProduct);
@@ -119,9 +120,11 @@ module.exports = {
 
             }
         } catch (error) {
+            console.log(error);
             res.status(500).json({
                 success: false,
-                message: error.message
+                message: error.message,
+                
             });
         }
 
