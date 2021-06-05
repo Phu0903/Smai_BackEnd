@@ -95,9 +95,9 @@ module.exports = {
                     'title': title,
                     'note': note,
                     //map load path image in cloud from Post
-                    'urlImage':req.files.map(function (files) {
+                    /*'urlImage':req.files.map(function (files) {
                         return files.path
-                      })
+                      })*/
                 })
                 Product.create(dataPost.NameProduct, function (err, res) {
                     if (err) {
