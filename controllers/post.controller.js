@@ -30,11 +30,7 @@ module.exports = {
     //Add post from User
     AddPost: async (req, res) => {
      console.log(req.files);
-     console.log(TitlePost);
-     console.log(NotePost);
-     console.log(ProductPost);
-     console.log(TypeAuthor);
-     console.log(Address);
+    
         const {
             TitlePost,
             NotePost,
@@ -43,7 +39,11 @@ module.exports = {
             NameAuthor,
             Address,
         } = req.body;
-       
+        console.log(req.body.TitlePost);
+        console.log(NotePost);
+        console.log(ProductPost);
+        console.log(TypeAuthor);
+        console.log(Address);
 
         try {
 
