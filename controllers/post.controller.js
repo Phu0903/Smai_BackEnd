@@ -48,8 +48,7 @@ module.exports = {
     //Add post from User
     AddPost: async (req, res) => {
         console.log(req.accountID);
-     console.log(req.files);
-    
+        console.log(req.files);
         const {
             title,
             note,
@@ -104,7 +103,7 @@ module.exports = {
                         res.json(err)
                     }
                 })
-                dataPost.save(function (err) {
+                dataPost.save(function (err,data) {
                     if (err) {
                         res.json(err)
                     }
@@ -112,7 +111,8 @@ module.exports = {
                         res.status(201)
                             .json({
                                 success: true,
-                                'message': "Oke"
+                                'message': "Oke",
+                                'data':dataPost._id,
                             })
                     }
                 })
