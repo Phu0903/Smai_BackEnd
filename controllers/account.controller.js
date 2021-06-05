@@ -50,6 +50,7 @@ module.exports ={
     register: async (req, res) => {
         const {UserName,Password,PhoneNumber,Address,FullName} = req.body
         if (!UserName || !Password) {
+          console.log("1");
           return res
             .status(400)
             .json({
@@ -59,6 +60,7 @@ module.exports ={
         }
         if(!PhoneNumber)
         {
+          console.log("2");
           return res 
                 .status(400)
                 .json({
@@ -68,14 +70,15 @@ module.exports ={
         }
             try {
           const user = await Account.findOne({'UserName':UserName })
-          if (user)
+          if (user){
+            console.log("UserName already taken");
             return res
             .status(400)
             .json({
                 success: false,
                 "message": 'UserName already taken'
               })
-          
+            }
           else {
             const hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
             const data = new Account({
