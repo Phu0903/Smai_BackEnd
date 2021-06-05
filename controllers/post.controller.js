@@ -132,7 +132,7 @@ module.exports = {
                 
               
                // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-               console.log(req.header.IDPost)
+               console.log(req.headers.IDPost)
                 if(!req.body.ProductPost)
                 {
                     return res
