@@ -27,6 +27,10 @@ module.exports = {
         }
       
     },
+    //Test image
+    TestImage: async(req,res)=> {
+        console.log(req.files);
+    },
     //Add post from User
     AddPost: async (req, res) => {
      console.log(req.files);
