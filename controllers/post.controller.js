@@ -30,7 +30,21 @@ module.exports = {
     //Test image
     TestImage: async(req,res)=> {
         console.log(req.files);
+        try {
+            res.status(200).json({
+                success:true,
+                'message':"OKE"
+            })
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
     },
+
+
+
     //Add post from User
     AddPost: async (req, res) => {
      console.log(req.files);
