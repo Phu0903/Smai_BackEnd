@@ -9,7 +9,7 @@ const fileUploader = require('../configs/cloudinary.config');
 
 
 ///Create post
-baipost.post('/CreatePost',verifyToken, fileUploader.array('urlImage'),controller.AddPost)
+baipost.post('/CreatePost',verifyToken, fileUploader.array('productImage'),controller.AddPost)
 //updatePost
 baipost.put('/UpdatePost',controller.UpdateProductInPost);
 //Get post
