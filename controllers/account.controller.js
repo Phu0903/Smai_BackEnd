@@ -48,7 +48,7 @@ module.exports ={
 
       //register
     register: async (req, res) => {
-        const {UserName,Password,PhoneNumber} = req.body
+        const {UserName,Password,PhoneNumber,Address,FullName} = req.body
         if (!UserName || !Password) {
           return res
             .status(400)
@@ -87,7 +87,9 @@ module.exports ={
             const UserDetail = new User({
               'UserName':UserName,
               'PhoneNumber':PhoneNumber,
-              'AccountID': data._id
+              'AccountID': data._id,
+              'FullName':FullName,
+              'Address':Address
             })
             const accessToken = jwt.sign(
               { accountID: data._id },
