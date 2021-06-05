@@ -29,7 +29,12 @@ module.exports = {
     },
     //Add post from User
     AddPost: async (req, res) => {
-     console.log(req.files)
+     console.log(req.files);
+     console.log(TitlePost);
+     console.log(NotePost);
+     console.log(ProductPost);
+     console.log(TypeAuthor);
+     console.log(Address);
         const {
             TitlePost,
             NotePost,
@@ -38,6 +43,8 @@ module.exports = {
             NameAuthor,
             Address,
         } = req.body;
+       
+
         try {
 
             if (!TitlePost) {
@@ -51,8 +58,6 @@ module.exports = {
             const findInfoAuthor = await User.findOne(
                 { 'AccountID': req.accountID }
             )
-            
-           
             if (!findInfoAuthor) {
                 return res
                     .status(400)
