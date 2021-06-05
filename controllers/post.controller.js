@@ -30,7 +30,7 @@ module.exports = {
                     .status(400)
                     .json({
                         success: false,
-                        message: 'ID_user is not exist'
+                        'message': 'ID_user is not exist'
                     })
             }
             const findInfoAuthor = await User.findOne(
@@ -43,7 +43,7 @@ module.exports = {
                     .status(400)
                     .json({
                         success: false,
-                        message: 'Account is not exist'
+                        'message': 'Account is not exist'
                     })
             }
             else {
@@ -73,7 +73,7 @@ module.exports = {
                         res.status(201)
                             .json({
                                 success: true,
-                                message: "Oke"
+                                'message': "Oke"
                             })
                     }
                 })
@@ -100,7 +100,7 @@ module.exports = {
                           .status(400)
                           .json({
                               success:false,
-                              message:"don't have Product"
+                              'message':"don't have Product"
                           })
                 }
                 else {
@@ -109,7 +109,7 @@ module.exports = {
                             'NameProduct':req.body.ProductPost
                         }
                     },function(err,data){
-                        res.json("oke")
+                        res.json({'message':"oke"})
                     })
 
                 }
@@ -132,7 +132,7 @@ module.exports = {
                     .status(400)
                     .json({
                         success: false,
-                        message: 'post is not exist'
+                        'message': 'post is not exist'
                     })
             }
             else {
@@ -161,7 +161,7 @@ module.exports = {
                         .status(400)
                         .json({
                             success:false,
-                            message:'There are not post in this location'
+                            'message':'There are not post in this location'
                         })
                 }
                 else {
@@ -175,7 +175,7 @@ module.exports = {
            } catch (error) {
             res.status(500).json({
                 success: false,
-                message: error.message
+                'message': error.message
             });
            }
     },
@@ -196,7 +196,7 @@ module.exports = {
             res.status(400)
                .json({
                    success:false,
-                   message:'Type Author is not right'
+                   'message':'Type Author is not right'
                })
         }
         else (
@@ -206,7 +206,7 @@ module.exports = {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            'message': error.message
         });
     }
     },
@@ -228,7 +228,7 @@ module.exports = {
       } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            'message': error.message
         });
       }
      }
