@@ -14,7 +14,7 @@ const Post = new mongoose.Schema({
     enum: [
       'Cá nhân',
       'Quỹ/Nhóm từ thiện',
-      'Tổ chức công ích "Chính quyền nhà thờ, nhà chùa,...',
+      'Tổ chức công ích',
       'Tặng cộng đồng'
     ]
 
