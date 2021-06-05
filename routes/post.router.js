@@ -21,4 +21,6 @@ baipost.get('/getPostByTypeAuthor',controller.GetPostByTypeAuthor);
 //TestUpload
 
 baipost.get('/getNewPost',controller.GetNewPost);
+//TesstToken
+baipost.post('/TestToken',verifyToken,controller.TestToke)
 module.exports = baipost;

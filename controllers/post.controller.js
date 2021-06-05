@@ -11,7 +11,21 @@ var ObjectID = require('mongodb').ObjectID;
 
 
 module.exports = {
-    
+    //Test Token
+    TestToke:async(req,res)=>{
+      try {
+        res.json({
+            'message':req.accountID,
+        }) 
+      } 
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+      
+    },
     //Add post from User
     AddPost: async (req, res) => {
      console.log(req.files)
