@@ -47,8 +47,8 @@ module.exports = {
 
     //Add post from User
     AddPost: async (req, res) => {
-        console.log(req.accountID);
-        console.log(req.files);
+     
+      
         const {
             title,
             note,
@@ -112,7 +112,7 @@ module.exports = {
                             .json({
                                 success: true,
                                 'message': "Oke",
-                                'IDPost':dataPost._id,
+                                'idpost':dataPost._id,
                             })
                     }
                 })
@@ -128,24 +128,27 @@ module.exports = {
     },
     //Update Product int Post
     UpdateProductInPost:async(req,res)=>{
+        console.log(req.files);
             try {
                 
               
                // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-               console.log(req.headers.IDPost)
-                if(!req.body.ProductPost)
+               console.log(req.headers.idpost)
+                if(!req.headers.idpost)
                 {
                     return res
                           .status(400)
                           .json({
                               success:false,
-                              'message':"don't have Product"
+                              'message':"don't have Post"
                           })
                 }
                 else {
-                    Post.updateOne({_id: PostNew._id},{
+                    Post.updateOne({_id:req.headers.idpost},{
                         $set:{
-                            'NameProduct':req.body.ProductPost
+                            'urlImage':req.files.map(function (files) {
+                                return files.path
+                              })
                         }
                     },function(err,data){
                         res.json({'message':"oke"})

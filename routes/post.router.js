@@ -11,7 +11,7 @@ const fileUploader = require('../configs/cloudinary.config');
 ///Create post
 baipost.post('/CreatePost',verifyToken, fileUploader.array('productImage'),controller.AddPost)
 //updatePost
-baipost.post('/UpdatePost',controller.UpdateProductInPost);
+baipost.post('/UpdatePost',fileUploader.array('productImage'),controller.UpdateProductInPost);
 //Get post
 baipost.get('/getFullPost',controller.GetInfoFullPost);
 //Get Post by Location
