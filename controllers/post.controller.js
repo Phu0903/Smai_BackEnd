@@ -47,7 +47,7 @@ module.exports = {
 
     //Add post from User
     AddPost: async (req, res) => {
-        console.log(red.accountID);
+        console.log(req.accountID);
      console.log(req.files);
     
         const {
