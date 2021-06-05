@@ -24,6 +24,6 @@ baipost.get('/getNewPost',controller.GetNewPost);
 //TesstToken
 baipost.post('/TestToken',verifyToken,controller.TestToke)
 //Test post image
-baipost.post('/CreatePost',verifyToken, fileUploader.array('productImage'),controller.TestImage)
+baipost.post('/TestIamge',verifyToken, fileUploader.array('productImage'),controller.TestImage)
 
 module.exports = baipost;
