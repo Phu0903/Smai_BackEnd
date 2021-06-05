@@ -39,11 +39,11 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        console.log(TitlePost);
-        console.log(NotePost);
-        console.log(ProductPost);
+        console.log(title);
+        console.log(note);
+        console.log(NameProduct);
         console.log(TypeAuthor);
-        console.log(Address);
+        console.log(address);
 
         try {
 
