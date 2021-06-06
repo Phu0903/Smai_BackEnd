@@ -124,5 +124,22 @@ UpdateProfile: async (req, res) => {
             message: error.message
         });
       }
+  },
+
+  //Get PhonNumber by AccountID
+  getPhonNumber:async(req,res)=>{
+    try {
+        console.log(req.query.AuthorID)
+        const account =await Account.findOne({'_id':req.query.AuthorID})
+        res.json({
+
+            'PhoneNumber':account.PhoneNumber,
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }     
   }
 }

@@ -20,6 +20,7 @@ baipost.get('/getPostByAccountId',verifyToken,controller.GetPostByAccountID);
 baipost.get('/getFullPostByLocation',controller.GetDetailPostByAddress);
 //Get Post by TypeAuthor
 baipost.get('/getPostByTypeAuthor',controller.GetPostByTypeAuthor);
+
 //TestUpload
 
 baipost.get('/getNewPost',controller.GetNewPost);

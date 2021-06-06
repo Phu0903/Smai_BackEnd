@@ -16,7 +16,8 @@ users.put('/profileUser',verifyToken,usercontroller.UpdateProfile)
 
 //Get address user
 users.get('/getAddress',verifyToken,userController.getAddress);
-
+//Get PhoneNumber User
+users.get('/getPhonNumber',userController.getPhonNumber)
 
 
 
