@@ -4,7 +4,7 @@ const Post = require('../Model/Post');
 const Schema = mongoose.Schema;
 const Product = require('../Model/Product')
 const User = require('../Model/User')
-const multer  = require('multer');
+const multer = require('multer');
 const { json } = require('express');
 var ObjectID = require('mongodb').ObjectID;
 const { findOne } = require('../Model/User');
@@ -12,6 +12,7 @@ const { findOne } = require('../Model/User');
 
 
 module.exports = {
+<<<<<<< HEAD
     //Test Token
    /* TestToke:async(req,res)=>{
       try {
@@ -50,6 +51,12 @@ module.exports = {
     AddPost: async (req, res) => {
      
       
+=======
+
+    //Add post from User
+    AddPost: async (req, res) => {
+        console.log(req.files)
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
         const {
             title,
             note,
@@ -78,6 +85,11 @@ module.exports = {
             const findInfoAuthor = await User.findOne(
                 { 'AccountID': req.accountID }
             )
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
             if (!findInfoAuthor) {
                 return res
                     .status(400)
@@ -96,9 +108,15 @@ module.exports = {
                     'title': title,
                     'note': note,
                     //map load path image in cloud from Post
+<<<<<<< HEAD
                     /*'urlImage':req.files.map(function (files) {
                         return files.path
                       })*/
+=======
+                    'urlImage': req.files.map(function (files) {
+                        return files.path
+                    })
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
                 })
                 Product.create(dataPost.NameProduct, function (err, res) {
                     if (err) {
@@ -131,6 +149,7 @@ module.exports = {
 
     },
     //Update Product int Post
+<<<<<<< HEAD
     UpdateProductInPost:async(req,res)=>{
         console.log(req.files);
             try {
@@ -156,8 +175,32 @@ module.exports = {
                         }
                     },function(err,data){
                         res.json({'message':"oke"})
-                    })
+=======
+    UpdateProductInPost: async (req, res) => {
+        try {
 
+
+            const PostNew = await Post.findOne({ '_id': req.body.id })
+            console.log(PostNew)
+            if (!req.body.ProductPost) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message: "don't have Product"
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
+                    })
+            }
+            else {
+                Post.updateOne({ _id: PostNew._id }, {
+                    $set: {
+                        'NameProduct': req.body.ProductPost
+                    }
+                }, function (err, data) {
+                    res.json("oke")
+                })
+
+<<<<<<< HEAD
                 }
             } catch (error) {
                 console.log(error);
@@ -165,15 +208,23 @@ module.exports = {
                     success: false,
                     message: error.message
                 });
+=======
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
             }
-         },
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
 
 
     //Get Info Post
     GetInfoFullPost: async (req, res) => {
         try {
             const post = await Post.find({})
-            
+
             if (!post) {
                 return res
                     .status(400)
@@ -197,6 +248,7 @@ module.exports = {
 
 
     //Get Post by Location/Address
+<<<<<<< HEAD
    GetDetailPostByAddress: async(req,res) =>
     {
            try {
@@ -220,14 +272,38 @@ module.exports = {
                                  })
                 }
            } catch (error) {
+=======
+    GetDetailPostByAddress: async (req, res) => {
+        try {
+            const PostByAddress = await Post.find({ address: req.query.address })
+            console.log(PostByAddress[0].address)
+            if (PostByAddress.address) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message: 'There are not post in this location'
+                    })
+            }
+            else {
+                return res
+                    .status(201)
+                    .json({
+                        success: true,
+                        PostByAddress
+                    })
+            }
+        } catch (error) {
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
             res.status(500).json({
                 success: false,
                 'message': error.message
             });
-           }
+        }
     },
- 
+
     //Get Post by type Author
+<<<<<<< HEAD
      
     GetPostByTypeAuthor:async(req,res)=>
     {
@@ -256,10 +332,38 @@ module.exports = {
             'message': error.message
         });
     }
+=======
+
+    GetPostByTypeAuthor: async (req, res) => {
+        try {
+            const PostByAuthor = await Post.find({ TypeAuthor: req.query.typeauthor })
+
+            if (PostByAuthor == null) {
+                res.status(400)
+                    .json({
+                        success: false,
+                        message: 'Type Author is not right'
+                    })
+            }
+            else (
+                res.status(200)
+                    .json({
+                        success: true,
+                        PostByAuthor
+                    })
+            )
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
     },
 
 
     //get new post
+<<<<<<< HEAD
     GetNewPost : async(req,res)=>{
       try {
           const SortTime = {createdAt:-1};
@@ -305,4 +409,24 @@ module.exports = {
             });
          }
      }
+=======
+    GetNewPost: async (req, res) => {
+        try {
+            const SortTime = { createdAt: -1 };
+            Post.find({}).sort(SortTime).limit(12).exec(function (err, docs) {
+                if (err) {
+                    res.json(err);
+                }
+                else {
+                    res.json(docs)
+                }
+            })
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+>>>>>>> 03822a78ebb5edba76670d9d39d67fa956fc4b01
 }
