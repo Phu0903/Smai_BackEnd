@@ -7,12 +7,13 @@ const User = require('../Model/User')
 const multer  = require('multer');
 const { json } = require('express');
 var ObjectID = require('mongodb').ObjectID;
+const { findOne } = require('../Model/User');
 
 
 
 module.exports = {
     //Test Token
-    TestToke:async(req,res)=>{
+   /* TestToke:async(req,res)=>{
       try {
         res.json({
 
@@ -41,7 +42,7 @@ module.exports = {
                 message: error.message
             });
         }
-    },
+    },*/
 
 
 
@@ -277,5 +278,31 @@ module.exports = {
             'message': error.message
         });
       }
+     },
+
+
+     //Get Post by AccountID
+    GetPostByAccountID : async(req,res) =>{
+         try {
+             const ID = req.accountID;
+             const post = await Post.find({'AuthorID':ID})
+           
+             if(!post[0]._id)
+             {
+                 res.status(201)
+                    .json({
+                        'message':'You do not have post'
+                    })
+             }
+             else{
+                 res.status(201)
+                     .json(post)
+             }
+         } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+         }
      }
 }
