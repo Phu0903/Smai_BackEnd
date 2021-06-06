@@ -29,7 +29,8 @@ getInfoUser: async(req,res)=>{
 
     try {
         const Id = req.accountID;
-        const UserInfo = await User.findOne({'_id': req.accountID})
+        console.log(Id);
+        const UserInfo = await User.findOne({'AccountID': Id})
         if (!UserInfo){
            res.status(400)
                json({
