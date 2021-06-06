@@ -131,8 +131,7 @@ UpdateProfile: async (req, res) => {
     try {
         console.log(req.query.AuthorID)
         const account =await Account.findOne({'_id':req.query.AuthorID})
-        res.json({
-
+        res.status(201).json({
             'PhoneNumber':account.PhoneNumber,
         })
     } catch (error) {
