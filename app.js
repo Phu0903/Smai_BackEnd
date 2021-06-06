@@ -4,14 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
-var connctDB = async() =>{
+var connctDB = async () => {
   try {
     await mongoose.connect('mongodb+srv://dbAppSmai:WMZGnIzqoScefzRH@smaiapp.zdcd7.mongodb.net/dbSmai?retryWrites=true&w=majority',
-    {  useCreateIndex:true,
+      {
+        useCreateIndex: true,
         useNewUrlParser: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true});
-   console.log('Connected')
+        useFindAndModify: false,
+        useUnifiedTopology: true
+      });
+    console.log('Connected')
   } catch (error) {
     console.log(error.message);
     process.exit(1)
@@ -22,6 +24,7 @@ var indexRouter = require('./routes/index');
 var accountRouter = require('./routes/account.router');
 var userRouter = require('./routes/user.router');
 var postRouter = require('./routes/post.router')
+var adminRouter = require('./routes/admin.router');
 
 var app = express();
 
@@ -37,16 +40,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/account', accountRouter);
-app.use('/user',userRouter);
-app.use('/post',postRouter);
+app.use('/user', userRouter);
+app.use('/post', postRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
