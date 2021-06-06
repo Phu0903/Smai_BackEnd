@@ -26,19 +26,28 @@ getInfoUser: async(req,res)=>{
  },
  //get Infor User by Id 
  getInfoUserById: async(req,res)=>{
-     const Id = req.query.Id;
-     const UserInfo = await User.findOne({'_id':Id})
-     if (!UserInfo){
-        res.status(400)
-            json({
-                success:false,
-                message:"UserName not exist"
-            })
+
+    try {
+        const Id = req.accountID;
+        const UserInfo = await User.findOne({'_id': req.accountID})
+        if (!UserInfo){
+           res.status(400)
+               json({
+                   success:false,
+                   'message':"UserName not exist"
+               })
+       }
+       else{
+           res.status(201)
+              .json(UserInfo)
+       }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-    else{
-        res.status(201)
-           .json(UserInfo)
-    }
+    
 
  },
 //Update profile usser

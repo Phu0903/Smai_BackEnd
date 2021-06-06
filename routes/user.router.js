@@ -4,7 +4,11 @@ const userController = require('../controllers/user.controller');
 const users = express.Router();
 const usercontroller = require('../controllers/user.controller')
 const verifyToken = require('../middleware/auth')
-//get profile User
+
+//get profile user by token
+users.get('/getInForUserByTokenId',verifyToken,usercontroller.getInfoUserById);
+
+//get profile User by userName
 users.get('/getInfoUser',usercontroller.getInfoUser)
 
 //Update profile User 
