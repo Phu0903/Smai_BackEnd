@@ -273,6 +273,7 @@ try {
         typeauthor = 'Tặng cộng đồng'
     }
     const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
+    console.log(PostByAuthor);
  
     if (PostByAuthor == null)
     {
