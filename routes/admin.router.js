@@ -13,4 +13,6 @@ admin.post('/edit-account', verifyToken, checkAdmin, controller.editAccount);
 
 admin.get('/all-user', verifyToken, checkAdmin, controller.getAllUser);
 
+admin.post('/edit-user',verifyToken, checkAdmin, controller.editUser);
+
 module.exports = admin;
