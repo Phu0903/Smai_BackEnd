@@ -272,6 +272,18 @@ try {
     {
         typeauthor = 'Tặng cộng đồng'
     }
+    if(req.query.typeauthor = 'canhan')
+    {
+        typeauthor = 'Cá nhân'
+    }
+    if(req.query.typeauthor = 'quy')
+    {
+        typeauthor= 'Quỹ/Nhóm từ thiện'
+    }
+    if(req.query.typeauthor = 'tochuc')
+    {
+        typeauthor = 'Tổ chức công ích'
+    }
     const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
     console.log(PostByAuthor);
  
