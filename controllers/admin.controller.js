@@ -59,17 +59,35 @@ module.exports = {
             }
             //edit account
             // must contain UserName, Password, Rule into the reques.body
+            let hashedPassword;
+            if (req.body.Password)
+                hashedPassword = await argon2d.hash(req.body.Password);//if req contain new password, hash it
+            console.log(req.query._id)
             Account.updateOne(
-                { _id: req.body._id },
+                { _id: req.query._id },
                 {
                     $set: {
                         UserName: req.body.UserName || editedAccount.UserName,
-                        Password: await argon2d.hash(req.body.Password) || editedAccount.Password,
+                        Password: hashedPassword || editedAccount.Password,
                         Rule: req.Rule || 1
                     }
                 }, function (err, data) {
-                    res.json("oke")
+                    if (err)
+                        res.send("error")
+                    else
+                        res.send("oke")
                 });
+            // if (req.body.UserName != editedAccount.UserName) {
+            //     User.updateOne(
+            //         { AccountID: editedAccount._id },
+            //         {
+            //             $set: {
+            //                 UserName: req.body.UserName
+            //             }
+            //         }
+            //     )
+            // }
+
         } catch (error) {
             res.status(500).json({
                 success: false,
@@ -77,6 +95,7 @@ module.exports = {
             });
         }
     },
+    //get all user with none data in req.body
     getAllUser: async (req, res, next) => {
         User.find().then(data => {
             if (!data) {
@@ -94,5 +113,54 @@ module.exports = {
                     data: data
                 })
         });
+    },
+    //edit information of user
+    //in this method, user must contain id of the user which being edited and all new information
+    //the id of the user being edited must contain in the url
+    editUser: async (req, res, next) => {
+        try {
+            //id of the user being edited in request
+            //get _id of the user by query data from url
+            console.log(req.query._id);
+            var editedUser = await User.findOne({
+                _id: req.query._id
+            })
+            //confirm that the user edited is existing
+            if (!editedUser) {
+                return res
+                    .status(404)
+                    .json({
+                        success: false,
+                        message: "The User you have chosen to edit does not exist"
+                    })
+            }
+            //edit user
+            // must contain UserName, Password, Rule into the req.body
+            //in this method, admin can not change property AccountId and userName
+            //if any field is null, it will be remain the previous value
+            User.updateOne(
+                { _id: req.query._id },
+                {
+                    $set: {
+                        FullName: req.body.FullName || editedUser.FullName,
+                        BirthDay: req.body.BirthDay || editedUser.BirthDay,
+                        Address: req.body.Address || editedUser.Address,
+                        Gender: req.body.Gender || editedUser.Gender,
+                        PhoneNumber: req.body.PhoneNumber || editedUser.PhoneNumber,
+                    }
+                }, function (err, data) {
+                    return res
+                        .status(200)
+                        .json({
+                            success: true,
+                            message: "This user already update."
+                        })
+                });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
     }
 }
