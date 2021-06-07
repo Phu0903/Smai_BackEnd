@@ -272,15 +272,15 @@ try {
     {
         typeauthor = 'Tặng cộng đồng'
     }
-    if(req.query.typeauthor = 'canhan')
+    if(req.query.typeauthor == 'canhan')
     {
         typeauthor = 'Cá nhân'
     }
-    if(req.query.typeauthor = 'quy')
+    if(req.query.typeauthor == 'quy')
     {
         typeauthor= 'Quỹ/Nhóm từ thiện'
     }
-    if(req.query.typeauthor = 'tochuc')
+    if(req.query.typeauthor == 'tochuc')
     {
         typeauthor = 'Tổ chức công ích'
     }
