@@ -284,9 +284,9 @@ try {
     {
         typeauthor = 'Tổ chức công ích'
     }
-    console.log(typeauthor);
+  
     const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
-    console.log(PostByAuthor);
+    
  
     if (PostByAuthor == null)
     {
