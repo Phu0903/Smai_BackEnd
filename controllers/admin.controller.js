@@ -1,6 +1,7 @@
 const argon2d = require('argon2');
 const Account = require('../Model/Account');
 const User = require('../Model/User')
+const Post = require('../Model/Post')
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 const mongoose = require('mongoose');
@@ -77,22 +78,49 @@ module.exports = {
                     else
                         res.send("oke")
                 });
-            // if (req.body.UserName != editedAccount.UserName) {
-            //     User.updateOne(
-            //         { AccountID: editedAccount._id },
-            //         {
-            //             $set: {
-            //                 UserName: req.body.UserName
-            //             }
-            //         }
-            //     )
-            // }
-
         } catch (error) {
             res.status(500).json({
                 success: false,
                 message: error.message
             });
+        }
+    },
+    removeAccount: async (req, res, next) => {
+        let deletedAccount = await Account.findOne({ _id: req.query._id });
+        if (!deletedAccount) {
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    message: "the account you chosen does not exists."
+                })
+        }
+        try {
+            let temp;
+            Account.remove({ _id: req.query._id }, function (error, object) {
+                if (error) throw error;
+                temp = object.deletedCount;
+            });
+
+            User.remove(
+                { UserName: deletedAccount.UserName },
+                function (err, object) {
+                    if (err) throw err;
+                    return res
+                        .status(200)
+                        .json({
+                            success: true,
+                            message: `update success: ${temp} account and ${object.deletedCount} user`
+                        })
+                }
+            )
+        } catch (err) {
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    message: err.message
+                })
         }
     },
     //get all user with none data in req.body
@@ -162,5 +190,69 @@ module.exports = {
                 message: error.message
             });
         }
+    },
+    removeUser: async (req, res, next) => {
+        console.log(req.query._id)
+        let deletedUser = await User.findOne({ _id: req.query._id });
+        if (!deletedUser)
+            return res
+                .status(501)
+                .json({
+                    success: false,
+                    message: "User that you want to delete does not exists."
+                })
+        try {
+            User.remove({ _id: req.query._id }, function (error, object) {
+                if (error) throw error;
+                return res.status(200)
+                    .json({
+                        success: true,
+                        message: `updated success: ${object.deletedCount} record`
+                    })
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
+    //view all post
+    getAllPost: async (req, res, next) => {
+        try {
+            Post.find().then((data) => {
+                return res
+                    .status(200)
+                    .json({
+                        success: true,
+                        data: data
+                    })
+            })
+        } catch (error) {
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    message: error.message
+                })
+        }
+    },
+    removePost: async (req, res, next) => {
+        let deletedPost = await Post.find({ _id: req.query._id });
+        if (!deletedPost)
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    message: "post you want to remove does not exist."
+                })
+        Post.remove({ _id: req.query._id }, function (error, object) {
+            if (error) throw error;
+            return res.status(200)
+                .json({
+                    success: true,
+                    message: `updated success: ${object.deletedCount} record`
+                })
+        })
     }
 }
