@@ -7,17 +7,13 @@ const verifyToken = (req,res,next) =>{
     if(!token)
     return res
            .status(401)
-           .json({
+           .send({
                'success':false,
                'message':'Bạn cần đăng nhập để sử dụng tính năng này'
            })
     try {
         const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
-        if(!decoded){
-            return res
-                .status(401)
-                .send('Bạn không có quyền truy cập vào tính năng này!');
-        }
+      
         req.accountID = decoded.accountID
         
         next() // cho qua
