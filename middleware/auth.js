@@ -19,7 +19,10 @@ const verifyToken = (req,res,next) =>{
         next() // cho qua
     } catch (error) {
         console.log(error)
-        return res.status(403).json(error)
+        return res.status(403).json({
+            success:false,
+            'message':"Invalid token"
+        })
     }
 }
 module.exports = verifyToken
