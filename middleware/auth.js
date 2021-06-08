@@ -9,7 +9,7 @@ const verifyToken = (req,res,next) =>{
            .status(401)
            .json({
                'success':false,
-               'message':'Access token not found'
+               'message':'Bạn cần đăng nhập để sử dụng tính năng này'
            })
     try {
         const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
