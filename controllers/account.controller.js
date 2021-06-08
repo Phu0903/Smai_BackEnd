@@ -9,6 +9,7 @@ module.exports = {
   //Login
   login: async (req, res) => {
     const { UserName, Password } = req.body
+    console.log(req.body)
     if (!UserName || !Password)
       return res
         .status(400)
