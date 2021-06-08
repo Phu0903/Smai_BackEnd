@@ -12,9 +12,14 @@ const verifyToken = (req,res,next) =>{
                'message':'Access token not found'
            })
     try {
-        const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+        const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+        if(!decoded){
+            return res
+                .status(401)
+                .send('Bạn không có quyền truy cập vào tính năng này!');
+        }
         req.accountID = decoded.accountID
-      
+        
         next() // cho qua
     } catch (error) {
         console.log(error)
