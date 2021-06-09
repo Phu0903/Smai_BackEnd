@@ -228,6 +228,7 @@ try {
     }
     const SortTime = {createdAt:-1};
     const PostByAuthor = await Post.find({TypeAuthor:typeauthor}).sort(SortTime).limit(12);
+    console.log(PostByAuthor);
     if (PostByAuthor == null)
     {
         res.status(400)
