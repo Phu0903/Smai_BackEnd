@@ -68,6 +68,7 @@ module.exports = {
    
     try {
       const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
+      console.log(user)
       if (user.PhoneNumber) {
         return res
           .status(400)
