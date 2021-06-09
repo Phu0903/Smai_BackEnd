@@ -23,13 +23,6 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        console.log(req.body);
-        console.log(title);
-        console.log(note);
-        console.log(NameProduct);
-        console.log(TypeAuthor);
-        console.log(address);
-
         try {
 
             if (!title) {
@@ -99,7 +92,7 @@ module.exports = {
     },
    //Update Product int Post
    UpdateProductInPost:async(req,res)=>{
-    console.log(req.files);
+  
         try {
             
           
