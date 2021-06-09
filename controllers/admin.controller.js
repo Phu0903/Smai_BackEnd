@@ -20,12 +20,7 @@ module.exports = {
                         message: "Accout requesting does not exist"
                     })
             }
-            return res
-                .status(400)
-                .json({
-                    success: true,
-                    data: data
-                })
+            res.render('AdminPage/index')
         });
     },
     editAccount: async (req, res, next) => {
