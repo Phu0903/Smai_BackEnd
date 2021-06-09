@@ -10,7 +10,7 @@ const CORS = require('../middleware/CORS')
 users.get('/getInForUserByTokenId', verifyToken, CORS, usercontroller.getInfoUserById);
 
 //get profile User by userName
-users.get('/getInfoUser', CORS, usercontroller.getInfoUser)
+//users.get('/getInfoUser', CORS, usercontroller.getInfoUser)
 
 //Update profile User 
 users.put('/profileUser', verifyToken, CORS, usercontroller.UpdateProfile)
