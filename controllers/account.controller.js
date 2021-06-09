@@ -69,13 +69,14 @@ module.exports = {
    
     try {
       const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
-      console.log(user)
+      
+     
       if (user) {
         return res
           .status(400)
           .json({
             success: false,
-            "message": 'PhonNumber already taken'
+            "message": 'PhoneNumber already taken'
           })
       }
       else {
@@ -110,7 +111,7 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log(err)
+    
       res.status(500).json({
         success: false,
         "message": err.message
