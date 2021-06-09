@@ -139,32 +139,31 @@ module.exports = {
         }
 
     },
-   //Update Product int Post
-   UpdateProductInPost:async(req,res)=>{
-    console.log(req.files);
+    //Update Product int Post
+    UpdateProductInPost: async (req, res) => {
+        console.log(req.files);
         try {
-            
-          
-           // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-           console.log(req.headers.idpost)
-            if(!req.headers.idpost)
-            {
+
+
+            // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
+            console.log(req.headers.idpost)
+            if (!req.headers.idpost) {
                 return res
-                      .status(400)
-                      .json({
-                          success:false,
-                          'message':"don't have Post"
-                      })
+                    .status(400)
+                    .json({
+                        success: false,
+                        'message': "don't have Post"
+                    })
             }
             else {
-                Post.updateOne({_id:req.headers.idpost},{
-                    $set:{
-                        'urlImage':req.files.map(function (files) {
+                Post.updateOne({ _id: req.headers.idpost }, {
+                    $set: {
+                        'urlImage': req.files.map(function (files) {
                             return files.path
-                          })
+                        })
                     }
-                },function(err,data){
-                    res.json({'message':"oke"})
+                }, function (err, data) {
+                    res.json({ 'message': "oke" })
                 })
 
             }
@@ -175,7 +174,7 @@ module.exports = {
                 message: error.message
             });
         }
-     },
+    },
 
 
 
@@ -205,140 +204,133 @@ module.exports = {
         }
     },
 
-  //Get Info Post
-  GetInfoFullPost: async (req, res) => {
-    try {
-        const post = await Post.find({})
-        
-        if (!post) {
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    'message': 'post is not exist'
-                })
-        }
-        else {
-            return res
-                .status(201)
-                .json(post)
-        }
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-},
+    //Get Info Post
+    GetInfoFullPost: async (req, res) => {
+        try {
+            const post = await Post.find({})
 
-
-//Get Post by Location/Address
-GetDetailPostByAddress: async(req,res) =>
-{
-       try {
-            const PostByAddress = await Post.find({address:req.query.address})
-            console.log(PostByAddress[0].address)
-            if(PostByAddress.address)
-            {
+            if (!post) {
                 return res
                     .status(400)
                     .json({
-                        success:false,
-                        'message':'There are not post in this location'
+                        success: false,
+                        'message': 'post is not exist'
                     })
             }
             else {
-                   return res
-                         .status(201)
-                          .json({
-                                 success:true,
-                                 PostByAddress
-                             })
+                return res
+                    .status(201)
+                    .json(post)
             }
-       } catch (error) {
-        res.status(500).json({
-            success: false,
-            'message': error.message
-        });
-       }
-},
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
 
-//Get Post by type Author
- 
-GetPostByTypeAuthor:async(req,res)=>
-{
-try {
-    if(req.query.typeauthor == 'tangcongdong')
-    {
-        typeauthor = 'Tặng cộng đồng'
+
+    //Get Post by Location/Address
+    GetDetailPostByAddress: async (req, res) => {
+        try {
+            const PostByAddress = await Post.find({ address: req.query.address })
+            console.log(PostByAddress[0].address)
+            if (PostByAddress.address) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        'message': 'There are not post in this location'
+                    })
+            }
+            else {
+                return res
+                    .status(201)
+                    .json({
+                        success: true,
+                        PostByAddress
+                    })
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
+    },
+
+    //Get Post by type Author
+
+    GetPostByTypeAuthor: async (req, res) => {
+        try {
+            if (req.query.typeauthor == 'tangcongdong') {
+                typeauthor = 'Tặng cộng đồng'
+            }
+            const PostByAuthor = await Post.find({ TypeAuthor: typeauthor })
+
+            if (PostByAuthor == null) {
+                res.status(400)
+                    .json({
+                        success: false,
+                        'message': 'Type Author is not right'
+                    })
+            }
+            else (
+                res.status(200)
+                    .json(PostByAuthor)
+            )
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
+    },
+
+
+    //get new post
+    GetNewPost: async (req, res) => {
+        try {
+            const SortTime = { createdAt: -1 };
+            Post.find({}).sort(SortTime).limit(12).exec(function (err, docs) {
+                if (err) {
+                    res.json(err);
+                }
+                else {
+                    res.json(docs)
+                }
+            })
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
+    },
+
+
+    //Get Post by AccountID
+    GetPostByAccountID: async (req, res) => {
+        try {
+            const ID = req.accountID;
+            const post = await Post.find({ 'AuthorID': ID })
+
+            if (!post[0]._id) {
+                res.status(201)
+                    .json({
+                        'message': 'You do not have post'
+                    })
+            }
+            else {
+                res.status(201)
+                    .json(post)
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
     }
-    const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
- 
-    if (PostByAuthor == null)
-    {
-        res.status(400)
-           .json({
-               success:false,
-               'message':'Type Author is not right'
-           })
-    }
-    else (
-        res.status(200)
-            .json(PostByAuthor)
-    )
-} catch (error) {
-    res.status(500).json({
-        success: false,
-        'message': error.message
-    });
-}
-},
-
-
-//get new post
-GetNewPost : async(req,res)=>{
-  try {
-      const SortTime = {createdAt:-1};
-      Post.find({}).sort(SortTime).limit(12).exec(function(err,docs){
-          if(err) 
-          {
-               res.json(err);
-          } 
-          else{
-              res.json(docs)
-          }
-      })
-  } catch (error) {
-    res.status(500).json({
-        success: false,
-        'message': error.message
-    });
-  }
- },
-
-
- //Get Post by AccountID
-GetPostByAccountID : async(req,res) =>{
-     try {
-         const ID = req.accountID;
-         const post = await Post.find({'AuthorID':ID})
-       
-         if(!post[0]._id)
-         {
-             res.status(201)
-                .json({
-                    'message':'You do not have post'
-                })
-         }
-         else{
-             res.status(201)
-                 .json(post)
-         }
-     } catch (error) {
-        res.status(500).json({
-            success: false,
-            'message': error.message
-        });
-     }
- }
 }
