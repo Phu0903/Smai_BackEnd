@@ -227,8 +227,7 @@ try {
         typeauthor = 'Tổ chức công ích'
     }
     const SortTime = {createdAt:-1};
-    const PostByAuthor = await Post.find({TypeAuthor:typeauthor}).sort(SortTime).limit(12);
-    console.log(PostByAuthor);
+    const PostByAuthor = await Post.find({TypeAuthor:typeauthor}).sort(SortTime);
     if (PostByAuthor == null)
     {
         res.status(400)
@@ -275,8 +274,9 @@ GetNewPost : async(req,res)=>{
  //Get Post by AccountID
 GetPostByAccountID : async(req,res) =>{
      try {
+        const SortTime = {createdAt:-1};
          const ID = req.accountID;
-         const post = await Post.find({'AuthorID':ID})
+         const post = await Post.find({'AuthorID':ID}).sort(SortTime);
        
          if(!post[0]._id)
          {
