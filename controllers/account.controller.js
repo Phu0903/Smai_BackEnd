@@ -55,29 +55,19 @@ module.exports = {
   //register
   register: async (req, res) => {
     const { UserName, Password, PhoneNumber, Address, FullName } = req.body
-    console.log(req.body);
-    if (!UserName || !Password) {
+    if (!PhoneNumber || !Password) {
       console.log("1");
       return res
         .status(400)
         .json({
           success: false,
-          "message": "UserName or Password not exist"
+          "message": "PhoneNumber or Password not exist"
         })
     }
-    if (!PhoneNumber) {
-      console.log("2");
-      return res
-        .status(400)
-        .json({
-          success: false,
-          "message": "PhoneNumber not exits"
-        })
-    }
+   
     try {
-      const user = await Account.findOne({ 'UserName': UserName })
-      if (user) {
-    
+      const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
+      if (user.PhoneNumber) {
         return res
           .status(400)
           .json({
