@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Account = new mongoose.Schema({
     UserName: {
         type: String,
-        require: true,
+      
         unique: true //Duy nhất
     },
     Password:

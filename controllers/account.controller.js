@@ -77,7 +77,7 @@ module.exports = {
     try {
       const user = await Account.findOne({ 'UserName': UserName })
       if (user) {
-        console.log("UserName already taken");
+    
         return res
           .status(400)
           .json({
