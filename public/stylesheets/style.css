@@ -1,8 +1,15 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
+@media (min-width: 1400px){
+  .div-wrap-all{
+      display: flex
+  }
+  .div-wrap-all-option{
+      width: 250px;
+      background-color: aqua;
+      height: 100px;
+  }
+  .div-wrap-data{
+      flex-grow: 1;
+      background-color: bisque;
+      height: 100px;
+  }
 }

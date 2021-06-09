@@ -18,6 +18,13 @@ module.exports = {
         })
     try {
       const user = await Account.findOne({ 'UserName': UserName })
+      if (!user)
+        return res
+          .status(500)
+          .json({
+            success: false,
+            message: "UserName error."
+          })
       const passwordValid = await argon2d.verify(user.Password, Password)
       if (!user || !passwordValid)
         return res
