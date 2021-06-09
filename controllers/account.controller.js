@@ -93,7 +93,6 @@ module.exports = {
                 success: true,
                 "message": "OK",
                 "accessToken": accessToken, //Respone token for client user
-
               })
         });
       }

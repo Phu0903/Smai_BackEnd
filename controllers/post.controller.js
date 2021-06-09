@@ -46,7 +46,8 @@ module.exports = {
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
-                    'address': address || findInfoAuthor.Address,
+                    //'address': address || findInfoAuthor.Address,
+                    'address': address,
                     'NameProduct': NameProduct,
                     'title': title,
                     'note': note,
@@ -78,7 +79,7 @@ module.exports = {
 
             }
         } catch (error) {
-            console.log(error);
+          
             res.status(500).json({
                 success: false,
                 message: error.message,
@@ -178,7 +179,7 @@ GetDetailPostByAddress: async(req,res) =>
 {
        try {
             const PostByAddress = await Post.find({address:req.query.address})
-            console.log(PostByAddress[0].address)
+        
             if(PostByAddress.address)
             {
                 return res
@@ -225,10 +226,8 @@ try {
     {
         typeauthor = 'Tổ chức công ích'
     }
-  
-    const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
-    
- 
+    const SortTime = {createdAt:-1};
+    const PostByAuthor = await Post.find({TypeAuthor:typeauthor}).sort(SortTime).limit(12);
     if (PostByAuthor == null)
     {
         res.status(400)
