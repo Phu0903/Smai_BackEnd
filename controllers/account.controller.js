@@ -8,23 +8,22 @@ require("dotenv").config();
 module.exports = {
   //Login
   login: async (req, res) => {
-    const { UserName, Password } = req.body
-    console.log(req.body)
-    if (!UserName || !Password)
+    const { PhoneNumber, Password } = req.body
+    if (!PhoneNumber || !Password)
       return res
         .status(400)
         .json({
           success: false,
-          message: "Missing user name or password"
+          message: "Missing PhoneNumber or password"
         })
     try {
-      const user = await Account.findOne({ 'UserName': UserName })
+      const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
       if (!user)
         return res
           .status(500)
           .json({
             success: false,
-            message: "UserName error."
+            message: "PhoneNumber error."
           })
       const passwordValid = await argon2d.verify(user.Password, Password)
       if (!user || !passwordValid)
@@ -32,7 +31,7 @@ module.exports = {
           .status(400)
           .json({
             success: false,
-            'message': 'Incorrect username or password'
+            'message': 'Incorrect PhoneNumber or password'
           })
       const accessToken = jwt.sign(
         { accountID: user._id },
@@ -54,11 +53,8 @@ module.exports = {
 
   //register
   register: async (req, res) => {
-    const { UserName, Password, PhoneNumber, Address, FullName } = req.body
-  
-    
+    const {  Password, PhoneNumber, FullName } = req.body
     if (!PhoneNumber || !Password) {
-      console.log("1");
       return res
         .status(400)
         .json({
@@ -66,11 +62,8 @@ module.exports = {
           "message": "PhoneNumber or Password not exist"
         })
     }
-   
     try {
       const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
-      
-     
       if (user) {
         return res
           .status(400)
@@ -88,7 +81,6 @@ module.exports = {
           'Rule': 1
         })
         const UserDetail = new User({
-         
           'PhoneNumber': PhoneNumber,
           'AccountID': data._id,
           'FullName': FullName,
@@ -97,9 +89,7 @@ module.exports = {
         const accessToken = jwt.sign(
           { accountID: data._id },
           process.env.ACCESS_TOKEN_SECRET)
-
         data.save(function (err) {
-         
           UserDetail.save(),
             res.status(201)
               .json({
@@ -111,7 +101,6 @@ module.exports = {
         });
       }
     } catch (err) {
-    
       res.status(500).json({
         success: false,
         "message": err.message
