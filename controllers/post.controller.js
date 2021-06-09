@@ -13,7 +13,7 @@ const { findOne } = require('../Model/User');
 
 module.exports = {
     AddPost: async (req, res) => {
-        console.log(req.files)
+     
 
         const {
             title,
@@ -120,7 +120,7 @@ module.exports = {
 
             }
         } catch (error) {
-            console.log(error);
+           
             res.status(500).json({
                 success: false,
                 message: error.message

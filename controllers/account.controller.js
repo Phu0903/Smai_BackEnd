@@ -55,7 +55,8 @@ module.exports = {
   //register
   register: async (req, res) => {
     const { UserName, Password, PhoneNumber, Address, FullName } = req.body
-    console.log(req.body)
+  
+    
     if (!PhoneNumber || !Password) {
       console.log("1");
       return res
@@ -69,24 +70,24 @@ module.exports = {
     try {
       const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
       console.log(user)
-      if (user.PhoneNumber) {
+      if (user) {
         return res
           .status(400)
           .json({
             success: false,
-            "message": 'UserName already taken'
+            "message": 'PhonNumber already taken'
           })
       }
       else {
         const hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
         const data = new Account({
-          'UserName': UserName,
+         
           'Password': hashedPassword,
           'PhoneNumber': PhoneNumber,
           'Rule': 1
         })
         const UserDetail = new User({
-          'UserName': UserName,
+         
           'PhoneNumber': PhoneNumber,
           'AccountID': data._id,
           'FullName': FullName,
@@ -97,6 +98,7 @@ module.exports = {
           process.env.ACCESS_TOKEN_SECRET)
 
         data.save(function (err) {
+         
           UserDetail.save(),
             res.status(201)
               .json({
@@ -108,6 +110,7 @@ module.exports = {
         });
       }
     } catch (err) {
+      console.log(err)
       res.status(500).json({
         success: false,
         "message": err.message
