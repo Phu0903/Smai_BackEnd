@@ -17,7 +17,12 @@ baipost.get('/getPostByAccountId', verifyToken, CORS, controller.GetPostByAccoun
 //Get Post by Location
 baipost.get('/getFullPostByLocation', CORS, controller.GetDetailPostByAddress);
 //Get Post by TypeAuthor
+
 baipost.get('/getPostByTypeAuthor', CORS, controller.GetPostByTypeAuthor);
+
+
+
+
 //TestUpload
 
 baipost.get('/getNewPost', CORS, controller.GetNewPost);

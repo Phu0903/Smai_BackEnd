@@ -16,7 +16,13 @@ users.get('/getInfoUser', CORS, usercontroller.getInfoUser)
 users.put('/profileUser', verifyToken, CORS, usercontroller.UpdateProfile)
 
 //Get address user
+
 users.get('/getAddress', verifyToken, CORS, userController.getAddress);
+
+
+users.get('/getAddress',verifyToken,userController.getAddress);
+//Get PhoneNumber User
+users.get('/getPhonNumber',userController.getPhonNumber)
 
 
 

@@ -252,6 +252,7 @@ module.exports = {
                         PostByAddress
                     })
             }
+
         } catch (error) {
             res.status(500).json({
                 success: false,
@@ -332,5 +333,47 @@ module.exports = {
                 'message': error.message
             });
         }
+
+       } catch (error) {
+        res.status(500).json({
+            success: false,
+            'message': error.message
+        });
+       }
+},
+
+//Get Post by type Author
+ 
+GetPostByTypeAuthor:async(req,res)=>
+{
+try {
+    if(req.query.typeauthor == 'tangcongdong')
+    {
+        typeauthor = 'Tặng cộng đồng'
+    }
+    if(req.query.typeauthor == 'canhan')
+    {
+        typeauthor = 'Cá nhân'
+    }
+    if(req.query.typeauthor == 'quy')
+    {
+        typeauthor= 'Quỹ/Nhóm từ thiện'
+    }
+    if(req.query.typeauthor == 'tochuc')
+    {
+        typeauthor = 'Tổ chức công ích'
+    }
+  
+    const PostByAuthor = await Post.find({TypeAuthor:typeauthor})
+    
+ 
+    if (PostByAuthor == null)
+    {
+        res.status(400)
+           .json({
+               success:false,
+               'message':'Type Author is not right'
+           })
+
     }
 }
