@@ -13,8 +13,6 @@ const { findOne } = require('../Model/User');
 
 module.exports = {
     AddPost: async (req, res) => {
-     
-
         const {
             title,
             note,
@@ -24,7 +22,6 @@ module.exports = {
             address,
         } = req.body;
         try {
-
             if (!title) {
                 return res
                     .status(400)
@@ -92,12 +89,8 @@ module.exports = {
     },
    //Update Product int Post
    UpdateProductInPost:async(req,res)=>{
-  
-        try {
-            
-          
+        try {            
            // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-           console.log(req.headers.idpost)
             if(!req.headers.idpost)
             {
                 return res
@@ -117,10 +110,8 @@ module.exports = {
                 },function(err,data){
                     res.json({'message':"oke"})
                 })
-
             }
-        } catch (error) {
-           
+        } catch (error) {   
             res.status(500).json({
                 success: false,
                 message: error.message
@@ -134,7 +125,6 @@ module.exports = {
     GetInfoFullPost: async (req, res) => {
         try {
             const post = await Post.find({})
-
             if (!post) {
                 return res
                     .status(400)

@@ -3,8 +3,6 @@ const Account = require('../Model/Account');
 const User = require('../Model/User')
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
-
-
 module.exports = {
   //Login
   login: async (req, res) => {
@@ -75,7 +73,6 @@ module.exports = {
       else {
         const hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
         const data = new Account({
-         
           'Password': hashedPassword,
           'PhoneNumber': PhoneNumber,
           'Rule': 1
@@ -84,7 +81,7 @@ module.exports = {
           'PhoneNumber': PhoneNumber,
           'AccountID': data._id,
           'FullName': FullName,
-          'Address': Address
+       
         })
         const accessToken = jwt.sign(
           { accountID: data._id },
