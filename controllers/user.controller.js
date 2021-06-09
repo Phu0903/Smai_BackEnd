@@ -7,7 +7,7 @@ require("dotenv").config();
 
 module.exports ={
 //get infor User
-getInfoUser: async(req,res)=>{
+/*getInfoUser: async(req,res)=>{
     const userName = req.query.UserName;
     const UserInfo = await  User.findOne({'UserName': userName})
     console.log(UserInfo)
@@ -23,13 +23,12 @@ getInfoUser: async(req,res)=>{
            .json(UserInfo)
     }
 
- },
+ },*/
  //get Infor User by Id 
  getInfoUserById: async(req,res)=>{
 
     try {
         const Id = req.accountID;
-      
         const UserInfo = await User.findOne({'AccountID': Id})
         if (!UserInfo){
            res.status(400)
