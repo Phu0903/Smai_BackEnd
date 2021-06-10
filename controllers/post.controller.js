@@ -46,8 +46,9 @@ module.exports = {
                 if(TypeAuthor == 'tangcongdong')
                 {
                     TypeAuthor = 'Tặng cộng đồng'
+                    console.log(TypeAuthor);
                 }
-                console.log(TypeAuthor);
+               
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
