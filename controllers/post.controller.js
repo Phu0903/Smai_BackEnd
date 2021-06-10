@@ -43,10 +43,10 @@ module.exports = {
                     })
             }
             else {
-                if(TypeAuthor == 'tangcongdong')
+                if(req.body.TypeAuthor == 'tangcongdong')
                 {
                     TypeAuthor = 'Tặng cộng đồng'
-                    console.log(TypeAuthor);
+                  
                 }
                
                 const dataPost = await new Post({
