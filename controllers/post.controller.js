@@ -44,18 +44,11 @@ module.exports = {
                     })
             }
             else {
-                if(req.body.TypeAuthor == 'tangcongdong')
-                {
-                    typeAuthor = 'Tặng cộng đồng'
-                  
-                }
-                else{
-                    typeAuthor = req.body.TypeAuthor
-                }
-                console.log(typeAuthor);
+             
+                
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
-                    'TypeAuthor': typeAuthor || 'Cá nhân',
+                    'TypeAuthor': TypeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
                     //'address': address || findInfoAuthor.Address,
                     'address': address,
