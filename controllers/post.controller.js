@@ -42,6 +42,10 @@ module.exports = {
                     })
             }
             else {
+                if(TypeAuthor = 'tangcongdong')
+                {
+                    TypeAuthor = 'Tặng cộng đồng'
+                }
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
