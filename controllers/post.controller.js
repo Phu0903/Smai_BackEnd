@@ -42,7 +42,7 @@ module.exports = {
                     })
             }
             else {
-                if(TypeAuthor = 'tangcongdong')
+                if(TypeAuthor == 'tangcongdong')
                 {
                     TypeAuthor = 'Tặng cộng đồng'
                 }
