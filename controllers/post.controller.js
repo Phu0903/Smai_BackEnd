@@ -44,7 +44,7 @@ module.exports = {
                     })
             }
             else {
-                if(TypeAuthor == 'tangcongdong')
+                if(req.body.TypeAuthor == 'tangcongdong')
                 {
                     typeAuthor = 'Tặng cộng đồng'
                   
