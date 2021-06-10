@@ -21,7 +21,7 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        console.log(req.body);
+       
         try {
             if (!title) {
                 return res
@@ -72,6 +72,7 @@ module.exports = {
                 })
                 dataPost.save(function (err, data) {
                     if (err) {
+                        
                         res.json(err)
                     }
                     else {
@@ -86,7 +87,7 @@ module.exports = {
 
             }
         } catch (error) {
-          
+            console.log(error)
             res.status(500).json({
                 success: false,
                 message: error.message,
