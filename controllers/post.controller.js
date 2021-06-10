@@ -47,6 +47,7 @@ module.exports = {
                 {
                     TypeAuthor = 'Tặng cộng đồng'
                 }
+                console.log(TypeAuthor);
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
