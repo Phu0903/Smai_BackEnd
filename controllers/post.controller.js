@@ -21,7 +21,7 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-       
+        var typeAuthor;
        
         try {
             if (!title) {
@@ -44,12 +44,15 @@ module.exports = {
                     })
             }
             else {
-                if(req.body.TypeAuthor == 'tangcongdong')
+                if(TypeAuthorr == 'tangcongdong')
                 {
-                    TypeAuthor = 'Tặng cộng đồng'
+                    typeAuthor = 'Tặng cộng đồng'
                   
                 }
-               
+                else{
+                    typeAuthor = req.body.TypeAuthor
+                }
+                console.log(TypeAuthor);
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
