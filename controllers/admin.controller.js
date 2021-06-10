@@ -40,21 +40,21 @@ module.exports = {
             }
             //make sure that there are no account have the same UserName with the data edit
 
-            var checkAccount = await Account.findOne({ UserName: req.body.UserName });
+            var checkAccount = await Account.findOne({ PhoneNumber: req.body.PhoneNumber });
             console.log(checkAccount);
-            console.log(editedAccount.UserName);
+            console.log(editedAccount.PhoneNumber);
             if (checkAccount) {
-                if (checkAccount.UserName != editedAccount.UserName) {
+                if (checkAccount.PhoneNumber != editedAccount.PhoneNumber) {
                     return res
                         .status(501)
                         .json({
                             success: false,
-                            message: "the new UserName already exist"
+                            message: "the new PhoneNumber already exist"
                         });
                 }
             }
             //edit account
-            // must contain UserName, Password, Rule into the reques.body
+            // must contain PhoneNumber, Password, Rule into the reques.body
             let hashedPassword;
             if (req.body.Password)
                 hashedPassword = await argon2d.hash(req.body.Password);//if req contain new password, hash it
@@ -63,7 +63,7 @@ module.exports = {
                 { _id: req.query._id },
                 {
                     $set: {
-                        UserName: req.body.UserName || editedAccount.UserName,
+                        PhoneNumber: req.body.PhoneNumber || editedAccount.PhoneNumber,
                         Password: hashedPassword || editedAccount.Password,
                         Rule: req.Rule || 1
                     }
@@ -98,7 +98,7 @@ module.exports = {
             });
 
             User.remove(
-                { UserName: deletedAccount.UserName },
+                { PhoneNumber: deletedAccount.PhoneNumber },
                 function (err, object) {
                     if (err) throw err;
                     return res
@@ -158,7 +158,7 @@ module.exports = {
                     })
             }
             //edit user
-            // must contain UserName, Password, Rule into the req.body
+            // must contain PhoneNumber, Password, Rule into the req.body
             //in this method, admin can not change property AccountId and userName
             //if any field is null, it will be remain the previous value
             User.updateOne(
@@ -168,8 +168,7 @@ module.exports = {
                         FullName: req.body.FullName || editedUser.FullName,
                         BirthDay: req.body.BirthDay || editedUser.BirthDay,
                         Address: req.body.Address || editedUser.Address,
-                        Gender: req.body.Gender || editedUser.Gender,
-                        PhoneNumber: req.body.PhoneNumber || editedUser.PhoneNumber,
+                        Gender: req.body.Gender || editedUser.Gender
                     }
                 }, function (err, data) {
                     return res
