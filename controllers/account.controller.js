@@ -3,27 +3,25 @@ const Account = require('../Model/Account');
 const User = require('../Model/User')
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
-
-
 module.exports = {
   //Login
   login: async (req, res) => {
-    const { UserName, Password } = req.body
-    if (!UserName || !Password)
+    const { PhoneNumber, Password } = req.body
+    if (!PhoneNumber || !Password)
       return res
         .status(400)
         .json({
           success: false,
-          message: "Missing user name or password"
+          message: "Missing PhoneNumber or password"
         })
     try {
-      const user = await Account.findOne({ 'UserName': UserName })
+      const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
       if (!user)
         return res
           .status(500)
           .json({
             success: false,
-            message: "UserName error."
+            message: "PhoneNumber error."
           })
       const passwordValid = await argon2d.verify(user.Password, Password)
       if (!user || !passwordValid)
@@ -31,7 +29,7 @@ module.exports = {
           .status(400)
           .json({
             success: false,
-            'message': 'Incorrect username or password'
+            'message': 'Incorrect PhoneNumber or password'
           })
       const accessToken = jwt.sign(
         { accountID: user._id },
@@ -53,56 +51,41 @@ module.exports = {
 
   //register
   register: async (req, res) => {
-    const { UserName, Password, PhoneNumber, Address, FullName } = req.body
-    console.log(req.body);
-    if (!UserName || !Password) {
-      console.log("1");
+    const {  Password, PhoneNumber, FullName } = req.body
+    if (!PhoneNumber || !Password) {
       return res
         .status(400)
         .json({
           success: false,
-          "message": "UserName or Password not exist"
-        })
-    }
-    if (!PhoneNumber) {
-      console.log("2");
-      return res
-        .status(400)
-        .json({
-          success: false,
-          "message": "PhoneNumber not exits"
+          "message": "PhoneNumber or Password not exist"
         })
     }
     try {
-      const user = await Account.findOne({ 'UserName': UserName })
+      const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
       if (user) {
-        console.log("UserName already taken");
         return res
           .status(400)
           .json({
             success: false,
-            "message": 'UserName already taken'
+            "message": 'PhoneNumber already taken'
           })
       }
       else {
         const hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
         const data = new Account({
-          'UserName': UserName,
           'Password': hashedPassword,
           'PhoneNumber': PhoneNumber,
           'Rule': 1
         })
         const UserDetail = new User({
-          'UserName': UserName,
           'PhoneNumber': PhoneNumber,
           'AccountID': data._id,
           'FullName': FullName,
-          'Address': Address
+       
         })
         const accessToken = jwt.sign(
           { accountID: data._id },
           process.env.ACCESS_TOKEN_SECRET)
-
         data.save(function (err) {
           UserDetail.save(),
             res.status(201)
@@ -110,7 +93,6 @@ module.exports = {
                 success: true,
                 "message": "OK",
                 "accessToken": accessToken, //Respone token for client user
-
               })
         });
       }

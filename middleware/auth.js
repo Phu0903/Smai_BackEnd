@@ -7,20 +7,21 @@ const verifyToken = (req,res,next) =>{
     if(!token)
     return res
            .status(401)
-           .json({
+           .send({
                'success':false,
-               'message':'Access token not found'
+               'message':'Bạn cần đăng nhập để sử dụng tính năng này'
            })
     try {
-        const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
-        req.accountID = decoded.accountID
+        const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
       
+        req.accountID = decoded.accountID
+        
         next() // cho qua
     } catch (error) {
         console.log(error)
         return res.status(403).json({
             success:false,
-            message:"Invalid token"
+            'message':"Invalid token"
         })
     }
 }

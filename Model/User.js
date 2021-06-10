@@ -25,10 +25,10 @@ var User = new mongoose.Schema({
         type: Schema.Types.ObjectId,
       	ref: 'Account'
    },
-   UserName:{
+   /*UserName:{
        type:String,
        ref:'Account'
-   }
+   }*/
 },{collection:'User',
    versionKey: false,
    timestamps:true

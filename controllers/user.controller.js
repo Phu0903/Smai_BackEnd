@@ -29,7 +29,6 @@ getInfoUser: async(req,res)=>{
 
     try {
         const Id = req.accountID;
-        console.log(Id);
         const UserInfo = await User.findOne({'AccountID': Id})
         if (!UserInfo){
            res.status(400)
@@ -63,7 +62,7 @@ UpdateProfile: async (req, res) => {
     try {
     
         const UserInfo = await User.findOne({ 'AccountID':req.accountID })
-        console.log(UserInfo._id)
+      
         if (!UserInfo)
             return res
                 .status(400)
