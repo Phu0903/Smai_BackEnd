@@ -219,7 +219,7 @@ GetPostByTypeAuthor:async(req,res)=>
 try {
     if(req.query.typeauthor == 'tangcongdong')
     {
-        typeauthor = 'Tặng cộng đồng'
+        typeauthor = 'tangcongdong'
     }
     if(req.query.typeauthor == 'canhan')
     {
