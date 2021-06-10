@@ -44,7 +44,7 @@ module.exports = {
                     })
             }
             else {
-                if(TypeAuthorr == 'tangcongdong')
+                if(TypeAuthor == 'tangcongdong')
                 {
                     typeAuthor = 'Tặng cộng đồng'
                   
