@@ -52,10 +52,10 @@ module.exports = {
                 else{
                     typeAuthor = req.body.TypeAuthor
                 }
-                console.log(TypeAuthor);
+                console.log(typeAuthor);
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
-                    'TypeAuthor': TypeAuthor || 'Cá nhân',
+                    'TypeAuthor': typeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
                     //'address': address || findInfoAuthor.Address,
                     'address': address,
