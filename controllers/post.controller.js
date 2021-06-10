@@ -13,7 +13,7 @@ const { findOne } = require('../Model/User');
 
 module.exports = {
     AddPost: async (req, res) => {
-        const {
+        var {
             title,
             note,
             NameProduct,
@@ -21,6 +21,7 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
+       
        
         try {
             if (!title) {
