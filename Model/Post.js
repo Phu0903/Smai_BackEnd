@@ -15,7 +15,7 @@ const Post = new mongoose.Schema({
       'Cá nhân',
       'Quỹ/Nhóm từ thiện',
       'Tổ chức công ích',
-      'Tặng cộng đồng'
+      'Tng cộng đồngặ'
     ]
 
   },
