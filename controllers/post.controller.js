@@ -80,6 +80,7 @@ module.exports = {
                         res.json(err)
                     }
                     else {
+                        console.log(dataPost._id)
                         res.status(201)
                             .json({
                                 success: true,
