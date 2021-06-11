@@ -16,13 +16,7 @@ const checkAdmin = async (req, res, next) => {
             })
     }
     else if (account.Rule == 1) {
-        console.log("err")
-        return res
-            .status(400)
-            .json({
-                success: false,
-                message: 'you do not have enought permission.'
-            })
+        return res.redirect('/admin/login', { status: "You do not have enought permission." })
     }
     else {
         next();
