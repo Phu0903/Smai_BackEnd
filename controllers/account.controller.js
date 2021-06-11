@@ -35,10 +35,6 @@ module.exports = {
         { accountID: user._id },
         process.env.ACCESS_TOKEN_SECRET
       )
-      var randomNumber = Math.random().toString();
-      randomNumber = randomNumber.substring(2, randomNumber.length);
-      res.cookie('cookieName', randomNumber, { maxAge: 900000, httpOnly: true });
-      console.log('cookie created successfully');
       res.json({
         success: true,
         "message": "OK",
