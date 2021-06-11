@@ -20,7 +20,7 @@ module.exports = {
                         message: "Accout requesting does not exist"
                     })
             }
-            res.render('AdminPage/index')
+            res.render('admin/product/them')
         });
     },
     editAccount: async (req, res, next) => {

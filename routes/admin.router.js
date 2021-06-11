@@ -6,7 +6,7 @@ const CORS = require('../middleware/CORS')
 const checkAdmin = require('../middleware/CheckAdmin')
 /* GET users listing. */
 
-admin.get('/all-account', verifyToken, checkAdmin, CORS, controller.getAllAccount);
+admin.get('/all-account', CORS, controller.getAllAccount);
 //this function allow admin to edit every account
 //the req.body must contain new(UserName, Password, Rule, PhoneNumber)
 //if any parameter above undefine, it will be default with the value 
