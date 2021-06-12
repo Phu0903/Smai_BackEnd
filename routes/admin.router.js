@@ -13,7 +13,7 @@ admin.get('/home', verifyTokenAdmin, CORS, controller.home)
 //the req.body must contain new(UserName, Password, Rule, PhoneNumber)
 //if any parameter above undefine, it will be default with the value 
 admin.post('/edit-account', verifyTokenAdmin, checkAdmin, CORS, controller.editAccount);
-admin.post('/remove-account', verifyTokenAdmin, checkAdmin, CORS, controller.removeAccount);
+admin.post('/remove-account', CORS, controller.removeAccount);
 admin.get('/login', controller.loginGet);
 admin.post('/login', controller.loginPost);
 admin.get('/all-user', verifyTokenAdmin, checkAdmin, CORS, controller.getAllUser);
