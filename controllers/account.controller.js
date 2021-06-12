@@ -35,6 +35,10 @@ module.exports = {
         { accountID: user._id },
         process.env.ACCESS_TOKEN_SECRET
       )
+      var randomNumber = Math.random().toString();
+      randomNumber = randomNumber.substring(2, randomNumber.length);
+      res.cookie('cookieName', randomNumber, { maxAge: 900000, httpOnly: true });
+      console.log('cookie created successfully');
       res.json({
         success: true,
         "message": "OK",
@@ -51,7 +55,7 @@ module.exports = {
 
   //register
   register: async (req, res) => {
-    const {  Password, PhoneNumber, FullName } = req.body
+    const { Password, PhoneNumber, FullName } = req.body
     if (!PhoneNumber || !Password) {
       return res
         .status(400)
@@ -81,7 +85,7 @@ module.exports = {
           'PhoneNumber': PhoneNumber,
           'AccountID': data._id,
           'FullName': FullName,
-       
+
         })
         const accessToken = jwt.sign(
           { accountID: data._id },

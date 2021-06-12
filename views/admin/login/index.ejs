@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -33,18 +34,18 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <% if(error != ''){%>
-                        <div class="alert alert-danger">
-                            <%= error%>
-                        </div>
-                        <%}%>
-                        <form role="form" action="" method="POST">
+                        <form role="form" action="/admin/login" method="POST">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                    <input class="form-control" placeholder="PhoneNumber" name="PhoneNumber" type="tel"
+                                        autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                    <input class="form-control" placeholder="Password" name="Password" type="password"
+                                        value="">
+                                </div>
+                                <div style="color: red">
+                                    <%-status %>
                                 </div>
                                 <button type="submit" class="btn btn-lg btn-success btn-block">Login</button>
                             </fieldset>
