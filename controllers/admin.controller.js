@@ -65,12 +65,10 @@ module.exports = {
                         message: "Accout requesting does not exist"
                     })
             }
-            console.log(data);
-            for(let i=0; i<data.length; i++)
-            {
-                
+            for (let i = 0; i < data.length; i++) {
+
             }
-            res.render('admin/product/danhsach', { account: data })
+            res.render('admin/account/danhsach', { account: data, url: process.env.URL })
         });
     },
     editAccount: async (req, res, next) => {

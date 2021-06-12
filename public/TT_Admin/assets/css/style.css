@@ -5532,6 +5532,9 @@ border-left: 3px solid transparent;
     top: -5px;
     position: relative;
 }
+.table>:not(:last-child)>:last-child>*{
+    border-bottom-color: #ebe8e8 !important;
+}
 .chatapi-windows .user-window .controlbar img {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -6626,7 +6629,6 @@ border-left: 3px solid transparent;
     width: 100%;
     z-index: 10;
     padding: 30px;
-    color: #f5f55;
     text-align: left;
     text-shadow: none;
 }
