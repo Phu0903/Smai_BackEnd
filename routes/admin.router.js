@@ -20,6 +20,7 @@ admin.get('/all-user', verifyTokenAdmin, checkAdmin, CORS, controller.getAllUser
 admin.post('/remove-user', verifyTokenAdmin, checkAdmin, CORS, controller.removeUser);
 admin.post('/edit-user', CORS, controller.editUserPost);
 admin.get('/edit-user', verifyTokenAdmin, checkAdmin, CORS, controller.editUserGet);
+admin.get('/view-user', controller.viewUser)
 
 admin.get('/all-post', verifyTokenAdmin, checkAdmin, CORS, controller.getAllPost)
 

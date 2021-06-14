@@ -29,16 +29,16 @@
                                         <table class="rwd-table container">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 70px;">
+                                                    <th style="width: 50px;">
                                                         STT</th>
-                                                    <th style="width: 190px; text-align: center;">
+                                                    <th style="width: 170px; text-align: center;">
                                                         FullName</th>
-                                                    <th style="width: 150px;">
+                                                    <th style="width: 140px;">
                                                         Phone Number</th>
                                                     <th style="text-align: center;">Address</th>
                                                     <th style="width: 110px;">
                                                         Birth Day</th>
-                                                    <th style="width: 200px; text-align: center;">
+                                                    <th style="width: 250px; text-align: center;">
                                                         Action</th>
                                                 </tr>
                                             </thead>
@@ -70,6 +70,10 @@
                                                                 <button type="button" class="circle circle1"
                                                                     onclick="deleteUser('<%=item._id%>')"><i
                                                                         class="fa fa-trash-alt"></i>
+                                                                </button>
+                                                                <button type="button" class="circle circle3"
+                                                                    onclick="viewUser('<%=item._id%>')"><i
+                                                                        class="fa fa-eye"></i>
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -111,6 +115,10 @@
                     }
                     function redirectToEditPage(id) {
                         let url = `admin/edit-user?_id=${id}`
+                        location.href = url
+                    }
+                    function viewUser(id) {
+                        let url = `admin/view-user?_id=${id}`
                         location.href = url
                     }
                 </script>
