@@ -11,21 +11,11 @@
             <!-- START CONTENT -->
             <section id="main-content" class=" ">
                 <section class="wrapper main-wrapper row">
-                    <div class='col-xs-12'>
-                        <div class="page-title">
-                            <div class="pull-left">
-                                <h1 class="title">LIST OF ACCOUNT</h1>
-                            </div>
-                            <div class="pull-right hidden-xs">
-
-                            </div>
-                        </div>
-                    </div>
                     <div class="clearfix"></div>
                     <div class="col-lg-12">
                         <section class="box ">
                             <header class="panel_header">
-                                <h2 class="title pull-left">ALL ACCOUNT</h2>
+                                <h2 class="title pull-left">ALL USER</h2>
                                 <div class="actions panel_actions pull-right">
                                     <a class="box_toggle fa fa-chevron-down"></a>
                                     <a class="box_setting fa fa-cog" data-toggle="modal" href="#section-settings"></a>
@@ -34,9 +24,6 @@
                             </header>
                             <div class="content-body">
                                 <div class="row">
-                                    <div class="alert alert-success">
-
-                                    </div>
                                     <div class="col-xs-12">
                                         <!-- ********************************************** -->
                                         <table class="rwd-table container">
@@ -49,7 +36,7 @@
                                                     <th style="width: 150px;">
                                                         Phone Number</th>
                                                     <th style="text-align: center;">Address</th>
-                                                    <th style="width: 100px;">
+                                                    <th style="width: 110px;">
                                                         Birth Day</th>
                                                     <th style="width: 200px; text-align: center;">
                                                         Action</th>
@@ -76,7 +63,7 @@
                                                             </td>
                                                             <td style="text-align:center">
                                                                 <button type="button" class="circle circle2"
-                                                                    onclick="deleteAccount('<%=item._id%>')"><i
+                                                                    onclick="redirectToEditPage('<%=item._id%>')"><i
                                                                         class="fa fa-edit"></i>
                                                                 </button>
 
@@ -121,5 +108,9 @@
                         }).then(data => {
                             location.href = "admin/all-user";
                         })
+                    }
+                    function redirectToEditPage(id) {
+                        let url = `admin/edit-user?_id=${id}`
+                        location.href = url
                     }
                 </script>

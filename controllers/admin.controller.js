@@ -175,7 +175,20 @@ module.exports = {
     //edit information of user
     //in this method, user must contain id of the user which being edited and all new information
     //the id of the user being edited must contain in the url
-    editUser: async (req, res, next) => {
+    editUserGet: async (req, res, next) => {
+        try {
+            var editedUser = await User.findOne({
+                _id: req.query._id
+            })
+            res.render("admin/user/edit", { user: editedUser });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
+    editUserPost: async (req, res, next) => {
         try {
             //id of the user being edited in request
             //get _id of the user by query data from url
@@ -184,12 +197,13 @@ module.exports = {
             })
             //confirm that the user edited is existing
             if (!editedUser) {
-                return res
-                    .status(404)
-                    .json({
-                        success: false,
-                        message: "The User you have chosen to edit does not exist"
-                    })
+                // return res
+                //     .status(404)
+                //     .json({
+                //         success: false,
+                //         message: "The User you have chosen to edit does not exist"
+                //     })
+                res.render("admin/user/error")
             }
             //edit user
             // must contain PhoneNumber, Password, Rule into the req.body
@@ -205,18 +219,15 @@ module.exports = {
                         Gender: req.body.Gender || editedUser.Gender
                     }
                 }, function (err, data) {
-                    return res
-                        .status(200)
-                        .json({
-                            success: true,
-                            message: "This user already update."
-                        })
+                    if (err) {
+                        res.render("admin/user/error")
+                    }
+                    else {
+                        res.render("admin/user/success")
+                    }
                 });
         } catch (error) {
-            return res.status(500).json({
-                success: false,
-                message: error.message
-            });
+            res.render("admin/user/error")
         }
     },
     removeUser: async (req, res, next) => {
