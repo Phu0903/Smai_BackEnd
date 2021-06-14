@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 const Account = new mongoose.Schema({
-    /*UserName: {
-        type: String,
-      
-        unique: true //Duy nhất
-    },*/
     Password:
     {
         type: String,
@@ -19,10 +14,7 @@ const Account = new mongoose.Schema({
     {
         type: Number,
         require: true,
-    },
-
-
-
+    }
 }, {
     collection: 'Account',
     timestamps: true,
