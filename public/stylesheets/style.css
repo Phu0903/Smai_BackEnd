@@ -13,3 +13,23 @@
       height: 100px;
   }
 }
+.circle {
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0.375em 0.375em 0 0 rgba(15, 28, 63, 0.125);
+    height: 50px;
+    color: white;
+    width: 50px;
+}
+.circle1{
+    background: #E63946;
+}
+.circle1:hover {
+    background: #c9323e;
+}
+.circle2{
+    background: #457B9D;
+}
+.circle2:hover {
+    background: #27526e;
+}

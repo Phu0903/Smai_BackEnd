@@ -8,7 +8,7 @@ const verifyTokenAdmin = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
         req.accountID = decoded.accountID
-
+        console.log(decoded);
         next() // cho qua
     } catch (error) {
         console.log(error)

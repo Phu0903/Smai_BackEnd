@@ -42,40 +42,46 @@
                                         <table class="rwd-table container">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 100px;">
+                                                    <th style="width: 70px;">
                                                         STT</th>
-                                                    <th style="width: 250px; text-align: center;">
-                                                        ID</th>
+                                                    <th style="width: 190px; text-align: center;">
+                                                        FullName</th>
+                                                    <th style="width: 150px;">
+                                                        Phone Number</th>
+                                                    <th style="text-align: center;">Address</th>
                                                     <th style="width: 100px;">
-                                                        Rule</th>
-                                                    <th style="text-align: center;">PhoneNumber</th>
+                                                        Birth Day</th>
                                                     <th style="width: 200px; text-align: center;">
                                                         Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <% let i=0; %>
-                                                    <% account.forEach(function(item){ i++;%>
+                                                    <% users.forEach(function(item){ i++;%>
                                                         <tr>
                                                             <td class="td-hover">
                                                                 <%= i%>
                                                             </td>
                                                             <td class="td-hover">
-                                                                <%= item._id%>
+                                                                <%= item.FullName || null%>
                                                             </td>
                                                             <td class="td-hover">
-                                                                <% if(item.Rule==1 ){%>
-                                                                    User
-                                                                    <%}else{%>
-                                                                        Admin
-                                                                        <% } %>
+                                                                0<%=item.PhoneNumber %>
                                                             </td>
                                                             <td class="td-hover">
-                                                                0<%= item.PhoneNumber%>
+                                                                <%= item.Address || null%>
+                                                            </td>
+                                                            <td class="td-hover">
+                                                                <%= item.BirthDay || null%>
                                                             </td>
                                                             <td style="text-align:center">
-                                                                <button type="button" class="circle circle1"
+                                                                <button type="button" class="circle circle2"
                                                                     onclick="deleteAccount('<%=item._id%>')"><i
+                                                                        class="fa fa-edit"></i>
+                                                                </button>
+
+                                                                <button type="button" class="circle circle1"
+                                                                    onclick="deleteUser('<%=item._id%>')"><i
                                                                         class="fa fa-trash-alt"></i>
                                                                 </button>
                                                             </td>
@@ -108,12 +114,12 @@
                     type="text/javascript"></script>
                 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
                 <script>
-                    async function deleteAccount(id) {
+                    async function deleteUser(id) {
                         await axios({
                             method: 'POST',
-                            url: `<%=url %>/admin/remove-account?_id=${id}`
+                            url: `<%=url %>/admin/remove-user?_id=${id}`
                         }).then(data => {
-                            location.href = "admin/all-account";
+                            location.href = "admin/all-user";
                         })
                     }
                 </script>
