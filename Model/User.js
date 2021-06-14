@@ -25,6 +25,12 @@ var User = new mongoose.Schema({
     AccountID: {
         type: Schema.Types.ObjectId,
         ref: 'Account'
+    },
+    createAt: {
+        type: Schema.Types.Date
+    },
+    updateAt: {
+        type: Schema.Types.Date
     }
 }, {
     collection: 'User',
