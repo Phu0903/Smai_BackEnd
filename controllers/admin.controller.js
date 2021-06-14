@@ -29,12 +29,11 @@ module.exports = {
             account = await Account.find({ PhoneNumber: PhoneNumber });
         }
         if (account.length != 0 && check == true) {
-            console.log(account);
             const passwordValid = await argon2d.verify(account[0].Password, Password)
             if (passwordValid)//kiem tra mk
             {
                 const accessToken = jwt.sign(
-                    { accountID: account._id },
+                    { accountID: account[0]._id },
                     process.env.ACCESS_TOKEN_SECRET
                 );
                 res.cookie('token', accessToken, { maxAge: 900000, httpOnly: true });
@@ -65,9 +64,6 @@ module.exports = {
                         message: "Accout requesting does not exist"
                     })
             }
-            for (let i = 0; i < data.length; i++) {
-
-            }
             res.render('admin/account/danhsach', { account: data, url: process.env.URL })
         });
     },
@@ -89,8 +85,6 @@ module.exports = {
             //make sure that there are no account have the same UserName with the data edit
 
             var checkAccount = await Account.findOne({ PhoneNumber: req.body.PhoneNumber });
-            console.log(checkAccount);
-            console.log(editedAccount.PhoneNumber);
             if (checkAccount) {
                 if (checkAccount.PhoneNumber != editedAccount.PhoneNumber) {
                     return res
@@ -106,7 +100,6 @@ module.exports = {
             let hashedPassword;
             if (req.body.Password)
                 hashedPassword = await argon2d.hash(req.body.Password);//if req contain new password, hash it
-            console.log(req.query._id)
             Account.updateOne(
                 { _id: req.query._id },
                 {
@@ -168,22 +161,16 @@ module.exports = {
     },
     //get all user with none data in req.body
     getAllUser: async (req, res, next) => {
-        User.find().then(data => {
-            if (!data) {
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message: "Accout requesting does not exist"
-                    })
-            }
+        const UserInfo = await User.find()
+        if (!UserInfo) {
             return res
                 .status(400)
                 .json({
-                    success: true,
-                    data: data
+                    success: false,
+                    message: "Accout requesting does not exist"
                 })
-        });
+        }
+        res.render('admin/user/danhsach', { users: UserInfo, url: process.env.URL, accountOpen: "open" })
     },
     //edit information of user
     //in this method, user must contain id of the user which being edited and all new information
@@ -192,7 +179,6 @@ module.exports = {
         try {
             //id of the user being edited in request
             //get _id of the user by query data from url
-            console.log(req.query._id);
             var editedUser = await User.findOne({
                 _id: req.query._id
             })
@@ -234,7 +220,6 @@ module.exports = {
         }
     },
     removeUser: async (req, res, next) => {
-        console.log(req.query._id)
         let deletedUser = await User.findOne({ _id: req.query._id });
         if (!deletedUser)
             return res
