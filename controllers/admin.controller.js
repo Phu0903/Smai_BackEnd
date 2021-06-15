@@ -159,6 +159,11 @@ module.exports = {
                 })
         }
     },
+    viewAccount: async (req, res, next) => {
+        await Account.findOne({ _id: req.query._id }).then((data) => {
+            res.render("admin/account/view", { account: data, isOpen: ["", "open", "", ""] })
+        })
+    },
     //get all user with none data in req.body
     getAllUser: async (req, res, next) => {
         const UserInfo = await User.find()
