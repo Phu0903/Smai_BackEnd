@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema
 const Account = new mongoose.Schema({
     Password:
     {
@@ -14,6 +15,12 @@ const Account = new mongoose.Schema({
     {
         type: Number,
         require: true,
+    },
+    createAt: {
+        type: Schema.Types.Date
+    },
+    updateAt: {
+        type: Schema.Types.Date
     }
 }, {
     collection: 'Account',

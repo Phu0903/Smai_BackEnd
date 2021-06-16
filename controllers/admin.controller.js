@@ -159,6 +159,11 @@ module.exports = {
                 })
         }
     },
+    viewAccount: async (req, res, next) => {
+        await Account.findOne({ _id: req.query._id }).then((data) => {
+            res.render("admin/account/view", { account: data, isOpen: ["", "open", "", ""] })
+        })
+    },
     //get all user with none data in req.body
     getAllUser: async (req, res, next) => {
         const UserInfo = await User.find()
@@ -265,12 +270,7 @@ module.exports = {
     getAllPost: async (req, res, next) => {
         try {
             Post.find().then((data) => {
-                return res
-                    .status(200)
-                    .json({
-                        success: true,
-                        data: data
-                    })
+                res.render('admin/post/allPost', { post: data, url: process.env.URL, isOpen: ["", "", "", "open"] })
             })
         } catch (error) {
             return res
@@ -281,8 +281,14 @@ module.exports = {
                 })
         }
     },
+    viewPost: async (req, res, next) => {
+        await Post.findOne({ _id: req.query._id }).then((data) => {
+            res.render("admin/post/view", { post: data, isOpen: ["", "open", "", ""] })
+        })
+    },
     removePost: async (req, res, next) => {
         let deletedPost = await Post.find({ _id: req.query._id });
+        console.log(req.query._id)
         if (!deletedPost)
             return res
                 .status(500)
