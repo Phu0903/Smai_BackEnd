@@ -28,31 +28,23 @@
                                         <!-- ********************************************** -->
                                         <div>
                                             <p><b>_id: </b>
-                                                <%=user._id %>
-                                            </p>
-                                            <p><b>FullName: </b>
-                                                <%=user.FullName%>
+                                                <%=account._id %>
                                             </p>
                                             <p><b>PhoneNumber: </b>
-                                                <%=user.PhoneNumber%>
+                                                <%=account.PhoneNumber%>
                                             </p>
-                                            <p><b>AccountID: </b>
-                                                <%=user.AccountID%>
+                                            <p><b>Rule: </b>
+                                                <%if(account.Rule==1){%>
+                                                    Client
+                                                    <% }else{ %>
+                                                        Admin
+                                                        <% } %>
                                             </p>
-                                            <p><b>Address: </b>
-                                                <%=user.Address%>
+                                            <p><b>createdAt: </b>
+                                                <%=account.createdAt%>
                                             </p>
-                                            <p><b>BirthDay: </b>
-                                                <%=user.BirthDay%>
-                                            </p>
-                                            <p><b>Gender: </b>
-                                                <%=user.Gender%>
-                                            </p>
-                                            <p><b>Create At: </b>
-                                                <%=user.createdAt%>
-                                            </p>
-                                            <p><b>Update At: </b>
-                                                <%=user.updatedAt%>
+                                            <p><b>updatedAt: </b>
+                                                <%=account.updatedAt%>
                                             </p>
                                         </div>
                                         <button class="btn" onclick="redirectThisPage()">BACK</button>
@@ -82,6 +74,6 @@
                 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
                 <script>
                     function redirectThisPage() {
-                        location.href = "/admin/all-user"
+                        location.href = "/admin/all-account"
                     }
                 </script>

@@ -15,7 +15,7 @@
                     <div class="col-lg-12">
                         <section class="box ">
                             <header class="panel_header">
-                                <h2 class="title pull-left">ALL USER</h2>
+                                <h2 class="title pull-left">ALL POST</h2>
                                 <div class="actions panel_actions pull-right">
                                     <a class="box_toggle fa fa-chevron-down"></a>
                                     <a class="box_setting fa fa-cog" data-toggle="modal" href="#section-settings"></a>
@@ -31,49 +31,51 @@
                                                 <tr>
                                                     <th style="width: 50px;">
                                                         STT</th>
+                                                    <th style="width: 80px; text-align: center;">
+                                                        Type Author</th>
+                                                    <th style="width: 170px;">
+                                                        Author</th>
+                                                    <th>Product</th>
+                                                    <th>Title</th>
+                                                    <th>Address</th>
                                                     <th style="width: 170px; text-align: center;">
-                                                        FullName</th>
-                                                    <th style="width: 140px;">
-                                                        Phone Number</th>
-                                                    <th style="text-align: center;">Address</th>
-                                                    <th style="width: 110px;">
-                                                        Birth Day</th>
-                                                    <th style="width: 250px; text-align: center;">
                                                         Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <% let i=0; %>
-                                                    <% users.forEach(function(item){ i++;%>
+                                                    <% post.forEach(function(item){ i++;%>
                                                         <tr>
                                                             <td class="td-hover">
                                                                 <%= i%>
                                                             </td>
                                                             <td class="td-hover">
-                                                                <%= item.FullName || null%>
+                                                                <%= item.TypeAuthor%>
                                                             </td>
                                                             <td class="td-hover">
-                                                                0<%=item.PhoneNumber %>
+                                                                <%= item.NameAuthor %>
                                                             </td>
                                                             <td class="td-hover">
-                                                                <%= item.Address || null%>
+                                                                <%item.NameProduct.forEach(function(pr){%>
+                                                                    <p>
+                                                                        <%=pr.NameProduct%>
+                                                                    </p>
+                                                                    <%})%>
                                                             </td>
                                                             <td class="td-hover">
-                                                                <%= item.BirthDay || null%>
+                                                                <%= item.title %>
+                                                            </td>
+                                                            <td class="td-hover">
+                                                                <%= item.address %>
                                                             </td>
                                                             <td style="text-align:center">
-                                                                <button type="button" class="circle circle2"
-                                                                    onclick="redirectToEditPage('<%=item._id%>')"><i
-                                                                        class="fa fa-edit"></i>
-                                                                </button>
-
-                                                                <button type="button" class="circle circle1"
-                                                                    onclick="deleteUser('<%=item._id%>')"><i
-                                                                        class="fa fa-trash-alt"></i>
-                                                                </button>
                                                                 <button type="button" class="circle circle3"
-                                                                    onclick="viewUser('<%=item._id%>')"><i
+                                                                    onclick="viewPost('<%=item._id%>')"><i
                                                                         class="fa fa-eye"></i>
+                                                                </button>
+                                                                <button type="button" class="circle circle1"
+                                                                    onclick="deletePost('<%=item._id%>')"><i
+                                                                        class="fa fa-trash-alt"></i>
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -105,20 +107,16 @@
                     type="text/javascript"></script>
                 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
                 <script>
-                    async function deleteUser(id) {
+                    async function deletePost(id) {
                         await axios({
                             method: 'POST',
-                            url: `<%=url %>/admin/remove-user?_id=${id}`
+                            url: `<%=url %>/admin/remove-post?_id=${id}`
                         }).then(data => {
-                            location.href = "admin/all-user";
+                            location.href = "admin/all-post";
                         })
                     }
-                    function redirectToEditPage(id) {
-                        let url = `admin/edit-user?_id=${id}`
-                        location.href = url
-                    }
-                    function viewUser(id) {
-                        let url = `admin/view-user?_id=${id}`
+                    function viewPost(id) {
+                        let url = `admin/view-post?_id=${id}`
                         location.href = url
                     }
                 </script>

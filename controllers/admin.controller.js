@@ -51,7 +51,7 @@ module.exports = {
         let countAccount = await Account.count();
         let countUser = await User.count();
         let countPost = await Post.count();
-        res.render('admin/main/index', { account: countAccount, user: countUser, post: countPost })
+        res.render('admin/main/index', { account: countAccount, user: countUser, post: countPost, isOpen: ["open", "", "", ""] })
     }
     ,
     getAllAccount: async (req, res, next) => {
@@ -64,7 +64,7 @@ module.exports = {
                         message: "Accout requesting does not exist"
                     })
             }
-            res.render('admin/account/danhsach', { account: data, url: process.env.URL })
+            res.render('admin/account/danhsach', { account: data, url: process.env.URL, isOpen: ["", "open", "", ""] })
         });
     },
     editAccount: async (req, res, next) => {
@@ -159,6 +159,11 @@ module.exports = {
                 })
         }
     },
+    viewAccount: async (req, res, next) => {
+        await Account.findOne({ _id: req.query._id }).then((data) => {
+            res.render("admin/account/view", { account: data, isOpen: ["", "open", "", ""] })
+        })
+    },
     //get all user with none data in req.body
     getAllUser: async (req, res, next) => {
         const UserInfo = await User.find()
@@ -170,12 +175,25 @@ module.exports = {
                     message: "Accout requesting does not exist"
                 })
         }
-        res.render('admin/user/danhsach', { users: UserInfo, url: process.env.URL, accountOpen: "open" })
+        res.render('admin/user/danhsach', { users: UserInfo, url: process.env.URL, isOpen: ["", "", "open", ""] })
     },
     //edit information of user
     //in this method, user must contain id of the user which being edited and all new information
     //the id of the user being edited must contain in the url
-    editUser: async (req, res, next) => {
+    editUserGet: async (req, res, next) => {
+        try {
+            var editedUser = await User.findOne({
+                _id: req.query._id
+            })
+            res.render("admin/user/edit", { user: editedUser, isOpen: ["", "", "open", ""] });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
+    editUserPost: async (req, res, next) => {
         try {
             //id of the user being edited in request
             //get _id of the user by query data from url
@@ -184,12 +202,13 @@ module.exports = {
             })
             //confirm that the user edited is existing
             if (!editedUser) {
-                return res
-                    .status(404)
-                    .json({
-                        success: false,
-                        message: "The User you have chosen to edit does not exist"
-                    })
+                // return res
+                //     .status(404)
+                //     .json({
+                //         success: false,
+                //         message: "The User you have chosen to edit does not exist"
+                //     })
+                res.render("admin/user/error")
             }
             //edit user
             // must contain PhoneNumber, Password, Rule into the req.body
@@ -205,18 +224,15 @@ module.exports = {
                         Gender: req.body.Gender || editedUser.Gender
                     }
                 }, function (err, data) {
-                    return res
-                        .status(200)
-                        .json({
-                            success: true,
-                            message: "This user already update."
-                        })
+                    if (err) {
+                        res.render("admin/user/error", { isOpen: ["", "", "open", ""] })
+                    }
+                    else {
+                        res.render("admin/user/success", { isOpen: ["", "", "open", ""] })
+                    }
                 });
         } catch (error) {
-            return res.status(500).json({
-                success: false,
-                message: error.message
-            });
+            res.render("admin/user/error")
         }
     },
     removeUser: async (req, res, next) => {
@@ -244,16 +260,17 @@ module.exports = {
             });
         }
     },
+    viewUser: async (req, res, next) => {
+        await User.findOne({ _id: req.query._id }).then((data) => {
+            console.log(data)
+            res.render("admin/user/view", { user: data, isOpen: ["", "", "open", ""] })
+        })
+    },
     //view all post
     getAllPost: async (req, res, next) => {
         try {
             Post.find().then((data) => {
-                return res
-                    .status(200)
-                    .json({
-                        success: true,
-                        data: data
-                    })
+                res.render('admin/post/allPost', { post: data, url: process.env.URL, isOpen: ["", "", "", "open"] })
             })
         } catch (error) {
             return res
@@ -264,8 +281,14 @@ module.exports = {
                 })
         }
     },
+    viewPost: async (req, res, next) => {
+        await Post.findOne({ _id: req.query._id }).then((data) => {
+            res.render("admin/post/view", { post: data, isOpen: ["", "open", "", ""] })
+        })
+    },
     removePost: async (req, res, next) => {
         let deletedPost = await Post.find({ _id: req.query._id });
+        console.log(req.query._id)
         if (!deletedPost)
             return res
                 .status(500)

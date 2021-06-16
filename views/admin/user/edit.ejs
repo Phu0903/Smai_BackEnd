@@ -13,9 +13,6 @@
                 <section class="wrapper main-wrapper row" style=''>
                     <div class='col-xs-12'>
                         <div class="page-title">
-                            <div class="pull-left">
-                                <h1 class="title">Add Sản Phẩm</h1>
-                            </div>
                             <div class="pull-right hidden-xs">
 
                             </div>
@@ -25,7 +22,7 @@
                     <div class="col-xs-12">
                         <section class="box ">
                             <header class="panel_header">
-                                <h2 class="title pull-left">Thông Tin</h2>
+                                <h2 class="title pull-left">Information</h2>
                                 <div class="actions panel_actions pull-right">
                                     <a class="box_toggle fa fa-chevron-down"></a>
                                     <a class="box_setting fa fa-cog" data-toggle="modal" href="#section-settings"></a>
@@ -34,64 +31,53 @@
                             </header>
                             <div class="content-body">
                                 <div class="row">
-                                    <form action="" method="post" enctype="multipart/form-data">
+                                    <form action="/admin/edit-user?_id=<%=user._id  %> " method="post" role="form">
                                         <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
                                             <div class="form-group">
-                                                <label class="form-label" for="field-120334">Name</label>
+                                                <label class="form-label" for="field-120334">Full Name</label>
                                                 <span class="desc"></span>
                                                 <div class="controls">
-                                                    <input type="text" id="name" value="" class="form-control"
-                                                        name="name">
+                                                    <input type="text" id="name" value="<%= user.FullName %> "
+                                                        class="form-control" name="FullName">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
                                             <div class="form-group">
-                                                <label class="form-label" for="field-120334">Hình</label>
+                                                <label class="form-label" for="field-120334">PhoneNumber</label>
                                                 <span class="desc"></span>
                                                 <div class="controls">
-                                                    <input type="file" id="hinh" value="" required="required"
-                                                        class="form-control" name="hinh">
+                                                    <input type="text" id="name" value="0<%=user.PhoneNumber%>"
+                                                        class="form-control" name="PhoneNumber">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
                                             <div class="form-group">
-                                                <label class="form-label" for="field-120334">Giá</label>
+                                                <label class="form-label" for="field-120334">Address</label>
                                                 <span class="desc"></span>
                                                 <div class="controls">
-                                                    <input type="number" id="gia" value="0" min="0" class="form-control"
-                                                        name="gia">
+                                                    <input type="text" id="name" value="<%=user.Address %>"
+                                                        class="form-control" name="Address">
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
                                             <div class="form-group">
-                                                <label class="form-label" for="field-120334">Thể Loại</label>
+                                                <label class="form-label" for="field-120334">BirthDay</label>
                                                 <span class="desc"></span>
                                                 <div class="controls">
-                                                    <select class="form-control" id="cate" name="cate">
-                                                    </select>
+                                                    <input type="date" id="name" value="<%=user.Birthday %> "
+                                                        class="form-control" name="BirthDay">
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
-                                            <div class="form-group">
-                                                <label class="form-label" for="field-120334">Chi Tiết Sản Phẩm</label>
-                                                <span class="desc"></span>
-                                                <div class="controls">
-                                                    <textarea name="des" id="des" class="form-control autogrow"
-                                                        cols="5"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
                                             <div class="text-left">
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                                <button type="button" class="btn">Cancel</button>
+                                                <button type="submit" class="btn btn-primary"
+                                                    onclick="redirectThisPage()">Save</button>
+                                                <button type="button" class="btn"
+                                                    onclick="redirectThisPage()">Cancel</button>
                                             </div>
                                         </div>
                                     </form>
@@ -105,3 +91,8 @@
             <div class="chatapi-windows ">
             </div>
             <% include ../playout/footer.ejs %>
+                <script>
+                    function redirectThisPage() {
+                        location.href = "admin/all-user";
+                    }
+                </script>

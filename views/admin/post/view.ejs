@@ -28,31 +28,42 @@
                                         <!-- ********************************************** -->
                                         <div>
                                             <p><b>_id: </b>
-                                                <%=user._id %>
+                                                <%=post._id %>
                                             </p>
-                                            <p><b>FullName: </b>
-                                                <%=user.FullName%>
+                                            <p><b>Product: </b>
+                                                <%post.NameProduct.forEach(function(pr){%>
+                                                    <p> &emsp;&emsp;- <%=pr.NameProduct %>
+                                                    </p>
+                                                    <%})%>
                                             </p>
-                                            <p><b>PhoneNumber: </b>
-                                                <%=user.PhoneNumber%>
+                                            <p><b>Image: </b>
+                                                <%post.urlImage.forEach(function(url){%>
+                                                    <img src="<%=url  %>" style="width: 100px; height: 100px;" />
+                                                    <% }) %>
                                             </p>
-                                            <p><b>AccountID: </b>
-                                                <%=user.AccountID%>
+                                            <p><b>AuthorID: </b>
+                                                <%=post.AuthorID%>
+                                            </p>
+                                            <p><b>Type Author: </b>
+                                                <%=post.TypeAuthor%>
+                                            </p>
+                                            <p><b>Author's Name: </b>
+                                                <%=post.NameAuthor%>
                                             </p>
                                             <p><b>Address: </b>
-                                                <%=user.Address%>
+                                                <%=post.address%>
                                             </p>
-                                            <p><b>BirthDay: </b>
-                                                <%=user.BirthDay%>
+                                            <p><b>Title: </b>
+                                                <%=post.title%>
                                             </p>
-                                            <p><b>Gender: </b>
-                                                <%=user.Gender%>
+                                            <p><b>Note: </b>
+                                                <%=post.note%>
                                             </p>
                                             <p><b>Create At: </b>
-                                                <%=user.createdAt%>
+                                                <%=post.updatedAt%>
                                             </p>
                                             <p><b>Update At: </b>
-                                                <%=user.updatedAt%>
+                                                <%=post.updatedAt%>
                                             </p>
                                         </div>
                                         <button class="btn" onclick="redirectThisPage()">BACK</button>
@@ -82,6 +93,6 @@
                 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
                 <script>
                     function redirectThisPage() {
-                        location.href = "/admin/all-user"
+                        location.href = "/admin/all-post"
                     }
                 </script>

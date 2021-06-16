@@ -11,16 +11,6 @@
             <!-- START CONTENT -->
             <section id="main-content" class=" ">
                 <section class="wrapper main-wrapper row">
-                    <div class='col-xs-12'>
-                        <div class="page-title">
-                            <div class="pull-left">
-                                <h1 class="title">LIST OF ACCOUNT</h1>
-                            </div>
-                            <div class="pull-right hidden-xs">
-
-                            </div>
-                        </div>
-                    </div>
                     <div class="clearfix"></div>
                     <div class="col-lg-12">
                         <section class="box ">
@@ -34,9 +24,6 @@
                             </header>
                             <div class="content-body">
                                 <div class="row">
-                                    <div class="alert alert-success">
-
-                                    </div>
                                     <div class="col-xs-12">
                                         <!-- ********************************************** -->
                                         <table class="rwd-table container">
@@ -49,7 +36,7 @@
                                                     <th style="width: 100px;">
                                                         Rule</th>
                                                     <th style="text-align: center;">PhoneNumber</th>
-                                                    <th style="width: 200px; text-align: center;">
+                                                    <th style="width: 250px; text-align: center;">
                                                         Action</th>
                                                 </tr>
                                             </thead>
@@ -74,6 +61,10 @@
                                                                 0<%= item.PhoneNumber%>
                                                             </td>
                                                             <td style="text-align:center">
+                                                                <button type="button" class="circle circle3"
+                                                                    onclick="viewAccount('<%=item._id%>')"><i
+                                                                        class="fa fa-eye"></i>
+                                                                </button>
                                                                 <button type="button" class="circle circle1"
                                                                     onclick="deleteAccount('<%=item._id%>')"><i
                                                                         class="fa fa-trash-alt"></i>
@@ -115,5 +106,9 @@
                         }).then(data => {
                             location.href = "admin/all-account";
                         })
+                    }
+                    function viewAccount(id) {
+                        let url = `admin/view-account?_id=${id}`
+                        location.href = url
                     }
                 </script>

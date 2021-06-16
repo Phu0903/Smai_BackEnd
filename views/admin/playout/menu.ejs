@@ -20,26 +20,25 @@
         <!-- USER INFO - END -->
         <ul class='wraplist'>
             <li class='menusection'>Main</li>
-            <li class="open">
-                <a href="/admin">
+            <li class=<%=isOpen[0] %>>
+                <a href="/admin/home">
                     <i class="fa fa-tachometer-alt"></i>
                     <span class="title">Dashboard</span>
                 </a>
             </li>
-            <li class="">
+            <li class=<%=isOpen[1] %>>
                 <a href="/admin/all-account">
                     <i class="fa fa-user-circle"></i>
                     <span class="title">Account</span>
                 </a>
             </li>
-            <li class="">
+            <li class=<%=isOpen[2] %>>
                 <a href="/admin/all-user">
                     <i class="fa fa-users"></i>
                     <span class="title">User</span>
                 </a>
             </li>
-
-            <li class="">
+            <li class=<%=isOpen[3] %>>
                 <a href="javascript:;">
                     <i class="fa fa-newspaper"></i>
                     <span class="title">Post</span>
