@@ -259,15 +259,17 @@ try {
 GetNewPost : async(req,res)=>{
   try {
       const SortTime = {createdAt:-1};
-      Post.find({}).sort(SortTime).limit(12).exec(function(err,docs){
+      Post.find({'TypeAuthor':'tangcongdong' }).sort(SortTime).limit(12).exec(function(err,docs){
           if(err) 
           {
                res.json(err);
           } 
           else{
               res.json(docs)
+            
           }
       })
+    
   } catch (error) {
     res.status(500).json({
         success: false,
