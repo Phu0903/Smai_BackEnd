@@ -218,7 +218,7 @@ module.exports = {
                 typeauthor = 'Tổ chức công ích'
             }
             const SortTime = { createdAt: -1 };
-            const PostByAuthor = await Post.find({ TypeAuthor: typeauthor }).sort(SortTime);
+            const PostByAuthor = await Post.find({ TypeAuthor: typeauthor }).sort(SortTime).limit(30);
             if (PostByAuthor == null) {
                 res.status(400)
                     .json({
