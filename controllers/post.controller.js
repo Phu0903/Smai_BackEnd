@@ -59,11 +59,6 @@ module.exports = {
                       })*/
 
                 })
-                Product.create(dataPost.NameProduct, function (err, res) {
-                    if (err) {
-                        res.json(err)
-                    }
-                })
                 dataPost.save(function (err, data) {
                     if (err) {
 
@@ -289,6 +284,8 @@ module.exports = {
             });
         }
     },
+
+    //create Post
     createPost: async (req, res) => {
         const {
             title,
@@ -325,12 +322,10 @@ module.exports = {
                     if (temp != null)
                         productPost.push(temp)
                 }
-                console.log(productPost);
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
-                    //'address': address || findInfoAuthor.Address,
                     'address': address,
                     'NameProduct': productPost,
                     'title': title,
@@ -338,11 +333,6 @@ module.exports = {
                     'urlImage': req.files.map(function (files) {
                         return files.path
                     })
-                    //map load path image in cloud from Post
-
-                    /*'urlImage':req.files.map(function (files) {
-                        return files.path
-                      })*/
 
                 })
                 Product.create(dataPost.NameProduct, function (err, res) {
@@ -352,23 +342,19 @@ module.exports = {
                 })
                 dataPost.save(function (err, data) {
                     if (err) {
-
                         res.json(err)
                     }
                     else {
-                        console.log(dataPost._id)
                         res.status(201)
                             .json({
                                 success: true,
                                 'message': "Oke",
-                                'idpost': dataPost._id,
                             })
                     }
                 })
 
             }
         } catch (error) {
-            console.log(error)
             res.status(500).json({
                 success: false,
                 message: error.message,
@@ -376,19 +362,9 @@ module.exports = {
             });
         }
 
-    }
+    },
 
-    else (
-        res.status(200)
-            .json(PostByAuthor)
-    )
-} catch (error) {
-    res.status(500).json({
-        success: false,
-        'message': error.message
-    });
-}
-},
+
 
 
 //get new post
@@ -442,6 +418,4 @@ GetPostByAccountID : async(req,res) =>{
  }
 
 }
-
-
 
