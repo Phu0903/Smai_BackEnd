@@ -377,6 +377,70 @@ module.exports = {
         }
 
     }
+
+    else (
+        res.status(200)
+            .json(PostByAuthor)
+    )
+} catch (error) {
+    res.status(500).json({
+        success: false,
+        'message': error.message
+    });
+}
+},
+
+
+//get new post
+GetNewPost : async(req,res)=>{
+  try {
+      const SortTime = {createdAt:-1};
+      Post.find({'TypeAuthor':'tangcongdong' }).sort(SortTime).limit(12).exec(function(err,docs){
+          if(err) 
+          {
+               res.json(err);
+          } 
+          else{
+              res.json(docs)
+            
+          }
+      })
+    
+  } catch (error) {
+    res.status(500).json({
+        success: false,
+        'message': error.message
+    });
+  }
+ },
+
+
+ //Get Post by AccountID
+GetPostByAccountID : async(req,res) =>{
+     try {
+        const SortTime = {createdAt:-1};
+         const ID = req.accountID;
+         const post = await Post.find({'AuthorID':ID}).sort(SortTime);
+       
+         if(!post[0]._id)
+         {
+             res.status(201)
+                .json({
+                    'message':'You do not have post'
+                })
+         }
+         else{
+             res.status(201)
+                 .json(post)
+         }
+     } catch (error) {
+        res.status(500).json({
+            success: false,
+            'message': error.message
+        });
+     }
+ }
+
 }
 
 
