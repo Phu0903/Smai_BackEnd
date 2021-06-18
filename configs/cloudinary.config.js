@@ -7,7 +7,7 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET
 });
-
+console.log("OK")
 const storage = new CloudinaryStorage({
   cloudinary,
   allowedFormats: ['jpg', 'png'],

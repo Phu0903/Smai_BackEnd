@@ -283,7 +283,7 @@ module.exports = {
     },
     viewPost: async (req, res, next) => {
         await Post.findOne({ _id: req.query._id }).then((data) => {
-            res.render("admin/post/view", { post: data, isOpen: ["", "open", "", ""] })
+            res.render("admin/post/view", { post: data, isOpen: ["", "", "", "open"] })
         })
     },
     removePost: async (req, res, next) => {
@@ -304,5 +304,8 @@ module.exports = {
                     message: `updated success: ${object.deletedCount} record`
                 })
         })
+    },
+    createPost: (req, res, next) => {
+        res.render('admin/post/createPost', { isOpen: ["", "", "", "open"] })
     }
 }

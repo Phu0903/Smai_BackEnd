@@ -22,6 +22,9 @@
                                     <a class="box_close fa fa-times"></a>
                                 </div>
                             </header>
+                            <div style="text-align: right;">
+                                <button class="btn btn-success" onclick="redirectCreatePost()">Crate new post</button>
+                            </div>
                             <div class="content-body">
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -58,7 +61,9 @@
                                                             <td class="td-hover">
                                                                 <%item.NameProduct.forEach(function(pr){%>
                                                                     <p>
-                                                                        <%=pr.NameProduct%>
+                                                                        <%if(pr !=null){%>
+                                                                            <%=pr.NameProduct%>
+                                                                                <% } %>
                                                                     </p>
                                                                     <%})%>
                                                             </td>
@@ -118,5 +123,8 @@
                     function viewPost(id) {
                         let url = `admin/view-post?_id=${id}`
                         location.href = url
+                    }
+                    function redirectCreatePost() {
+                        location.href = "admin/create-post";
                     }
                 </script>

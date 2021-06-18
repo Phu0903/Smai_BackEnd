@@ -20,9 +20,6 @@ baipost.get('/getFullPostByLocation', CORS, controller.GetDetailPostByAddress);
 
 baipost.get('/getPostByTypeAuthor', CORS, controller.GetPostByTypeAuthor);
 
-
-
-
 //TestUpload
 
 baipost.get('/getNewPost', CORS, controller.GetNewPost);
