@@ -102,5 +102,26 @@ module.exports = {
         "message": err.message
       });
     }
+  },
+
+
+  //find Phone
+  getPhone: async(req,res)=>{
+   try {
+    const user = await Account.findOne({ 'PhoneNumber': req.body.PhoneNumber }) 
+    if (user) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          "message": 'PhoneNumber already taken'
+        })
+    }
+    else{
+      res.status(201).json("Oke")
+    }
+   } catch (error) {
+     
+   }
   }
 }
