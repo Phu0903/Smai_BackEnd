@@ -425,7 +425,7 @@ GetPostByAccountID : async(req,res) =>{
  DeletePost: async(req,res) =>{
      try {
          //ID from client
-         const id = req.query.ID;
+         const id = req.query._id;
          //find News by ID 
          const post =await Post.findOne({'_id':id})
          console.log(id)
