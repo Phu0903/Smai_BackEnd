@@ -428,6 +428,7 @@ GetPostByAccountID : async(req,res) =>{
          const id = req.query.ID;
          //find News by ID 
          const post =await Post.findOne({'_id':id})
+         console.log(id)
          if (!post)
          {
              res.json({
@@ -439,7 +440,7 @@ GetPostByAccountID : async(req,res) =>{
               
             post.urlImage.map(function (url)  {
                 //delete image
-                //
+                console.log(url)
                 //Tách chuỗi lấy id
                 const image_type = url.split(/[/,.]/)
                 //lấy tách ID
@@ -452,11 +453,13 @@ GetPostByAccountID : async(req,res) =>{
             post.remove(function(err,data){
                 if(err)
                 {
+                    console.log(err);
                     res.json({
                         message:'Delete post do not successful'
                     })
                 }
                 else{
+                    console.log(oke)
                     res.json("Delete successful")
                 }
             })
@@ -468,7 +471,17 @@ GetPostByAccountID : async(req,res) =>{
             'message': error.message
         });
      }
+ },
+  
+ FindId : async(req,res)=>{
+   try {
+    const id = req.query.ID;
+    //find News by ID 
+    const post =await Post.findOne({'_id':id})
+    console.log(post)
+   } catch (error) {
+       
+   }
  }
-
 }
 
