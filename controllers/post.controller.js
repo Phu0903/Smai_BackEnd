@@ -431,7 +431,7 @@ GetPostByAccountID : async(req,res) =>{
          console.log(id)
          if (!post)
          {
-             res.json({
+             res.status(400).json({
                 success:false,
                 message:"do not have Post in data",
             });
@@ -440,7 +440,7 @@ GetPostByAccountID : async(req,res) =>{
               
             post.urlImage.map(function (url)  {
                 //delete image
-                console.log(url)
+               
                 //Tách chuỗi lấy id
                 const image_type = url.split(/[/,.]/)
                 //lấy tách ID
@@ -453,14 +453,14 @@ GetPostByAccountID : async(req,res) =>{
             post.remove(function(err,data){
                 if(err)
                 {
-                    console.log(err);
-                    res.json({
+                 
+                    res.status(201).json({
                         message:'Delete post do not successful'
                     })
                 }
                 else{
-                    console.log("Oke")
-                    res.json("Delete successful")
+                    
+                    res.status(201).json("Delete successful")
                 }
             })
          }
