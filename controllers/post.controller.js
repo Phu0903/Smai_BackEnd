@@ -459,7 +459,7 @@ GetPostByAccountID : async(req,res) =>{
                     })
                 }
                 else{
-                    console.log(oke)
+                    console.log("Oke")
                     res.json("Delete successful")
                 }
             })
