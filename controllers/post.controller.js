@@ -22,7 +22,7 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        console.log(req.body)
+        
         try {
             if (!title) {
                 return res
