@@ -23,9 +23,9 @@ baipost.get('/getPostByTypeAuthor', CORS, controller.GetPostByTypeAuthor);
 //TestUpload
 
 baipost.get('/getNewPost', CORS, controller.GetNewPost);
-//TesstToken
-/*baipost.post('/TestToken',verifyToken,controller.TestToke)
-//Test post image
-baipost.post('/TestIamge',verifyToken, fileUploader.array('productImage'),controller.TestImage)*/
+
+
+//delete Post
+baipost.delete('/deletePostbyUser',CORS,controller.DeletePost);
 
 module.exports = baipost;

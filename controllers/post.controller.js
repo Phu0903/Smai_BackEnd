@@ -4,6 +4,7 @@ const Post = require('../Model/Post');
 const Schema = mongoose.Schema;
 const Product = require('../Model/Product')
 const User = require('../Model/User')
+const cloudinary_detele = require('../configs/cloudinary.delete')
 const multer = require('multer');
 const { json } = require('express');
 var ObjectID = require('mongodb').ObjectID;
@@ -409,6 +410,58 @@ GetPostByAccountID : async(req,res) =>{
              res.status(201)
                  .json(post)
          }
+     } catch (error) {
+        res.status(500).json({
+            success: false,
+            'message': error.message
+        });
+     }
+ },
+
+
+
+ //delete Posst 
+
+ DeletePost: async(req,res) =>{
+     try {
+         //ID from client
+         const id = req.body.ID;
+         //find News by ID 
+         const post =await Post.findOne({'_id':id})
+         if (!post)
+         {
+             res.json({
+                success:false,
+                message:"do not have Post in data",
+            });
+         }
+         else{
+              
+            post.urlImage.map(function (url)  {
+                //delete image
+                //
+                //Tách chuỗi lấy id
+                const image_type = url.split(/[/,.]/)
+                //lấy tách ID
+                const imageId = image_type[image_type.length -2]
+
+                //xóa ảnh
+                cloudinary_detele.uploader.destroy(imageId);
+            })
+            //xóa tin đăng 
+            post.remove(function(err,data){
+                if(err)
+                {
+                    res.json({
+                        message:'Delete post do not successful'
+                    })
+                }
+                else{
+                    res.json("Delete successful")
+                }
+            })
+         }
+         
      } catch (error) {
         res.status(500).json({
             success: false,
