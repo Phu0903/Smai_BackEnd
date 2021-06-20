@@ -134,7 +134,7 @@ module.exports = {
     try {
       const password = req.body.Password
       const accountUser = await Account.findOne({ 'PhoneNumber': req.body.PhoneNumber })
-      console.log(res.body)
+      console.log(req.body)
       if (!accountUser)
       return res
         .status(400)
