@@ -114,7 +114,7 @@ module.exports = {
     try {
       const user = await Account.findOne({ 'PhoneNumber': req.body.PhoneNumber })
       if (user) {
-        res.status(400).json({
+        res.status(201).json({
           success: false,
           "message": 'PhoneNumber already taken'
         })
