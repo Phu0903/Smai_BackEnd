@@ -13,7 +13,11 @@ account.post('/login', CORS, controller.login)
 //find Phone
 account.post('/getPhone',CORS,controller.getPhone)
 
+//Forgot password
+
+account.post('/Forgot',CORS,controller.FogotPassword)
 
 
-
+//reset Pasword
+account.post('/ResetPassword',CORS,controller.ResetPassword)
 module.exports = account;
