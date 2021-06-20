@@ -160,9 +160,7 @@ module.exports = {
               throw new Error(err)
             }
             console.log("Oke");
-            res.status(201).json({
-              message: "Oke"
-            })
+            res.status(201).json("Oke")
           }
         )
       }
