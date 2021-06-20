@@ -134,6 +134,7 @@ module.exports = {
     try {
       const password = req.body.Password
       const accountUser = await Account.findOne({ 'PhoneNumber': req.body.PhoneNumber })
+      console.log(re.body)
       if (!accountUser)
       return res
         .status(400)
@@ -165,6 +166,7 @@ module.exports = {
       }
 
     } catch (error) {
+      console.log(error);
       res.status(500).json({
         success: false,
         "message": error.message
