@@ -159,7 +159,7 @@ module.exports = {
             if (err) {
               throw new Error(err)
             }
-            console.log("Oke")
+            console.log("Oke");
             res.status(201).json({
               message: "Oke"
             })
