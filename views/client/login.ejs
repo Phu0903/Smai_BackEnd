@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="#">
     <title>Đăng nhập</title>
-    <link rel="stylesheet" href="client/css/login-register.css">
-    <link rel="stylesheet" href="client/css/style.css">
+    <link rel="stylesheet" href="./css/login-register.css">
+    <link rel="stylesheet" href="./css/style.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -35,17 +35,20 @@
         <div class="noi-dung">
             <div class="form">
                 <h2>Đăng Nhập</h2>
-                <form action="">
+                <form role="form" action="/client/login" method="POST">
                     <div class="input-form">
                         <span>Tên Người Dùng</span>
-                        <input type="text" name="">
+                        <input type="text" name="PhoneNumber">
                     </div>
                     <div class="input-form">
                         <span>Mật Khẩu</span>
-                        <input type="password" name="">
+                        <input type="password" name="Password">
                     </div>
                     <div class="nho-dang-nhap">
-                        <label><input type="checkbox" name=""> Nhớ tên tài khoản</label>
+                        <label><input type="checkbox"> Nhớ tên tài khoản</label>
+                    </div>
+                    <div style="color: red">
+                        <%-status %>
                     </div>
                     <div class="input-form">
                         <input type="submit" value="Đăng Nhập">

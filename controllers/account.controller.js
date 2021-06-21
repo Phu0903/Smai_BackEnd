@@ -135,12 +135,12 @@ module.exports = {
       const password = req.body.Password
       const accountUser = await Account.findOne({ 'PhoneNumber': req.body.PhoneNumber })
       if (!accountUser)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "PhoneNumber error."
-        })
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "PhoneNumber error."
+          })
       if (!password) {
         throw new Error("No have password for reset password")
       }
@@ -152,7 +152,7 @@ module.exports = {
           }, {
           new: true // trả vè dữ liệu mới 
           //Hàm này trả về defaut là dữ liệu cũ
-          },
+        },
           function (err, data) {
             if (err) {
               throw new Error(err)
@@ -170,11 +170,11 @@ module.exports = {
       });
     }
   },
- 
-//Reset Password
+
+  //Reset Password
   ResetPassword: async (req, res) => {
     try {
-      const { PhoneNumber, Password,ResetPassword } = req.body
+      const { PhoneNumber, Password, ResetPassword } = req.body
       if (!PhoneNumber || !Password)
         return res
           .status(400)
@@ -200,8 +200,8 @@ module.exports = {
             .json({
               success: false,
               'message': 'Incorrect PhoneNumber or password'
-         })
-         else{
+            })
+        else {
           await accountUser.updateOne(
             {
               'Password': resetPassword
@@ -218,8 +218,8 @@ module.exports = {
               })
             }
           )
-         }
-       
+        }
+
       }
     } catch (error) {
       res.status(500).json({
