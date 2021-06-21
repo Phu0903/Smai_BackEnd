@@ -1,0 +1,85 @@
+  <% include ./layout/header.ejs %>
+ <div class="wrap-product-detail">
+      <div class="card">
+         <!-- card left -->
+         <div class="product-imgs">
+            <div class="img-display">
+               <div class="img-showcase">
+                  <img src="client/images/books/book-1.jpg" alt="product image ">
+                  <img src="client/images/books/book-2.jpg" alt="product image ">
+                  <img src="client/images/books/book-3.jpg" alt="product image ">
+                  <img src="client/images/books/book-4.jpg" alt="product image ">
+               </div>
+            </div>
+
+            <div class="img-select">
+               <div class="img-item">
+                  <a href="#" data-id="1">
+                     <img src="client/images/books/book-1.jpg" alt="book image ">
+                  </a>
+               </div>
+               <div class="img-item">
+                  <a href="#" data-id="2">
+                     <img src="client/images/books/book-2.jpg" alt="book image ">
+                  </a>
+               </div>
+               <div class="img-item">
+                  <a href="#" data-id="3">
+                     <img src="client/images/books/book-3.jpg" alt="book image ">
+                  </a>
+               </div>
+               <!-- <div class="img-item">
+                  <a href="#" data-id="4">
+                     <img src="./images/books/book-4.jpg" alt="book image ">
+                  </a>
+               </div> -->
+            </div>
+         </div>
+         <!-- card right -->
+         <div class="product-content">
+            <h2 class="product-title">Sách cũ</h2>
+            <a href="#" class="product-category">Đồ dùng học tập</a>
+
+            <div class="product-price">
+               <p>999.999 đ</p>
+            </div>
+
+            <div class="product-detail">
+               <h3>Thông tin sản phẩm:</h3>
+               <p>Từ một kẻ nhập cư tay trắng đến ông trùm tột đỉnh quyền uy, Don Vito Corleone là con rắn hổ mang thâm
+                  trầm,
+                  nguy hiểm khiến kẻ thù phải kiềng nể, e dè, nhưng cũng được bạn bè, thân quyến xem như một đấng toàn
+                  năng đầy nghĩa khí!</p>
+            </div>
+
+            <div class="purchase-infor">
+               <!-- <input type="number" min="0" value="1"> -->
+               <button type="button" class="btn">
+                  <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+               </button>
+            </div>
+
+            <div class="seller-infor">
+               <h4>Lionel Messi</h4>
+               <p>
+                  <i class="fas fa-map-marker-alt"></i> Linh Trung, Thủ Đức, Hồ Chí Minh
+               </p>
+               <p>
+                  <i class="fas fa-phone-alt"></i> 0868 888 888
+               </p>
+            </div>
+
+            <div class="wrap-social-link">
+               <h4> Chia sẻ tin đăng này cho bạn bè:</h4>
+               <div class="social-link">
+                  <a href="#"><img src="client/images/social-logo/circle-facebook.svg" alt="facebook"></a>
+                  <a href="#"><img src="client/images/social-logo/circle-messenger.svg" alt="messenger"></a>
+                  <a href="#"><img src="client/images/social-logo/circle-zalo.svg" alt="zalo"></a>
+                  <a href="#"><img src="client/images/social-logo/circle-copylink.svg" alt="copy"></a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <% include ./layout/footer.ejs %>
