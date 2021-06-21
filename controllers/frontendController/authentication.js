@@ -10,7 +10,7 @@ require("dotenv").config();
 module.exports = {
     //Login
     loginGet: (req, res, next) => {
-        res.render('client/login/index', { status: "" })
+        res.render('client/login', { status: "" })
     },
     loginPost: async (req, res, next) => {
         let { PhoneNumber, Password } = req.body;
@@ -37,13 +37,56 @@ module.exports = {
                 );
                 res.cookie('token', accessToken, { maxAge: 900000, httpOnly: true });
                 console.log('cookie created successfully');
-                return res.redirect("/admin/home");
+                return res.redirect("/");
             } else {
-                res.render('admin/login', { status: "wrong password !" })
+                res.render('client/login', { status: "Sai mật khẩu !" })
             }
         }
         else {
-            res.render('admin/login', { status: "Account does not exist." })
+            res.render('client/login', { status: "Tài khoản này không tồn tại." })
+        }
+    },
+    registerGet: (req, res, next) => {
+        res.render('client/register', { status: ["", "", ""] })
+        //status cuoi cung la hien thi truong hop dien thieu thong tin
+    },
+    registerPost: async (req, res) => {
+        const { Password, PhoneNumber, FullName } = req.body
+        if (!PhoneNumber || !Password) {
+            res.render('client/register', { status: ["", "", "Vui lòng điền đầy đủ thông tin"] })
+        }
+        try {
+            const user = await Account.findOne({ 'PhoneNumber': PhoneNumber })
+            if (user) {
+                res.render('client/register', { status: ["SDT này đã được sử dụng.", "", ""] })
+            }
+            else {
+                const hashedPassword = await argon2d.hash(Password)//hasd pass word by argon 
+                const data = new Account({
+                    'Password': hashedPassword,
+                    'PhoneNumber': PhoneNumber,
+                    'Rule': 1
+                })
+                const UserDetail = new User({
+                    'PhoneNumber': PhoneNumber,
+                    'AccountID': data._id,
+                    'FullName': FullName,
+
+                })
+                const accessToken = jwt.sign(
+                    { accountID: data._id },
+                    process.env.ACCESS_TOKEN_SECRET)
+                data.save(function (err) {
+                    UserDetail.save(),
+                        res.cookie('token', accessToken, { maxAge: 900000, httpOnly: true });
+                    return res.redirect("/");
+                });
+            }
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                "message": err.message
+            });
         }
     }
 

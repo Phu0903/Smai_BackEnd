@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="#">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="./css/login-register.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- preloader -->
+    <div class="wrap-loader">
+        <div class="loader"></div>
+    </div>
+    <section>
+        <section>
+            <!--Bắt Đầu Phần Hình Ảnh-->
+            <div class="img-bg">
+                <img src="https://niemvuilaptrinh.ams3.cdn.digitaloceanspaces.com/tao_trang_dang_nhap/hinh_anh_minh_hoa.jpg"
+                    alt="Hình Ảnh Minh Họa">
+            </div>
+            <!--Kết Thúc Phần Hình Ảnh-->
+            <!--Bắt Đầu Phần Nội Dung-->
+            <div class="noi-dung">
+                <div class="form">
+                    <h2>Đăng Ký</h2>
+                    <form role="form" action="/client/register" method="POST">
+                        <div class="input-form">
+                            <span>Tên Người Dùng</span>
+                            <input type="text" name="FullName" id="FullName">
+                        </div>
+                        <div class="input-form">
+                            <span>SDT Người Dùng</span>
+                            <input type="number" name="PhoneNumber" id="PhoneNumber">
+                        </div>
+                        <div class="input-form">
+                            <span>Mật Khẩu</span>
+                            <input type="password" name="Password" id="Password">
+                        </div>
+                        <div class="input-form">
+                            <span>Nhập Lại Mật Khẩu</span>
+                            <input type="password" name="_Password" />
+                        </div>
+                        <div style="color: red">
+                            <%-status[3] %>
+                                <%-status[0] %>
+                                    <%-status[1] %>
+                                        <%-status[2] %>
+                        </div>
+                        <div class="input-form">
+                            <input type="submit" value="Đăng Ký" id="btn_register">
+                        </div>
+                        <div class="input-form">
+                            <p>Bạn Đã Có Tài Khoản? <a href="./login">Đăng Nhập</a></p>
+                        </div>
+                    </form>
+                    <h3>Đăng Ký Bằng Mạng Xã Hội</h3>
+                    <ul class="icon-dang-nhap">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-google" aria-hidden="true"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--Kết Thúc Phần Nội Dung-->
+        </section>
+
+        <script src="./js/script.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</body>
+
+</html>
