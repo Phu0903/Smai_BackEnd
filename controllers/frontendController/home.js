@@ -37,6 +37,9 @@ module.exports={
           });
         }
       
+    },
+    getDetail:(req,res)=>{
+        res.render('client/product_details');
     }
 }
 
