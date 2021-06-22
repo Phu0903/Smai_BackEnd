@@ -90,8 +90,9 @@
          </div>
          <div class="row">
          <% data.map(function(product) { %>
-                 <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
+                 <div   class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
+               <div   class="product border-0 bg-light mb-2">
+               <a  onclick="viewPost('<%= product._id%>')" >
                   <div class="product-header">
                      <img src='<%= product.urlImage[0] %>' class="img-fluid" alt="">
                      <ul class="icons">
@@ -113,6 +114,7 @@
                      <i class="fas fa-star"></i>
                   </div>
                   <p class="price">100 000đ</p>
+                  </a>
                </div>
             </div>
        <%  }) %>
@@ -125,3 +127,12 @@
 
    <!-- footer -->
   <% include ./layout/footer.ejs %>
+
+     <script>
+               
+                    function viewPost(id) {
+                        let url = `view-post?_id=${id}`
+                        location.href = url
+                    }
+                   
+      </script>

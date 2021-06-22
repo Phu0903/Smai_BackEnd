@@ -18,45 +18,33 @@
   <% include ./layout/menu.ejs %>
 
  <div class="wrap-product-detail">
+ 
       <div class="card">
          <!-- card left -->
          <div class="product-imgs">
-            <div class="img-display">
+            <div  class="img-display">
                <div class="img-showcase">
-                  <img src="client/images/books/book-1.jpg" alt="product image ">
-                  <img src="client/images/books/book-2.jpg" alt="product image ">
-                  <img src="client/images/books/book-3.jpg" alt="product image ">
-                  <img src="client/images/books/book-4.jpg" alt="product image ">
+               <% data.urlImage.map(function(image){ %>
+                  <img src="<%=image%> "  width="400" height="500" >
+                 
+                  <%}) %>
                </div>
             </div>
 
             <div class="img-select">
+              <% for( i = 0; i<data.urlImage.length;i++){ %>
                <div class="img-item">
-                  <a href="#" data-id="1">
-                     <img src="client/images/books/book-1.jpg" alt="book image ">
+                  <a href="#" data-id="<%= i++ %>">
+                     <img src="<%=data.urlImage[i]%> "  alt="book image ">
                   </a>
                </div>
-               <div class="img-item">
-                  <a href="#" data-id="2">
-                     <img src="client/images/books/book-2.jpg" alt="book image ">
-                  </a>
-               </div>
-               <div class="img-item">
-                  <a href="#" data-id="3">
-                     <img src="client/images/books/book-3.jpg" alt="book image ">
-                  </a>
-               </div>
-               <!-- <div class="img-item">
-                  <a href="#" data-id="4">
-                     <img src="./images/books/book-4.jpg" alt="book image ">
-                  </a>
-               </div> -->
+                 <%} %>
             </div>
          </div>
          <!-- card right -->
          <div class="product-content">
-            <h2 class="product-title">Sách cũ</h2>
-            <a href="#" class="product-category">Đồ dùng học tập</a>
+            <h2 class="product-title"><%=data.title %> </h2>
+            <a href="#" class="product-category"><%= data.NameProduct[0].NameProduct %></a>
 
             <div class="product-price">
                <p>999.999 đ</p>
@@ -78,9 +66,9 @@
             </div>
 
             <div class="seller-infor">
-               <h4>Lionel Messi</h4>
+               <h4><%= data.NameAuthor %></h4>
                <p>
-                  <i class="fas fa-map-marker-alt"></i> Linh Trung, Thủ Đức, Hồ Chí Minh
+                  <i class="fas fa-map-marker-alt"></i> <%= data.address %>
                </p>
                <p>
                   <i class="fas fa-phone-alt"></i> 0868 888 888

@@ -5,5 +5,5 @@ const CORS = require('../../middleware/CORS')
 
 client.get('/', CORS, controller.getProduct);
 
-client.get('/productDetail',CORS,controller.getDetail)
+client.get('/view-post',CORS,controller.getDetail)
 module.exports = client;
