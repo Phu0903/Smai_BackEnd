@@ -24,20 +24,38 @@
          <div class="product-imgs">
             <div  class="img-display">
                <div  width="400" height="500" class="img-showcase">
-               <% data.urlImage.map(function(image){ %>
-                  <img src="<%=image%> "  alt="product image ">
-                  <%}) %>
+               <% for( var  i = 0; i<5;i++){ %>
+               <% var url =  data.urlImage[i]
+                  if(!url)
+                  {
+                      url = 'client/images/books/book-2.jpg'
+                  }
+                 %> 
+                  <img src="<%=url%> "  alt="product image ">
+                  <%} %>
                </div>
             </div>
+           
 
+          
+      
             <div class="img-select">
-              <% for( i = 0; i<data.urlImage.length;i++){ %>
-               <div class="img-item">
-                  <a href="#" data-id="<%= i++ %>">
-                     <img src="<%=data.urlImage[i]%> "  alt="book image ">
+            <% for( var  i = 0; i<5;i++){%>
+              <% var url = data.urlImage[i]
+                  if(!url )
+                  {
+                     url = 'client/images/books/book-2.jpg'
+                  }
+               %>
+               <div class="img-item" >
+                  <a href="#" data-id="<%= i+1 %>">
+                     <img class="img-post" src="<%=
+                     url
+                       %>" alt="book image ">
                   </a>
                </div>
-                 <%} %>
+              
+               <% } %> 
             </div>
          </div>
          <!-- card right -->
@@ -46,15 +64,12 @@
             <a href="#" class="product-category"><%= data.NameProduct[0].NameProduct %></a>
 
             <div class="product-price">
-               <p>999.999 đ</p>
+               <p>Miễn phí</p>
             </div>
 
             <div class="product-detail">
                <h3>Thông tin sản phẩm:</h3>
-               <p>Từ một kẻ nhập cư tay trắng đến ông trùm tột đỉnh quyền uy, Don Vito Corleone là con rắn hổ mang thâm
-                  trầm,
-                  nguy hiểm khiến kẻ thù phải kiềng nể, e dè, nhưng cũng được bạn bè, thân quyến xem như một đấng toàn
-                  năng đầy nghĩa khí!</p>
+               <p><%= data.note %></p>
             </div>
 
             <div class="purchase-infor">
@@ -70,7 +85,7 @@
                   <i class="fas fa-map-marker-alt"></i> <%= data.address %>
                </p>
                <p>
-                  <i class="fas fa-phone-alt"></i> 0868 888 888
+                  <i class="fas fa-phone-alt"></i><%= phone %>
                </p>
             </div>
 
@@ -88,19 +103,9 @@
    </div>
 
    <% include ./layout/footer.ejs %>
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-   <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script> -->
    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
-
+   <script src="client/js/product-details.js"></script>
    <script src="client/js/script.js"></script>
-     <script src="client/js/product-details.js"></script>
-   <script type="text/javascript" src="client/js/main.js"></script>
-
-
-</body>
-
-</html>

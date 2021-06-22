@@ -15,7 +15,12 @@ body {
    background-color: #fff;
    border: 1px solid #e5e5e5;
 }
-
+.product-imgs{
+   height: 562px !important;
+}
+.img-select{
+   height: 20%;
+}
 img {
    width: 100%;
    display: block;
@@ -40,6 +45,11 @@ img {
 
 .img-item {
    margin: 0.3rem;
+   width: 124px;
+   
+}
+.img-post{
+   height: 100%;
 }
 .img-item:nth-child(1), .img-item:nth-child(2), .img-item:nth-child(3) {
    margin-right: 0;
