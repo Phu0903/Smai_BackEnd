@@ -104,6 +104,7 @@ module.exports = {
                 Post.updateOne({ _id: req.headers.idpost }, {
                     $set: {
                         'urlImage': req.files.map(function (files) {
+                            console.log(files);
                             return files.path
                         })
                     }
