@@ -23,18 +23,21 @@
    <!-- end of header -->
    <!-- content ---------------------------------------->
    <div class="wrap-content">
-      <!-- full slider -->
       <div class="container-fluid p-1 wrap-slide">
          <div class="site-slider">
             <div class="slider-one">
                <div>
-                  <img src="client/images/temp/Slider_01.jpg" class="img-fluid" alt="banner 1">
+                  <!-- <div class=""> </div> -->
+                  <img src="client/images/slider/slider_1.jpg" class="img-fluid" alt="banner 1">
                </div>
                <div>
-                  <img src="client/images/temp/Slider_02.jpg" class="img-fluid" alt="banner 2">
+                  <img src="client/images/slider/slider_2.jpg" class="img-fluid" alt="banner 2">
                </div>
                <div>
-                  <img src="client/images/temp/Slider_03.jpg" class="img-fluid" alt="banner 3">
+                  <img src="client/images/slider/slider_3.jpg" class="img-fluid" alt="banner 3">
+               </div>
+               <div>
+                  <img src="client/images/slider/slider_4.jpg" class="img-fluid" alt="banner 3">
                </div>
             </div>
             <div class="slider-btn">
@@ -43,7 +46,6 @@
             </div>
          </div>
       </div>
-
       <!-- slide category -->
       <div class="container-fluid p-1 wrap-category">
          <div class="site-slider-two px-md-4">
@@ -127,7 +129,24 @@
 
    <!-- footer -->
   <% include ./layout/footer.ejs %>
+   <!-- end of footer -->
 
+   <!-- Create post -->
+     <% include ./create_post.ejs %>
+   <!-- End of Create post -->
+
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+   <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+   <script src="client/js/script.js"></script>
+   <script type="text/javascript" src="client/js/main.js"></script>
+
+
+</body>
+
+</html>
      <script>
                
                     function viewPost(id) {

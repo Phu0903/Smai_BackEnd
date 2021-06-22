@@ -23,10 +23,9 @@
          <!-- card left -->
          <div class="product-imgs">
             <div  class="img-display">
-               <div class="img-showcase">
+               <div  width="400" height="500" class="img-showcase">
                <% data.urlImage.map(function(image){ %>
-                  <img src="<%=image%> "  width="400" height="500" >
-                 
+                  <img src="<%=image%> "  alt="product image ">
                   <%}) %>
                </div>
             </div>
@@ -89,3 +88,19 @@
    </div>
 
    <% include ./layout/footer.ejs %>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script> -->
+   <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+   <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+
+   <script src="client/js/script.js"></script>
+     <script src="client/js/product-details.js"></script>
+   <script type="text/javascript" src="client/js/main.js"></script>
+
+
+</body>
+
+</html>
