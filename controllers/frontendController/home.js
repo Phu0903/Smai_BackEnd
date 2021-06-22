@@ -87,6 +87,18 @@ module.exports={
                 message: error.message
             });
         }
+    },
+
+
+    search: async(req,res) =>{
+        try {
+            res.render('client/search');
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
     }
 }
 

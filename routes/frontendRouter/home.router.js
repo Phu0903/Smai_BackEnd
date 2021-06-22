@@ -8,5 +8,6 @@ client.get('/', verifyToken, CORS, controller.getProduct);
 
 client.get('/view-post', verifyToken, CORS, controller.getDetail)
 
+client.get('/search', verifyToken, CORS, controller.search)
 
 module.exports = client;

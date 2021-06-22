@@ -108,14 +108,22 @@
                   <a href="client/product-details.html" class="text-decoration-none">
                      <h5><%= product.title %></h5>
                   </a>
-                  <div class="rating">
+                  <!--<div class="rating">
                      <i class="fas fa-star"></i>
                      <i class="fas fa-star"></i>
                      <i class="fas fa-star"></i>
                      <i class="fas fa-star"></i>
                      <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
+                  </div> -->
+                  <p class="price"><%= product.NameProduct[0].NameProduct %></p>
+                  <% var substrings =  product.address.split(",")
+                     var lastItem = substrings.splice(2, 3)
+                   %>
+
+                   <p class="price"><%=
+                      
+                    lastItem
+                     %></p>
                   </a>
                </div>
             </div>
