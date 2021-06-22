@@ -66,7 +66,7 @@ module.exports = {
                         res.json(err)
                     }
                     else {
-                        console.log(dataPost._id)
+                     
                         res.status(201)
                             .json({
                                 success: true,
@@ -104,7 +104,7 @@ module.exports = {
                 Post.updateOne({ _id: req.headers.idpost }, {
                     $set: {
                         'urlImage': req.files.map(function (files) {
-                            console.log(files);
+                           
                             return files.path
                         })
                     }

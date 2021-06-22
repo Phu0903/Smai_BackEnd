@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
+require('dotenv').config()
 var connctDB = async () => {
   try {
     await mongoose.connect('mongodb+srv://dbAppSmai:WMZGnIzqoScefzRH@smaiapp.zdcd7.mongodb.net/dbSmai?retryWrites=true&w=majority',

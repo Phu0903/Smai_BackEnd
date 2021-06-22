@@ -31,4 +31,6 @@ baipost.delete('/deletePostbyUser',CORS,controller.DeletePost);
 //find
 baipost.get('/find',CORS,controller.FindId);
 
+
+  
 module.exports = baipost;
