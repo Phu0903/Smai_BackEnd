@@ -306,6 +306,7 @@ module.exports = {
         })
     },
     createPost: (req, res, next) => {
+        
         res.render('admin/post/createPost', { isOpen: ["", "", "", "open"] })
     }
 }
