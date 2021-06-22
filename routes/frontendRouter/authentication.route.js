@@ -8,5 +8,6 @@ client.get('/login', CORS, controller.loginGet)
 client.post('/login', CORS, controller.loginPost)
 client.get('/register', CORS, controller.registerGet)
 client.post('/register', CORS, controller.registerPost)
+client.get('/logout', controller.logout)
 
 module.exports = client;

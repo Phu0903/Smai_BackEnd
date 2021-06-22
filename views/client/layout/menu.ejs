@@ -1,4 +1,45 @@
+<style>
+   .dropbtn {
+      background-color: #04AA6D;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+   }
 
+   .dropdown {
+      position: relative;
+      display: inline-block;
+   }
+
+   .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+   }
+
+   .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+   }
+
+   .dropdown-content a:hover {
+      background-color: #ddd;
+   }
+
+   .dropdown:hover .dropdown-content {
+      display: block;
+   }
+
+   .dropdown:hover .dropbtn {
+      background-color: #3e8e41;
+   }
+</style>
 <body class="bg-light">
    <!-- preloader -->
    <div class="wrap-loader">
@@ -29,10 +70,16 @@
          <button type="submit" class="fas fa-search"></button>
       </form>
 
-      <div class="header-user">
-         <li><a href="./login.html"><i class="fas fa-user"></i></a></li>
-         <li><button type="button" class="btn-post" data-bs-toggle="modal" data-bs-target="#myModal"><i
-                  class="far fa-edit"></i> Đăng tin</button></li>
+      <div class="dropdown">
+         <div class="header-user">
+            <li><a href="#"><i class="fas fa-user"></i></a></li>
+            <li><button type="button" class="btn-post" data-bs-toggle="modal" data-bs-target="#myModal"><i
+                     class="far fa-edit"></i> Đăng tin</button></li>
+         </div>
+         <div class="dropdown-content">
+            <a href="/client/logout" onclick="delete_cookie()">Đăng xuất</a>
+            <a href="#">Trang cá nhân</a>
+         </div>
       </div>
    </div>
    <!-- end of header -->

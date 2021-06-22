@@ -88,6 +88,10 @@ module.exports = {
                 "message": err.message
             });
         }
+    },
+    logout: (req, res, next) => {
+        res.cookie('token', '', { maxAge: 1 })
+        res.redirect('/client/login')
     }
 
 }
