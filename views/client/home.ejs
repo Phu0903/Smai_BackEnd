@@ -67,10 +67,11 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
+         <% data.map(function(product) { %>
+                 <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
                <div class="product border-0 bg-light mb-2">
                   <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
+                     <img src='<%= product.urlImage[0] %>' class="img-fluid" alt="">
                      <ul class="icons">
                         <span><i class="far fa-heart"></i></span>
                         <span><i class="fas fa-shopping-cart"></i></span>
@@ -80,7 +81,7 @@
                </div>
                <div class="product-footer">
                   <a href="client/product-details.html" class="text-decoration-none">
-                     <h5>Sách</h5>
+                     <h5><%= product.title %></h5>
                   </a>
                   <div class="rating">
                      <i class="fas fa-star"></i>
@@ -92,234 +93,9 @@
                   <p class="price">100 000đ</p>
                </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Sách</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/temp/p-4.png" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/temp/p-5.png" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/temp/p-7.png" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-center product-center">
-               <div class="product border-0 bg-light mb-2">
-                  <div class="product-header">
-                     <img src="client/images/books/book-1.jpg" class="img-fluid" alt="">
-                     <ul class="icons">
-                        <span><i class="far fa-heart"></i></span>
-                        <span><i class="fas fa-shopping-cart"></i></span>
-                        <span><i class="fas fa-search"></i></span>
-                     </ul>
-                  </div>
-               </div>
-               <div class="product-footer">
-                  <a href="#" class="text-decoration-none">
-                     <h5>Áo FNXH</h5>
-                  </a>
-                  <div class="rating">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                  </div>
-                  <p class="price">100 000đ</p>
-               </div>
-            </div>
+       <%  }) %>
          </div>
-
-      </div>
+      </div> 
    </div>
 
 

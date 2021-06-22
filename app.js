@@ -25,7 +25,8 @@ var accountRouter = require('./routes/account.router');
 var userRouter = require('./routes/user.router');
 var postRouter = require('./routes/post.router')
 var adminRouter = require('./routes/admin.router');
-var authenticationRouter = require('./routes/frontendRouter/authentication.route')
+var authenticationRouter = require('./routes/frontendRouter/authentication.route');
+var webhomeRouter = require('./routes/frontendRouter/home.router')
 var app = express();
 
 // view engine setup
@@ -38,12 +39,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/', webhomeRouter);
 app.use('/account', accountRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use('/admin', adminRouter);
 app.use('/client', authenticationRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
