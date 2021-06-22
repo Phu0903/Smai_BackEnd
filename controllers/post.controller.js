@@ -91,7 +91,7 @@ module.exports = {
     UpdateProductInPost: async (req, res) => {
         try {
             // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-            console.log(req.headers.idpost);
+         
             if (!req.headers.idpost) {
                 return res
                     .status(400)
@@ -113,7 +113,7 @@ module.exports = {
                 })
             }
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             res.status(500).json({
                
                 success: false,
