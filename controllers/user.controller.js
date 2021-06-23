@@ -2,7 +2,7 @@ const argon2d = require('argon2');
 const Account = require('../Model/Account');
 const User = require('../Model/User')
 const jwt = require('jsonwebtoken');
-const verifyToken = require('../middleware/auth')
+const verifyToken = require('../middleware/auth');
 require("dotenv").config();
 
 module.exports = {
@@ -51,17 +51,15 @@ module.exports = {
     },
     //Update profile usser
     UpdateProfile: async (req, res) => {
-        const {
-            FullName,
-            /*BirthDay,
-            Address,
-            Gender,*/
-        } = req.body
+        const {FullName,PasswordReset} = req.body
+        const Id = req.accountID;
+       
         try {
-
-            const UserInfo = await User.findOne({ 'AccountID': req.accountID })
-
-            if (!UserInfo)
+            const resetPassword = await argon2d.hash(PasswordReset)//hasd password by argon 
+            const AccountUser = await Account.findOne({'_id':Id})
+         
+            const UserInfo = await User.findOne({ 'AccountID': Id })
+            if (!UserInfo && !AccountUser)
                 return res
                     .status(400)
                     .json({
@@ -69,20 +67,41 @@ module.exports = {
                         message: "don't have user"
                     })
             else {
-
-                User.updateOne({ _id: UserInfo._id },
+                await AccountUser.updateOne(
+                    {
+                      'Password': resetPassword || AccountUser.Password
+                    }, {
+                    new: true // trả vè dữ liệu mới 
+                    //Hàm này trả về defaut là dữ liệu cũ
+                   },
+                  )
+                if(!req.file)
+                {
+                    User.updateOne({ _id: UserInfo._id },
+                        {
+                            $set: {
+                                'FullName': FullName || UserInfo.FullName,
+                               
+                            }
+                        }, function (error, data) {
+                            res.json("Oke")
+                        }
+                    )
+                }
+                else{
+                await User.updateOne({ _id: UserInfo._id },
                     {
                         $set: {
                             'FullName': FullName || UserInfo.FullName,
-                            /*'BirthDay': BirthDay || UserInfo.BirthDay,
-                            'Address': Address || UserInfo.Address,
-                            'Gender': Gender || UserInfo.Gender,*/
-                            'urlIamge': req.file.path
+                            'urlIamge': req.file 
                         }
                     }, function (error, data) {
                         res.json("Oke")
                     }
                 )
+                }
+             
+                
             }
         } catch (error) {
             res.status(500).json({

@@ -174,8 +174,8 @@ module.exports = {
   //Reset Password
   ResetPassword: async (req, res) => {
     try {
-      const { PhoneNumber, Password, ResetPassword } = req.body
-      if (!PhoneNumber || !Password)
+      const {ResetPassword } = req.body
+      if (!ResetPassword)
         return res
           .status(400)
           .json({
