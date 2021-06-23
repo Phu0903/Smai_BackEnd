@@ -53,10 +53,9 @@ module.exports = {
     UpdateProfile: async (req, res) => {
         const {
             FullName,
-            BirthDay,
+            /*BirthDay,
             Address,
-            Gender,
-
+            Gender,*/
         } = req.body
         try {
 
@@ -75,9 +74,10 @@ module.exports = {
                     {
                         $set: {
                             'FullName': FullName || UserInfo.FullName,
-                            'BirthDay': BirthDay || UserInfo.BirthDay,
+                            /*'BirthDay': BirthDay || UserInfo.BirthDay,
                             'Address': Address || UserInfo.Address,
-                            'Gender': Gender || UserInfo.Gender,
+                            'Gender': Gender || UserInfo.Gender,*/
+                            'urlIamge': req.file.path
                         }
                     }, function (error, data) {
                         res.json("Oke")

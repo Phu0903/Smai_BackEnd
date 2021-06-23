@@ -5,6 +5,8 @@ const users = express.Router();
 const usercontroller = require('../controllers/user.controller')
 const verifyToken = require('../middleware/auth')
 const CORS = require('../middleware/CORS')
+const fileUploader = require('../configs/cloudinary.config');
+
 
 //get profile user by token
 users.get('/getInForUserByTokenId', verifyToken, CORS, usercontroller.getInfoUserById);
@@ -13,7 +15,7 @@ users.get('/getInForUserByTokenId', verifyToken, CORS, usercontroller.getInfoUse
 users.get('/getInfoUser', CORS, usercontroller.getInfoUser)
 
 //Update profile User 
-users.put('/profileUser', verifyToken, CORS, usercontroller.UpdateProfile)
+users.put('/profileUser', verifyToken, fileUploader.single('imageUser'),CORS, usercontroller.UpdateProfile)
 
 //Get address user
 

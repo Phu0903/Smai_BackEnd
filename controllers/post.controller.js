@@ -22,7 +22,7 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        
+
         try {
             if (!title) {
                 return res
@@ -66,7 +66,7 @@ module.exports = {
                         res.json(err)
                     }
                     else {
-                     
+
                         res.status(201)
                             .json({
                                 success: true,
@@ -91,7 +91,7 @@ module.exports = {
     UpdateProductInPost: async (req, res) => {
         try {
             // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-         
+
             if (!req.headers.idpost) {
                 return res
                     .status(400)
@@ -104,7 +104,7 @@ module.exports = {
                 Post.updateOne({ _id: req.headers.idpost }, {
                     $set: {
                         'urlImage': req.files.map(function (files) {
-                           
+
                             return files.path
                         })
                     }
@@ -113,9 +113,9 @@ module.exports = {
                 })
             }
         } catch (error) {
-           
+
             res.status(500).json({
-               
+
                 success: false,
                 message: error.message
             });
@@ -371,120 +371,139 @@ module.exports = {
 
 
 
-//get new post
-GetNewPost : async(req,res)=>{
-  try {
-      const SortTime = {createdAt:-1};
-      Post.find({'TypeAuthor':'tangcongdong' }).sort(SortTime).limit(12).exec(function(err,docs){
-          if(err) 
-          {
-               res.json(err);
-          } 
-          else{
-              res.json(docs)
-            
-          }
-      })
-    
-  } catch (error) {
-    res.status(500).json({
-        success: false,
-        'message': error.message
-    });
-  }
- },
+    //get new post
+    GetNewPost: async (req, res) => {
+        try {
+            const SortTime = { createdAt: -1 };
+            Post.find({ 'TypeAuthor': 'tangcongdong' }).sort(SortTime).limit(12).exec(function (err, docs) {
+                if (err) {
+                    res.json(err);
+                }
+                else {
+                    res.json(docs)
 
+                }
+            })
 
- //Get Post by AccountID
-GetPostByAccountID : async(req,res) =>{
-     try {
-        const SortTime = {createdAt:-1};
-         const ID = req.accountID;
-         const post = await Post.find({'AuthorID':ID}).sort(SortTime);
-       
-         if(!post[0]._id)
-         {
-             res.status(201)
-                .json({
-                    'message':'You do not have post'
-                })
-         }
-         else{
-             res.status(201)
-                 .json(post)
-         }
-     } catch (error) {
-        res.status(500).json({
-            success: false,
-            'message': error.message
-        });
-     }
- },
-
-
-
- //delete Posst 
-
- DeletePost: async(req,res) =>{
-     try {
-         //ID from client
-         const id = req.query._id;
-         //find News by ID 
-         const post =await Post.findOne({'_id':id})
-         console.log(id)
-         if (!post)
-         {
-             res.status(400).json({
-                success:false,
-                message:"do not have Post in data",
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
             });
-         }
-         else{
-              
-            post.urlImage.map(function (url)  {
-                //delete image
-               
-                //Tách chuỗi lấy id
-                const image_type = url.split(/[/,.]/)
-                //lấy tách ID
-                const imageId = image_type[image_type.length -2]
+        }
+    },
 
-                //xóa ảnh
-                cloudinary_detele.uploader.destroy(imageId);
-            })
-            //xóa tin đăng 
-            post.remove(function(err,data){
-                if(err)
-                {
-                 
-                    res.status(201).json({
-                        message:'Delete post do not successful'
+
+    //Get Post by AccountID
+    GetPostByAccountID: async (req, res) => {
+        try {
+            const SortTime = { createdAt: -1 };
+            const ID = req.accountID;
+            const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
+
+            if (!post[0]._id) {
+                res.status(201)
+                    .json({
+                        'message': 'You do not have post'
                     })
-                }
-                else{
-                    
-                    res.status(201).json("Delete successful")
-                }
-            })
-         }
-         
-     } catch (error) {
-        res.status(500).json({
-            success: false,
-            'message': error.message
-        });
-     }
- },
-  
- FindId : async(req,res)=>{
-   try {
-    const id = req.query.ID;
-    //find News by ID 
-    const post =await Post.findOne({'_id':id})
-    console.log(post)
-   } catch (error) {
-       
-   }
- }
+            }
+            else {
+                res.status(201)
+                    .json(post)
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
+    },
+
+
+
+    //delete Posst 
+
+    DeletePost: async (req, res) => {
+        try {
+            //ID from client
+            const id = req.query._id;
+            //find News by ID 
+            const post = await Post.findOne({ '_id': id })
+            console.log(id)
+            if (!post) {
+                res.status(400).json({
+                    success: false,
+                    message: "do not have Post in data",
+                });
+            }
+            else {
+
+                post.urlImage.map(function (url) {
+                    //delete image
+
+                    //Tách chuỗi lấy id
+                    const image_type = url.split(/[/,.]/)
+                    //lấy tách ID
+                    const imageId = image_type[image_type.length - 2]
+
+                    //xóa ảnh
+                    cloudinary_detele.uploader.destroy(imageId);
+                })
+                //xóa tin đăng 
+                post.remove(function (err, data) {
+                    if (err) {
+
+                        res.status(201).json({
+                            message: 'Delete post do not successful'
+                        })
+                    }
+                    else {
+
+                        res.status(201).json("Delete successful")
+                    }
+                })
+            }
+
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
+    },
+
+    FindId: async (req, res) => {
+        try {
+            const id = req.query.ID;
+            //find News by ID 
+            const post = await Post.findOne({ '_id': id })
+            console.log(post)
+        } catch (error) {
+
+        }
+    },
+
+    //search item
+    searchPost: async (req, res) => {
+        try {
+            const key = `"${req.query.searchterm}"`;
+            console.log(req.query.searchterm)
+            const post = await Post.find({ $text: { $search: key } })
+            if(!post)
+            {
+                res.json({
+                    message:'No have post in data'
+                })
+            }
+            else{
+                res.json(post)
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
 }
 

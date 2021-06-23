@@ -22,6 +22,9 @@ var User = new mongoose.Schema({
         type: Number,
         ref: 'Account'
     },
+    urlIamge:{
+       type: String,
+    },
     AccountID: {
         type: Schema.Types.ObjectId,
         ref: 'Account'

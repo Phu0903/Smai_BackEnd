@@ -17,20 +17,15 @@ baipost.get('/getPostByAccountId', verifyToken, CORS, controller.GetPostByAccoun
 //Get Post by Location
 baipost.get('/getFullPostByLocation', CORS, controller.GetDetailPostByAddress);
 //Get Post by TypeAuthor
-
 baipost.get('/getPostByTypeAuthor', CORS, controller.GetPostByTypeAuthor);
-
 //TestUpload
-
 baipost.get('/getNewPost', CORS, controller.GetNewPost);
-
-
 //delete Post
 baipost.delete('/deletePostbyUser',CORS,controller.DeletePost);
-
 //find
 baipost.get('/find',CORS,controller.FindId);
-
+//Find Post 
+baipost.get('/searchPost',CORS,controller.searchPost);
 
   
 module.exports = baipost;
