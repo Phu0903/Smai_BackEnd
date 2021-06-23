@@ -53,7 +53,6 @@ module.exports = {
     UpdateProfile: async (req, res) => {
         const {FullName,PasswordReset} = req.body
         const Id = req.accountID;
-       
         try {
             const resetPassword = await argon2d.hash(PasswordReset)//hasd password by argon 
             const AccountUser = await Account.findOne({'_id':Id})
