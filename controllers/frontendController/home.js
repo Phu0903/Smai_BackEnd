@@ -14,6 +14,8 @@ const Account = require('../../Model/Account');
 let data_product
 
 module.exports={
+
+    //Render Product in home page
     getProduct :async (req,res) => {
       
         try {
@@ -40,6 +42,8 @@ module.exports={
         }
       
     },
+
+    //detail product 
     getDetail: async (req,res)=>{
         const idpost = req.query._id;
       
@@ -76,22 +80,14 @@ module.exports={
       
         
     },
+    
 
-    getPhonNumber: async (req, res) => {
-        try {
-            const account = await Account.findOne({ '_id':req.query._id })
-            res.render('client/product_details',{data:data_post});
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: error.message
-            });
-        }
-    },
-
-
+   //get page search
     search: async(req,res) =>{
         try {
+            const key = 'quần áo';
+            const data_post = await Post.find({ $text: { $search: key } })
+            console.log(data_post)
             res.render('client/search');
         } catch (error) {
             res.status(500).json({
