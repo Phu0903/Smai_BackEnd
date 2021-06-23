@@ -22,10 +22,8 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        console.log(req.body)
         try {
             if (!title) {
-                console.log(1)
                 return res
                     .status(400)
                     .json({
@@ -37,7 +35,6 @@ module.exports = {
                 { 'AccountID': req.accountID }
             )
             if (!findInfoAuthor) {
-                console.log(2)
 
                 return res
                     .status(400)
