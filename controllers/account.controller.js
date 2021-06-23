@@ -172,7 +172,7 @@ module.exports = {
   },
 
   //Reset Password
-  ResetPassword: async (req, res) => {
+  /*ResetPassword: async (req, res) => {
     try {
       const {ResetPassword } = req.body
       if (!ResetPassword)
@@ -227,6 +227,6 @@ module.exports = {
         "message": error.message
       });
     }
-  }
+  }*/
 
 }

@@ -19,5 +19,5 @@ account.post('/Forgot',CORS,controller.FogotPassword)
 
 
 //reset Pasword
-account.post('/ResetPassword',CORS,controller.ResetPassword)
+//account.post('/ResetPassword',CORS,controller.ResetPassword)
 module.exports = account;
