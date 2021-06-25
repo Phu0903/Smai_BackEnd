@@ -26,7 +26,7 @@ users.get('/getAddress',verifyToken,userController.getAddress);
 //Get PhoneNumber User
 users.get('/getPhonNumber',userController.getPhonNumber)
 //put history user
-users.post('/updateHistory',verifyToken,userController.HistoryPost)
+users.put('/updateHistory',verifyToken,userController.HistoryPost)
 //get history
 users.get('/getHistoryPost',verifyToken,userController.GetHistoryPost)
 
