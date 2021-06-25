@@ -23,6 +23,9 @@ module.exports = {
             address,
         } = req.body;
         try {
+            const findInfoAuthor = await User.findOne(
+                { 'AccountID': req.accountID }
+            )
             if (!title) {
                 return res
                     .status(400)
@@ -31,11 +34,7 @@ module.exports = {
                         'message': 'Title is not exist'
                     })
             }
-            const findInfoAuthor = await User.findOne(
-                { 'AccountID': req.accountID }
-            )
             if (!findInfoAuthor) {
-
                 return res
                     .status(400)
                     .json({
@@ -44,29 +43,29 @@ module.exports = {
                     })
             }
             else {
+                let Confirm;
+                if(TypeAuthor == 'tangcongdong')
+                {
+                    Confirm = true 
+                }
+                else {
+                    Confirm = false
+                }
                 const dataPost = await new Post({
                     'AuthorID': req.accountID,
                     'TypeAuthor': TypeAuthor || 'Cá nhân',
                     'NameAuthor': NameAuthor || findInfoAuthor.FullName,
-                    //'address': address || findInfoAuthor.Address,
                     'address': address,
                     'NameProduct': NameProduct,
                     'title': title,
                     'note': note,
-                    //map load path image in cloud from Post
-
-                    /*'urlImage':req.files.map(function (files) {
-                        return files.path
-                      })*/
-
+                    'confirm':Confirm || false
                 })
                 dataPost.save(function (err, data) {
                     if (err) {
-
                         res.json(err)
                     }
                     else {
-
                         res.status(201)
                             .json({
                                 success: true,
@@ -123,11 +122,10 @@ module.exports = {
     },
 
 
-
     //Get Info Post
     GetInfoFullPost: async (req, res) => {
         try {
-            const post = await Post.find({})
+            const post = await Post.find({'confirm':true})
             if (!post) {
                 return res
                     .status(400)
@@ -149,31 +147,7 @@ module.exports = {
         }
     },
 
-    //Get Info Post
-    GetInfoFullPost: async (req, res) => {
-        try {
-            const post = await Post.find({})
-
-            if (!post) {
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        'message': 'post is not exist'
-                    })
-            }
-            else {
-                return res
-                    .status(201)
-                    .json(post)
-            }
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: error.message
-            });
-        }
-    },
+  
 
 
     //Get Post by Location/Address
@@ -222,7 +196,7 @@ module.exports = {
                 typeauthor = 'Tổ chức công ích'
             }
             const SortTime = { createdAt: -1 };
-            const PostByAuthor = await Post.find({ TypeAuthor: typeauthor }).sort(SortTime).limit(30);
+            const PostByAuthor = await Post.find({ TypeAuthor: typeauthor,confirm:true }).sort(SortTime).limit(30);
             if (PostByAuthor == null) {
                 res.status(400)
                     .json({
@@ -241,136 +215,6 @@ module.exports = {
             });
         }
     },
-
-
-    //get new post
-    GetNewPost: async (req, res) => {
-        try {
-            const SortTime = { createdAt: -1 };
-            Post.find({}).sort(SortTime).limit(12).exec(function (err, docs) {
-                if (err) {
-                    res.json(err);
-                }
-                else {
-                    res.json(docs)
-                }
-            })
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                'message': error.message
-            });
-        }
-    },
-
-
-    //Get Post by AccountID
-    GetPostByAccountID: async (req, res) => {
-        try {
-            const SortTime = { createdAt: -1 };
-            const ID = req.accountID;
-            const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
-
-            if (!post[0]._id) {
-                res.status(201)
-                    .json({
-                        'message': 'You do not have post'
-                    })
-            }
-            else {
-                res.status(201)
-                    .json(post)
-            }
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                'message': error.message
-            });
-        }
-    },
-
-    //create Post
-    createPost: async (req, res) => {
-        const {
-            title,
-            note,
-            NameProduct,
-            TypeAuthor,
-            NameAuthor,
-            address,
-        } = req.body;
-        try {
-            if (!title) {
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        'message': 'Title is not exist'
-                    })
-            }
-            const findInfoAuthor = await User.findOne(
-                { 'AccountID': req.accountID }
-            )
-            if (!findInfoAuthor) {
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        'message': 'Account is not exist'
-                    })
-            }
-            else {
-                let productPost = []
-                for (let i = 0; i < NameProduct.length; i++) {
-                    let temp = await Product.findOne({ "NameProduct": NameProduct[i] })
-                    if (temp != null)
-                        productPost.push(temp)
-                }
-                const dataPost = await new Post({
-                    'AuthorID': req.accountID,
-                    'TypeAuthor': TypeAuthor || 'Cá nhân',
-                    'NameAuthor': NameAuthor || findInfoAuthor.FullName,
-                    'address': address,
-                    'NameProduct': productPost,
-                    'title': title,
-                    'note': note,
-                    'urlImage': req.files.map(function (files) {
-                        return files.path
-                    })
-
-                })
-                Product.create(dataPost.NameProduct, function (err, res) {
-                    if (err) {
-                        res.json(err)
-                    }
-                })
-                dataPost.save(function (err, data) {
-                    if (err) {
-                        res.json(err)
-                    }
-                    else {
-                        res.status(201)
-                            .json({
-                                success: true,
-                                'message': "Oke",
-                            })
-                    }
-                })
-
-            }
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: error.message,
-
-            });
-        }
-
-    },
-
-
-
-
     //get new post
     GetNewPost: async (req, res) => {
         try {
@@ -504,6 +348,137 @@ module.exports = {
                 message: error.message
             });
         }
+    },
+    //Get Post by AccountID
+    GetPostByAccountID: async (req, res) => {
+        try {
+            const SortTime = { createdAt: -1 };
+            const ID = req.accountID;
+            const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
+
+            if (!post[0]._id) {
+                res.status(201)
+                    .json({
+                        'message': 'You do not have post'
+                    })
+            }
+            else {
+                res.status(201)
+                    .json(post)
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
     }
+
+    //create Post
+    /*createPost: async (req, res) => {
+        const {
+            title,
+            note,
+            NameProduct,
+            TypeAuthor,
+            NameAuthor,
+            address,
+        } = req.body;
+        try {
+            if (!title) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        'message': 'Title is not exist'
+                    })
+            }
+            const findInfoAuthor = await User.findOne(
+                { 'AccountID': req.accountID }
+            )
+            if (!findInfoAuthor) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        'message': 'Account is not exist'
+                    })
+            }
+            else {
+                let productPost = []
+                for (let i = 0; i < NameProduct.length; i++) {
+                    let temp = await Product.findOne({ "NameProduct": NameProduct[i] })
+                    if (temp != null)
+                        productPost.push(temp)
+                }
+                const dataPost = await new Post({
+                    'AuthorID': req.accountID,
+                    'TypeAuthor': TypeAuthor || 'Cá nhân',
+                    'NameAuthor': NameAuthor || findInfoAuthor.FullName,
+                    'address': address,
+                    'NameProduct': productPost,
+                    'title': title,
+                    'note': note,
+                    'urlImage': req.files.map(function (files) {
+                        return files.path
+                    })
+
+                })
+                Product.create(dataPost.NameProduct, function (err, res) {
+                    if (err) {
+                        res.json(err)
+                    }
+                })
+                dataPost.save(function (err, data) {
+                    if (err) {
+                        res.json(err)
+                    }
+                    else {
+                        res.status(201)
+                            .json({
+                                success: true,
+                                'message': "Oke",
+                            })
+                    }
+                })
+
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message,
+
+            });
+        }
+
+    },*/
+       //get new post
+   /* GetNewPost: async (req, res) => {
+        try {
+            const SortTime = { createdAt: -1 };
+            Post.find({}).sort(SortTime).limit(12).exec(function (err, docs) {
+                if (err) {
+                    res.json(err);
+                }
+                else {
+                    res.json(docs)
+                }
+            })
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                'message': error.message
+            });
+        }
+    },*/
+
+
+
+
+
+
+    
+
+    
 }
 
