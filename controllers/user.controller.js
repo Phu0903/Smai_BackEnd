@@ -1,6 +1,7 @@
 const argon2d = require('argon2');
 const Account = require('../Model/Account');
-const User = require('../Model/User')
+const User = require('../Model/User');
+const Post = require('../Model/Post')
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/auth');
 require("dotenv").config();
@@ -142,11 +143,82 @@ module.exports = {
 
     //Get PhonNumber by AccountID
     getPhonNumber: async (req, res) => {
+        
         try {
             const account = await Account.findOne({ '_id': req.query.AuthorID })
+            console.log(account)
             res.status(201).json({
                 'PhoneNumber': account.PhoneNumber,
             })
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
+    //Update History
+    HistoryPost: async(req,res)=>{
+        try {
+            const UserInfo = await User.findOne({ 'AccountID': req.accountID }) 
+            const IdPost = req.body.Idpost
+            let id;
+            if(!IdPost)
+            {
+               id = []
+            }
+            else {
+                id = IdPost;
+            }
+            await User.updateOne({ _id: UserInfo._id },
+                {
+                    $push: {
+                        'History': id
+                    }
+                }, function (error, data) {
+                    if(error){
+                        throw new Error(error)
+                    }
+                    res.json("Oke")
+                }
+            )
+
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
+
+    //getHistoryPost for user by AccountId
+    GetHistoryPost:async(req,res)=>{
+        try {
+            const UserInfo = await User.findOne({ 'AccountID': req.accountID }) 
+            if(!UserInfo)
+            {
+               res.status(400).json({
+                   message :"No have user"
+               })
+            }
+           
+            let post=[];
+            let temp;
+        
+           await UserInfo.History.map(async (id)=> { 
+               data =  await Post.findOne({'_id':id,confirm:true})
+                await post.push(data)
+               console.log(post)
+           })
+         
+          
+         
+          
+           
+          
+           
+         
+
         } catch (error) {
             res.status(500).json({
                 success: false,

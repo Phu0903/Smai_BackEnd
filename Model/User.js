@@ -34,7 +34,8 @@ var User = new mongoose.Schema({
     },
     updateAt: {
         type: Schema.Types.Date
-    }
+    },
+    History:[]
 }, {
     collection: 'User',
     versionKey: false,
