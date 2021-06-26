@@ -161,8 +161,8 @@ module.exports = {
     HistoryPost: async(req,res)=>{
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID }) 
-            const IdPost = req.body.Idpost
-            console.log(req.body);
+            const IdPost = req.body
+            console.log(IdPost);
             var id;
             if(!IdPost)
             {
