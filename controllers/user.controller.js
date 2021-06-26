@@ -146,7 +146,7 @@ module.exports = {
         
         try {
             const account = await Account.findOne({ '_id': req.query.AuthorID })
-            console.log(account)
+         
             res.status(201).json({
                 'PhoneNumber': account.PhoneNumber,
             })
@@ -162,7 +162,7 @@ module.exports = {
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID }) 
             const IdPost = req.body.Idpost
-            let id;
+            var id;
             if(!IdPost)
             {
                id = []
@@ -173,13 +173,18 @@ module.exports = {
             await User.updateOne({ _id: UserInfo._id },
                 {
                     $push: {
-                        'History': id
+                        'History': id,
+                        
                     }
+                },
+                {
+                    new:true,
                 }, function (error, data) {
                     if(error){
+                        console.log(error)
                         throw new Error(error)
                     }
-                    res.json("Oke")
+                    res.json(data)
                 }
             )
 
@@ -202,22 +207,13 @@ module.exports = {
                })
             }
            
-            let post=[];
-            let temp;
-        
-           await UserInfo.History.map(async (id)=> { 
-               data =  await Post.findOne({'_id':id,confirm:true})
-                await post.push(data)
-               console.log(post)
-           })
-         
+            post=[];
+            for(i = 0; i<UserInfo.History.length;i++){
+                data =  await Post.findOne({'_id':UserInfo.History[i],confirm:true})
+               post.push(data)
+            }
+            res.json(post)
           
-         
-          
-           
-          
-           
-         
 
         } catch (error) {
             res.status(500).json({
