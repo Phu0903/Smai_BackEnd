@@ -162,7 +162,6 @@ module.exports = {
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID }) 
             const IdPost = req.body
-            console.log(IdPost);
             var id;
             if(!IdPost)
             {
@@ -185,7 +184,9 @@ module.exports = {
                         console.log(error)
                         throw new Error(error)
                     }
-                    res.json(data)
+                   else{
+                       res.status(200).json("oke")
+                   }
                 }
             )
 
