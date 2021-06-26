@@ -162,6 +162,7 @@ module.exports = {
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID }) 
             const IdPost = req.body.Idpost
+            console.log(IdPost);
             var id;
             if(!IdPost)
             {
