@@ -61,6 +61,11 @@ module.exports = {
                     'note': note,
                     'confirm':Confirm || false
                 })
+                Product.create(dataPost.NameProduct, function (err, res) {
+                    if (err) {
+                        res.json(err)
+                    }
+                })
                 dataPost.save(function (err, data) {
                     if (err) {
                         res.json(err)

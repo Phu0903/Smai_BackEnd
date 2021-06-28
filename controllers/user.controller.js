@@ -57,7 +57,6 @@ module.exports = {
         try {
             const resetPassword = await argon2d.hash(PasswordReset)//hasd password by argon 
             const AccountUser = await Account.findOne({ '_id': Id })
-
             const UserInfo = await User.findOne({ 'AccountID': Id })
             if (!UserInfo && !AccountUser)
                 return res
