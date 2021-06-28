@@ -62,10 +62,6 @@ module.exports = {
                     'confirm':Confirm || false
                 })
                 Product.create(dataPost.NameProduct, function (err, res) {
-                   
-                    if (err) { console.log(err)
-                        res.json(err)
-                    }
                 })
                 dataPost.save(function (err, data) {
                     if (err) {
