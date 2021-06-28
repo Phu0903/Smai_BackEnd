@@ -282,7 +282,6 @@ module.exports = {
             const id = req.query._id;
             //find News by ID 
             const post = await Post.findOne({ '_id': id })
-            console.log(id)
             if (!post) {
                 res.status(400).json({
                     success: false,
