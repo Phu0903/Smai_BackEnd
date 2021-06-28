@@ -61,7 +61,7 @@ module.exports = {
                     'note': note,
                     'confirm':Confirm || false
                 })
-                for( let i in dataPost.NameProduct)
+                /*for( let i in dataPost.NameProduct)
                 {
                     console.log(dataPost.NameProduct[i])
                     const dataProduct = await new Product({
@@ -69,7 +69,7 @@ module.exports = {
                         'Category':dataPost.NameProduct[i].Category
                     })
                     dataProduct.save();
-                }
+                }*/
                 dataPost.save(function (err, data) {
                     if (err) {
                         res.json(err)
