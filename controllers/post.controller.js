@@ -98,7 +98,7 @@ module.exports = {
     //Update Product int Post
     UpdateProductInPost: async (req, res) => {
         try {
-            // const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
+             const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
 
             if (!req.headers.idpost) {
                 return res
