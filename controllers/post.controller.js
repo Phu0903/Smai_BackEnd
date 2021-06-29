@@ -290,7 +290,23 @@ module.exports = {
             }
             else {
 
-                post.urlImage.map(function (url) {
+                const UserHistory = await User.find({})
+                for(let i in UserHistory)
+                {
+                    const UserInfor = await User.findOneAndUpdate(
+                        {_id:UserHistory[i]._id},
+                        {
+                            $pull:{
+                                History: id
+                            }
+                        },
+                        {
+                            new:true
+                        }
+                        )
+                }
+               
+               post.urlImage.map(function (url) {
                     //delete image
 
                     //Tách chuỗi lấy id
