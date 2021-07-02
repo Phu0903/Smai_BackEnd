@@ -235,6 +235,7 @@ module.exports = {
                     message: "No have user"
                 })
             }
+           
             post = [];
             for (let i in UserInfo.History) {
                 data = await Post.findOne({ '_id': UserInfo.History[i], confirm: true })
