@@ -15,7 +15,7 @@ users.get('/getInForUserByTokenId', verifyToken, CORS, usercontroller.getInfoUse
 users.get('/getInfoUser', CORS, usercontroller.getInfoUser)
 
 //Update profile User 
-users.put('/profileUser', verifyToken, fileUploader.single('imageUser'),CORS, usercontroller.UpdateProfile)
+users.post('/profileUser', verifyToken, fileUploader.single('imageUser'),CORS, usercontroller.UpdateProfile)
 
 //Get address user
 
