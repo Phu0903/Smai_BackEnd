@@ -90,7 +90,7 @@ module.exports = {
                 }
                 else {*/
                     console.log(req.files)
-                    await User.updateOne({ _id: UserInfo._id },
+                    await User.updateOne({ _id: req.accountID },
                         {
                             $set: {
                                // 'FullName': FullName || UserInfo.FullName,
