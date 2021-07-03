@@ -96,6 +96,9 @@ module.exports = {
                                // 'FullName': FullName || UserInfo.FullName,
                                 'urlIamge': req.file.path
                             }
+                        },
+                        {
+                            new:true
                         }, function (error, data) {
                             res.status(201).json({
                                 message: "Oke"
