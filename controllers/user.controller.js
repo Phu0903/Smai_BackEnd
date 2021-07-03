@@ -89,12 +89,12 @@ module.exports = {
                     )
                 }
                 else {*/
-                    console.log(req.files)
+                    console.log(req.file)
                     await User.updateOne({ _id: req.accountID },
                         {
                             $set: {
                                // 'FullName': FullName || UserInfo.FullName,
-                                'urlIamge': req.files.map(function (files) {
+                                'urlIamge': req.file.map(function (files) {
                                     return files.path
                                 })
                             }
