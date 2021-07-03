@@ -94,9 +94,7 @@ module.exports = {
                         {
                             $set: {
                                // 'FullName': FullName || UserInfo.FullName,
-                                'urlIamge': req.file.map(function (files) {
-                                    return files.path
-                                })
+                                'urlIamge': req.file.path
                             }
                         }, function (error, data) {
                             res.status(201).json({
