@@ -82,19 +82,24 @@ module.exports = {
 
                             }
                         }, function (error, data) {
-                            res.json("Oke")
+                            res.status(201).json({
+                                message: "Oke"
+                            })
                         }
                     )
                 }
                 else {
+                    console.log(req.file.path)
                     await User.updateOne({ _id: UserInfo._id },
                         {
                             $set: {
                                 'FullName': FullName || UserInfo.FullName,
-                                'urlIamge': req.file
+                                'urlIamge': req.file.path
                             }
                         }, function (error, data) {
-                            res.json("Oke")
+                            res.status(201).json({
+                                message: "Oke"
+                            })
                         }
                     )
                 }
