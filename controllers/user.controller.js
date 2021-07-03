@@ -52,10 +52,10 @@ module.exports = {
     },
     //Update profile usser
     UpdateProfile: async (req, res) => {
-        const { FullName, PasswordReset } = req.body
-        const Id = req.accountID;
+        //const { FullName, PasswordReset } = req.body
+        //const Id = req.accountID;
         try {
-            const resetPassword = await argon2d.hash(PasswordReset)//hasd password by argon 
+            /*const resetPassword = await argon2d.hash(PasswordReset)//hasd password by argon 
             const AccountUser = await Account.findOne({ '_id': Id })
             const UserInfo = await User.findOne({ 'AccountID': Id })
             if (!UserInfo && !AccountUser)
@@ -73,8 +73,8 @@ module.exports = {
                     new: true // trả vè dữ liệu mới 
                     //Hàm này trả về defaut là dữ liệu cũ
                 },
-                )
-                if (!req.file) {
+                )*/
+                /*if (!req.file) {
                     User.updateOne({ _id: UserInfo._id },
                         {
                             $set: {
@@ -88,13 +88,15 @@ module.exports = {
                         }
                     )
                 }
-                else {
-                    console.log(req.file.path)
+                else {*/
+                    console.log(req.files)
                     await User.updateOne({ _id: UserInfo._id },
                         {
                             $set: {
-                                'FullName': FullName || UserInfo.FullName,
-                                'urlIamge': req.file.path
+                               // 'FullName': FullName || UserInfo.FullName,
+                                'urlIamge': req.files.map(function (files) {
+                                    return files.path
+                                })
                             }
                         }, function (error, data) {
                             res.status(201).json({
@@ -102,10 +104,7 @@ module.exports = {
                             })
                         }
                     )
-                }
-
-
-            }
+                
         } catch (error) {
             console.log(error)
             res.status(500).json({
