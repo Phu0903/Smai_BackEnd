@@ -89,8 +89,7 @@ module.exports = {
                     )
                 }
                 else {*/
-                    console.log(req.file)
-                    console.log(req.accountID)
+                  
                     await User.updateOne({ AccountID: req.accountID },
                         {
                             $set: {
