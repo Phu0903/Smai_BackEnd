@@ -10,7 +10,7 @@ require("dotenv").config();
 module.exports = {
   //Login
   login: async (req, res) => {
-  
+    console.log(req.body)
     const { PhoneNumber, Password } = req.body
     if (!PhoneNumber || !Password)
       return res
