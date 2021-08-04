@@ -165,8 +165,7 @@ module.exports = {
     HistoryPost: async (req, res) => {
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID })
-            const IdPost = req.body
-           
+            const IdPost = req.body.IdPost
             var id,id_temp = [];
             //Nếu độ dài bằng không thì không cập nhật
             if (IdPost.length == 0) {
@@ -190,11 +189,10 @@ module.exports = {
 
                 }
                 //xóa bỏ id bài viết của user
-                const id_arr = id.filter(item => !id_temp.includes(item));
+                const id_arr =  id.filter(item => !id_temp.includes(item));
                 //check History
                 for (let j in UserInfo.History) {
                     id_arr.push(UserInfo.History[j])
-                  
                 }
                 //Đầu tiên, chúng ta tạo mới một phần tử Set và đưa nó vào một mảng.
                 // Vì Set chỉ cho phép giá trị duy nhất, tất cả trùng lặp sẽ bị xoá
@@ -225,7 +223,9 @@ module.exports = {
   
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({
+              
                 success: false,
                 message: error.message
             });
