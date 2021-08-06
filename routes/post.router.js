@@ -3,7 +3,8 @@ const baipost = express.Router();
 const controller = require('../controllers/post.controller');
 const verifyToken = require('../middleware/auth')
 const CORS = require('../middleware/CORS')
-const multer = require('multer')
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 const fileUploader = require('../configs/cloudinary.config');
 
 ///Create post
@@ -27,5 +28,7 @@ baipost.get('/find',CORS,controller.FindId);
 //Find Post 
 baipost.get('/searchPost',CORS,controller.searchPost);
 
-  
+baipost.post('/upload', upload.array('productImage',5),(req , res) => {
+    console.log(req.files)
+  });
 module.exports = baipost;

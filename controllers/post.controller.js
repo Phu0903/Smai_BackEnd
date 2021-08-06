@@ -99,8 +99,11 @@ module.exports = {
     UpdateProductInPost: async (req, res) => {
         try {
              const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
+            console.log(req.files)
+            console.log(req.headers.idpost)
 
             if (!req.headers.idpost) {
+                console.log(1)
                 return res
                     .status(400)
                     .json({
@@ -121,7 +124,7 @@ module.exports = {
                 })
             }
         } catch (error) {
-
+          console.log(error)
             res.status(500).json({
 
                 success: false,
