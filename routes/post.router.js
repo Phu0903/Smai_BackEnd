@@ -28,7 +28,7 @@ baipost.get('/find',CORS,controller.FindId);
 //Find Post 
 baipost.get('/searchPost',CORS,controller.searchPost);
 
-baipost.post('/upload', upload.array('productImage',5),(req , res) => {
-    console.log(req.files)
+baipost.post('/upload', upload.single('productImage'),(req , res) => {
+    console.log(req.file)
   });
 module.exports = baipost;
