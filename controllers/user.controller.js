@@ -55,40 +55,6 @@ module.exports = {
         //const { FullName, PasswordReset } = req.body
         //const Id = req.accountID;
         try {
-            /*const resetPassword = await argon2d.hash(PasswordReset)//hasd password by argon 
-            const AccountUser = await Account.findOne({ '_id': Id })
-            const UserInfo = await User.findOne({ 'AccountID': Id })
-            if (!UserInfo && !AccountUser)
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message: "don't have user"
-                    })
-            else {
-                await AccountUser.updateOne(
-                    {
-                        'Password': resetPassword || AccountUser.Password
-                    }, {
-                    new: true // trả vè dữ liệu mới 
-                    //Hàm này trả về defaut là dữ liệu cũ
-                },
-                )*/
-                /*if (!req.file) {
-                    User.updateOne({ _id: UserInfo._id },
-                        {
-                            $set: {
-                                'FullName': FullName || UserInfo.FullName,
-
-                            }
-                        }, function (error, data) {
-                            res.status(201).json({
-                                message: "Oke"
-                            })
-                        }
-                    )
-                }
-                else {*/
                   
                     await User.updateOne({ AccountID: req.accountID },
                         {
@@ -146,14 +112,14 @@ module.exports = {
     },
 
     //Get PhonNumber by AccountID
-    getPhonNumber: async (req, res) => {
-
+    getInfoAuthor: async (req, res) => {
         try {
             const account = await Account.findOne({ '_id': req.query.AuthorID })
-
+            const user = await User.findOne({'AccountID':req.query.AuthorID})
             res.status(201).json({
-                'PhoneNumber': account.PhoneNumber,
-            })
+              "PhoneNumber": account.PhoneNumber,
+              "ImgAuthor": user.urlIamge,
+            });
         } catch (error) {
             res.status(500).json({
                 success: false,
