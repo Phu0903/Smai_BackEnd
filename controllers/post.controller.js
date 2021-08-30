@@ -385,10 +385,9 @@ module.exports = {
             const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
 
             if (!post[0]) {
+                console.log("null")
                 res.status(201)
-                    .json({
-                        'message': 'You do not have post'
-                    })
+                    .json([])
             }
             else {
                 res.status(201)
