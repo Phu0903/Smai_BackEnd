@@ -383,7 +383,7 @@ module.exports = {
             const SortTime = { createdAt: -1 };
             const ID = req.accountID;
             const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
-
+            console.log(post)
             if (!post[0]) {
                 console.log("null")
                 res.status(201)
