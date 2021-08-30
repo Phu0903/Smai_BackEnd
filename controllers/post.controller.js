@@ -384,7 +384,7 @@ module.exports = {
             const ID = req.accountID;
             const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
 
-            if (!post[0]._id) {
+            if (!post[0]) {
                 res.status(201)
                     .json({
                         'message': 'You do not have post'
