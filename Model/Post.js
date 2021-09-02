@@ -6,8 +6,6 @@ const Post = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-
-
   TypeAuthor: {
     type: String,
     require: true,
@@ -17,7 +15,6 @@ const Post = new mongoose.Schema({
       'Tổ chức công ích',
       'tangcongdong'
     ]
-
   },
   NameAuthor: {
     required: true,
@@ -45,20 +42,15 @@ const Post = new mongoose.Schema({
   urlImage: [],
   confirm:
   {
-    type:Boolean,
-  }
-  /*expireAt: {
-   type: Date,
-   default: Date.now,
-   expires: 3600 , // giới hạn thời gian 3600s
- },*/
-
+    type: Boolean,
+  },
+  Transaction: []//Đối với bài viết xin thì trong đây chỉ chứa một phần tử, đối với bài viết tặng thì chứa nhiều phần tử
 }, {
   collection: 'Post',
   timestamps: true,
   versionKey: false,
 })
 
-Post.index({'NameProduct': 'text','title': 'text','address':'text'}); //đm bắt buộc dùng này mới tìm đc nghen
+Post.index({ 'NameProduct': 'text', 'title': 'text', 'address': 'text' }); //đm bắt buộc dùng này mới tìm đc nghen
 
 module.exports = mongoose.model('Post', Post)
