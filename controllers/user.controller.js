@@ -1,9 +1,6 @@
-const argon2d = require('argon2');
 const Account = require('../Model/Account');
 const User = require('../Model/User');
 const Post = require('../Model/Post')
-const jwt = require('jsonwebtoken');
-const verifyToken = require('../middleware/auth');
 require("dotenv").config();
 
 module.exports = {
@@ -73,7 +70,6 @@ module.exports = {
                     )
                 
         } catch (error) {
-            console.log(error)
             res.status(500).json({
                 success: false,
                 message: error.message

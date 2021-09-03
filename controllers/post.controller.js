@@ -1,14 +1,7 @@
-const mongoose = require('mongoose');
-const verifyToken = require('../middleware/auth')
 const Post = require('../Model/Post');
-const Schema = mongoose.Schema;
-const Product = require('../Model/Product')
 const User = require('../Model/User')
 const cloudinary_detele = require('../configs/cloudinary.delete')
-const multer = require('multer');
-const { json } = require('express');
-var ObjectID = require('mongodb').ObjectID;
-const { findOne } = require('../Model/User');
+
 
 
 
@@ -99,7 +92,7 @@ module.exports = {
     //Update Product int Post
     UpdateProductInPost: async (req, res) => {
         try {
-             const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
+            const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
             console.log(req.files)
             console.log(req.headers.idpost)
 
@@ -275,11 +268,7 @@ module.exports = {
             });
         }
     },
-
-
-
     //delete Posst 
-
     DeletePost: async (req, res) => {
         try {
             //ID from client
@@ -499,14 +488,6 @@ module.exports = {
             });
         }
     },*/
-
-
-
-
-
-
-    
-
-    
+   
 }
 

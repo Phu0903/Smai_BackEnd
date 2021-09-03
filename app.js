@@ -27,7 +27,7 @@ connctDB();
 var accountRouter = require('./routes/account.router');
 var userRouter = require('./routes/user.router');
 var postRouter = require('./routes/post.router')
-
+var transactionRouter = require('./routes/transaction.router')
 
 var app = express();
 
@@ -46,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/account', accountRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
+app.use("/transaction", transactionRouter);
 
 
 
