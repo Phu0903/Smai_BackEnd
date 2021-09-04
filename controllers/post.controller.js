@@ -15,7 +15,6 @@ module.exports = {
             NameAuthor,
             address,
         } = req.body;
-        console.log(req.body);
         try {
             const findInfoAuthor = await User.findOne(
                 { 'AccountID': req.accountID }

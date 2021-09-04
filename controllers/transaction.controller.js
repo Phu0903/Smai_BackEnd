@@ -37,13 +37,13 @@ module.exports = {
           .json(MessageResponse(false, "The parameters are not enough"));
       }
       if (!req.accountID) {
-        res.status(400).json(MessageResponse(false, "No have accound ID"));
+        res.status(404).json(MessageResponse(false, "No have accound ID"));
       } else {
         //id người tạo ra giao dịch
         const senderID = await User.findOne({ AccountID: req.accountID });
         if (!senderID) {
           return res
-            .status(400)
+            .status(404)
             .json(MessageResponse(false, "No have SenderID"));
         } else {
           //check img
@@ -104,7 +104,7 @@ module.exports = {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
         const transaction = await Transaction.find({ SenderID: accountId });
-        if (!transaction) {
+        if (transaction.length == 0) {
           res.status(404).json(MessageResponse(fasle, "Not Found"));
         } else {
           res
@@ -124,12 +124,88 @@ module.exports = {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
         const transaction = await Transaction.find({ ReceiverID: accountId });
-        if (!transaction) {
-          res.status(404).json(MessageResponse(fasle, "Not Found"));
+        console.log(transaction.length);
+        if (transaction.length == 0) {
+          res.status(404).json(MessageResponse(false, "Not Found"));
         } else {
           res
             .status(200)
             .json(MessageResponse(true, "Find Success", transaction));
+        }
+      }
+    } catch (error) {
+      res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
+  //get Transaction liên quan đến một bài viết
+  getTransactionPostID: async (req, res) => {
+    try {
+      //query
+      const postIdQuery = req.query.postId;
+      if (!postIdQuery) {
+        res
+          .status(400)
+          .json(MessageResponse(false, "The parameters are not enough"));
+      } else {
+        const getIdPost = await Transaction.find({ PostID: postIdQuery });
+        if (getIdPost.length == 0) {
+          res.status(404).json(MessageResponse(false, "Not Found"));
+        } else {
+          res
+            .status(200)
+            .json(MessageResponse(true, "Find Success", getIdPost));
+        }
+      }
+    } catch (error) {
+      res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
+  //update trạng thái connect của bài viết
+  updateTransaction: async (req, res) => {
+    try {
+      const { isConnect } = req.body;
+      const transactionIdQuery = req.query.transactionId;
+      if (!isConnect || !transactionIdQuery) {
+        res
+          .status(400)
+          .json(MessageResponse(false, "The parameters are not enough"));
+      } else {
+        let isConnectTemp;
+        if (isConnect == "True" || isConnect == "true") {
+          isConnectTemp = true;
+        } else {
+          res
+            .status(400)
+            .json(MessageResponse(false, "The parameters are not wrong"));
+        }
+        //check exists
+        const checkExists = await Transaction.findOne({
+          _id: transactionIdQuery,
+        });
+        if (!checkExists) {
+          res.status(404).json(MessageResponse(false, "Not Found"));
+        } else {
+          //find and update
+          await Transaction.findOneAndUpdate(
+            { _id: transactionIdQuery },
+            {
+              $set: {
+                isConnect: isConnectTemp,
+              },
+            },
+            {
+              new: true,
+            },
+            function (error, data) {
+              if (error) {
+                res.status(400).json(MessageResponse(false, "Failed Update"));
+              } else {
+                res
+                  .status(200)
+                  .json(MessageResponse(true, "Update Success", data));
+              }
+            }
+          );
         }
       }
     } catch (error) {
