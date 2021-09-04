@@ -28,7 +28,7 @@ var accountRouter = require('./routes/account.router');
 var userRouter = require('./routes/user.router');
 var postRouter = require('./routes/post.router')
 var transactionRouter = require('./routes/transaction.router')
-
+var doctorRouter = require('./routes/doctors.router')
 var app = express();
 
 // view engine setup
@@ -47,6 +47,7 @@ app.use('/account', accountRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use("/transaction", transactionRouter);
+app.use("/doctor", doctorRouter);
 
 
 
