@@ -1,6 +1,7 @@
 const Transaction = require("../Model/Transaction");
 const User = require("../Model/User");
-
+const Post = require("../Model/Post");
+//respone
 const MessageResponse = (success, message, data) => {
   return {
     data: {
@@ -10,7 +11,32 @@ const MessageResponse = (success, message, data) => {
     },
   };
 };
-
+//sẽ ẩn bài Post đi nếu transaction chuyển thành true
+ HidenPostByConnect =  (idPost) => {
+  const data = Post.findByIdAndUpdate(
+    { _id: idPost },
+    {
+      $set: {
+        isDisplay: false,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  if(data === null){
+    return false
+  }
+  return true;
+};
+//check post có tồn tại không
+CheckExistsPost = (idPost) =>{
+   const data = Post.findOne({ _id: idPost });
+   if(data === null){
+     return false
+   }
+   return data
+ }
 module.exports = {
   createTransaction: async (req, res) => {
     //req body
@@ -23,7 +49,6 @@ module.exports = {
       isConnect, //isConnect
       isConfirm, //isConfirm
     } = req.body;
-    console.log(req.body)
     try {
       if (
         !receiverID ||
@@ -32,19 +57,24 @@ module.exports = {
         !isConnect ||
         !isConfirm
       ) {
-        console.log("lỗi ở đây")
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
-      }
-      else {
+      } else {
         //id người tạo ra giao dịch
         const senderID = await User.findOne({ AccountID: req.accountID });
         if (!senderID) {
           return res
             .status(404)
             .json(MessageResponse(false, "No have SenderID"));
-        } else {
+        }
+        const dataPost = await CheckExistsPost(postID)
+        if(!dataPost){
+          return res
+            .status(404)
+            .json(MessageResponse(false, "No have Post"));
+        }
+        else {
           //check img
           let pathImage = [];
           if (!req.files) {
@@ -80,13 +110,24 @@ module.exports = {
             isConfirm: checkConfirm,
             urlImage: pathImage,
           });
-          dataTransaction.save(function (err) {
+          dataTransaction.save(async function (err) {
             if (err) {
               res.status(400).json(MessageResponse(false, "save db error"));
             } else {
-              res
-                .status(201)
-                .json(MessageResponse(true, "create transaction success"));
+              if (checkConnect === true) {
+                const hidden = await HidenPostByConnect(postID);
+                if (hidden == true) {
+                  res
+                    .status(201)
+                    .json(MessageResponse(true, "create transaction success"));
+                } else {
+                  res.status(400).json(MessageResponse(false, "save db error"));
+                }
+              }else{
+                res
+                  .status(201)
+                  .json(MessageResponse(true, "create transaction success"));
+              }
             }
           });
         }
@@ -123,7 +164,6 @@ module.exports = {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
         const transaction = await Transaction.find({ ReceiverID: accountId });
-        console.log(transaction.length);
         if (transaction.length == 0) {
           res.status(404).json(MessageResponse(false, "Not Found"));
         } else {

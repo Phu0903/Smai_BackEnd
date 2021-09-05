@@ -13,7 +13,7 @@ const Doctors = new mongoose.Schema({
      type:String
   }
 },{
-   collection:'Doctor',
+   collection:'Doctors',
    timestamps:true
 });
 module.exports = mongoose.model("Doctors", Doctors);

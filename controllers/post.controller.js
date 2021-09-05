@@ -63,9 +63,10 @@ module.exports = {
                     })
                     dataProduct.save();
                 }*/
-                dataPost.save(function (err, data) {
-                    if (err) {
-                        res.json(err)
+                dataPost.save(function (error, data) {
+                    if (error) {
+                        console.log(error);
+                        res.status(400).json(error);
                     }
                     else {
                         res.status(201)
@@ -88,13 +89,10 @@ module.exports = {
         }
 
     },
-    //Update Product int Post
+    //Update Product in Post
     UpdateProductInPost: async (req, res) => {
         try {
             const PostNew= await Post.findOne({'_id':req.header.IDPost}) 
-            console.log(req.files)
-            console.log(req.headers.idpost)
-
             if (!req.headers.idpost) {
                 console.log(1)
                 return res
