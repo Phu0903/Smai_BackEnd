@@ -32,6 +32,7 @@ module.exports = {
         !isConnect ||
         !isConfirm
       ) {
+        console.log("lỗi ở đây")
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
