@@ -28,7 +28,6 @@ module.exports = {
         !receiverID ||
         !postID ||
         !senderAddress ||
-        !title ||
         !isConnect ||
         !isConfirm
       ) {
