@@ -23,6 +23,7 @@ module.exports = {
       isConnect, //isConnect
       isConfirm, //isConfirm
     } = req.body;
+    console.log(req.body)
     try {
       if (
         !receiverID ||
