@@ -12,6 +12,6 @@ transaction.get(
   verifyToken,
   transactionController.getTransactionPostID
 );
-transaction.put('/update-connect',verifyToken,transactionController.updateTransaction)
+transaction.put('/update-connect',verifyToken,transactionController.updateTransactionConnect)
 
 module.exports = transaction;

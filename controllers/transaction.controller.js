@@ -35,9 +35,7 @@ module.exports = {
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
       }
-      if (!req.accountID) {
-        res.status(404).json(MessageResponse(false, "No have accound ID"));
-      } else {
+      else {
         //id người tạo ra giao dịch
         const senderID = await User.findOne({ AccountID: req.accountID });
         if (!senderID) {
@@ -160,7 +158,7 @@ module.exports = {
     }
   },
   //update trạng thái connect của bài viết
-  updateTransaction: async (req, res) => {
+  updateTransactionConnect: async (req, res) => {
     try {
       const { isConnect } = req.body;
       const transactionIdQuery = req.query.transactionId;
