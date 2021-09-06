@@ -14,8 +14,11 @@ const MessageResponse = (success, message, data) => {
 module.exports = {
   getDoctors: async (req, res) => {
     const getDoctors = await Doctors.find({});
-    if (!getDoctors) {
+    if (getDoctors) {
       res.status(200).json(MessageResponse(true, "Get Success", getDoctors));
+    }else{
+      res.status(404).json(MessageResponse(false, "Not Found"));
+
     }
   },
   createDoctors: async (req, res) => {
