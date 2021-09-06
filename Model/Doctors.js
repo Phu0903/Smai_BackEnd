@@ -14,6 +14,8 @@ const Doctors = new mongoose.Schema({
   }
 },{
    collection:'Doctors',
-   timestamps:true
+   timestamps:true,
+   versionKey: false,
+
 });
 module.exports = mongoose.model("Doctors", Doctors);
