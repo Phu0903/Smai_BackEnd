@@ -1,6 +1,8 @@
 const Transaction = require("../Model/Transaction");
 const User = require("../Model/User");
 const Post = require("../Model/Post");
+const Account = require("../Model/Account");
+
 //respone
 const MessageResponse = (success, message, data) => {
   return {
@@ -12,12 +14,12 @@ const MessageResponse = (success, message, data) => {
   };
 };
 //sẽ ẩn bài Post đi nếu transaction chuyển thành true
-HidenPostByConnect =async (idPost) => {
+const HidenPostByConnect = async (idPost,status) => {
   const data = await Post.findByIdAndUpdate(
     { _id: idPost },
     {
       $set: {
-        isDisplay: false,
+        isDisplay: status,
       },
     },
     {
@@ -37,31 +39,49 @@ const CheckExistsPost = async (idPost) => {
   }
   return data;
 };
+//const checkConfirm
+const CheckExistsTransaction = async (idTransaction) => {
+  const data = await Transaction.findOne({ _id: idTransaction });
+  if (data === null) {
+    return false;
+  }
+  return data;
+};
+//add transactionid to account
+const UpdateTransactionToAccount = async (accountId, transactionId) => {
+  const dataAccount = await Account.findOneAndUpdate(
+    { _id: accountId },
+    {
+      $addToSet: {
+        Transaction: transactionId,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  if (dataAccount === null) {
+    return false;
+  } else {
+    return dataAccount;
+  }
+};
 module.exports = {
   createTransaction: async (req, res) => {
     //req body
     const {
-      receiverID, //Id người sở hữu bài viết sinh ta giao dịch
       postID, //ID bài viết sinh ra giao dịch
       senderAddress, //Địa chỉ
-      title, //title
       note, //note
       isConnect, //isConnect
       isConfirm, //isConfirm
     } = req.body;
     try {
-      if (
-        !receiverID ||
-        !postID ||
-        !senderAddress ||
-        !isConnect ||
-        !isConfirm
-      ) {
+      if (!postID || !senderAddress || !isConnect || !isConfirm) {
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
       } else {
-        //id người tạo ra giao dịch
         const senderID = await User.findOne({ AccountID: req.accountID });
         if (!senderID) {
           return res
@@ -97,11 +117,10 @@ module.exports = {
           }
           //lưu vào db Transaction
           const dataTransaction = await new Transaction({
-            SenderID: senderID,
-            ReceiverID: receiverID,
+            SenderID: req.accountID,
+            ReceiverID: dataPost.AuthorID,
             PostID: postID,
             SenderAddress: senderAddress,
-            title: title,
             note: note,
             isConnect: checkConnect,
             isConfirm: checkConfirm,
@@ -112,7 +131,7 @@ module.exports = {
               res.status(400).json(MessageResponse(false, "save db error"));
             } else {
               if (checkConnect === true) {
-                const hidden = await HidenPostByConnect(postID);
+                const hidden = await HidenPostByConnect(postID,false);
                 if (hidden === true) {
                   res
                     .status(201)
@@ -209,16 +228,20 @@ module.exports = {
         let isConnectTemp;
         if (isConnect == "True" || isConnect == "true") {
           isConnectTemp = true;
+        }
+        else if (isConnect == "False" || isConnect == "false") {
+          isConnectTemp = false;
         } else {
           res
             .status(400)
             .json(MessageResponse(false, "The parameters are not wrong"));
         }
-        //check exists
-        const checkExists = await Transaction.findOne({
-          _id: transactionIdQuery,
-        });
-        if (!checkExists) {
+        //check exists Transaction
+        const transactionExists = await CheckExistsTransaction(
+          transactionIdQuery
+        );
+        //if Transaction don't have already
+        if (!transactionExists) {
           res.status(404).json(MessageResponse(false, "Not Found"));
         } else {
           //find and update
@@ -226,24 +249,30 @@ module.exports = {
             { _id: transactionIdQuery },
             {
               $set: {
-                isConnect: isConnectTemp,
+                isConnect: isConnectTemp, //update isConnect
               },
             },
             {
-              new: true,
+              new: true, //return data new
             },
             async function (error, data) {
               if (error) {
                 res.status(400).json(MessageResponse(false, "Failed Update"));
               } else {
-                //hidden post 
-                const hidden = await HidenPostByConnect(data.PostID);
-                if (hidden === true) {
+                //hidden post
+                const hidden = await HidenPostByConnect(
+                  data.PostID,
+                  !isConnectTemp
+                ); // isConnect = true change isDisplay = !isConnect = false
+                   // isConnect = false change isDisplay = !isConnet = true
+                if (hidden === true) { //update post successfully
                   res
                     .status(200)
                     .json(MessageResponse(true, "Update Success", data));
                 } else {
-                  res.status(400).json(MessageResponse(false, "Failed HiddenPost"));
+                  res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed HiddenPost"));
                 }
               }
             }
@@ -254,6 +283,68 @@ module.exports = {
       res.status(500).json(MessageResponse(false, error.message));
     }
   },
+  //Update transactionConfirm
+  updateTransactionConfirm: async (req, res) => {
+    try {
+      const { isConfirm } = req.body;
+      const transactionIdQuery = req.query.transactionId; //transactionId
+      //check enough
+      if (!isConfirm || !transactionIdQuery) {
+        res
+          .status(400)
+          .json(MessageResponse(false, "The parameters are not enough"));
+      } else {
+        let isConfirmTemp;
+        if (isConfirm == "True" || isConfirm == "true") {
+          isConfirmTemp = true;
+        }
+         else {
+          res
+            .status(400)
+            .json(MessageResponse(false, "The parameters are not wrong"));
+        }
+        //kiểm tra tồn tại
+        const transactionExists = await CheckExistsTransaction(
+          transactionIdQuery
+        );
+        if (!transactionExists) {
+          res.status(404).json(MessageResponse(false, "Not Found"));
+        } else {
+          //update isConfirm for Transaction
+          const newData = await Transaction.findOneAndUpdate(
+            { _id: transactionIdQuery },
+            {
+              $set: {
+                isConfirm: isConfirmTemp,
+              },
+            },
+            {
+              new: true,
+            }
+          );
+          if (newData === null) {
+            res.status(400).json(MessageResponse(false, "Failed Update"));
+          } else {
+            //add id transaction to account senderId
+            const accountTransactionSenderId = await UpdateTransactionToAccount(
+              newData.SenderID,
+              newData._id
+            );
+            //add id transaction to account ReceiverID
+            const accountTransactionReceiverID =
+              await UpdateTransactionToAccount(newData.ReceiverID, newData._id);
+            if (!accountTransactionSenderId || !accountTransactionReceiverID) {
+              res.status(400).json(MessageResponse(false, "Failed Update"));
+            } else {
+              res.status(200).json(MessageResponse(true, "Update Success"));
+            }
+          }
+        }
+      }
+    } catch (error) {
+      res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
 };
 
-//update 
+

@@ -384,7 +384,8 @@ module.exports = {
                 'message': error.message
             });
         }
-    }
+    },
+ 
 
     //create Post
     /*createPost: async (req, res) => {
