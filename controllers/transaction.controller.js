@@ -14,7 +14,7 @@ const MessageResponse = (success, message, data) => {
   };
 };
 //sẽ ẩn bài Post đi nếu transaction chuyển thành true
-const HidenPostByConnect = async (idPost,status) => {
+const HidenPostByConnect = async (idPost, status) => {
   const data = await Post.findByIdAndUpdate(
     { _id: idPost },
     {
@@ -92,60 +92,76 @@ module.exports = {
         if (!dataPost) {
           return res.status(404).json(MessageResponse(false, "No have Post"));
         } else {
-          //check img
-          let pathImage = [];
-          if (!req.files) {
-            pathImage = [];
-          } else {
-            req.files.map(function (files) {
-              pathImage.push(files.path);
-            });
-          }
-          //check true false
-          let checkConnect, checkConfirm;
-          if (isConnect == "True" || isConnect == "true") {
-            checkConnect = true;
-          }
-          if (isConnect == "False" || isConnect == "false") {
-            checkConnect = false;
-          }
-          if (isConfirm == "True" || isConfirm == "true") {
-            checkConfirm = true;
-          }
-          if (isConfirm == "False" || isConfirm == "false") {
-            checkConfirm = false;
-          }
-          //lưu vào db Transaction
-          const dataTransaction = await new Transaction({
-            SenderID: req.accountID,
-            ReceiverID: dataPost.AuthorID,
-            PostID: postID,
-            SenderAddress: senderAddress,
-            note: note,
-            isConnect: checkConnect,
-            isConfirm: checkConfirm,
-            urlImage: pathImage,
-          });
-          dataTransaction.save(async function (err) {
-            if (err) {
-              res.status(400).json(MessageResponse(false, "save db error"));
+          //Sender user and Receiver user must not be the same
+          if (req.accountID != dataPost.AuthorID) {
+            //check img
+            let pathImage = [];
+            if (!req.files) {
+              pathImage = [];
             } else {
-              if (checkConnect === true) {
-                const hidden = await HidenPostByConnect(postID,false);
-                if (hidden === true) {
+              req.files.map(function (files) {
+                pathImage.push(files.path);
+              });
+            }
+            //check true false
+            let checkConnect, checkConfirm;
+            if (isConnect == "True" || isConnect == "true") {
+              checkConnect = true;
+            }
+            if (isConnect == "False" || isConnect == "false") {
+              checkConnect = false;
+            }
+            if (isConfirm == "True" || isConfirm == "true") {
+              checkConfirm = true;
+            }
+            if (isConfirm == "False" || isConfirm == "false") {
+              checkConfirm = false;
+            }
+            //lưu vào db Transaction
+            const dataTransaction = await new Transaction({
+              SenderID: req.accountID,
+              ReceiverID: dataPost.AuthorID,
+              PostID: postID,
+              SenderAddress: senderAddress,
+              note: note,
+              isConnect: checkConnect,
+              isConfirm: checkConfirm,
+              urlImage: pathImage,
+            });
+            dataTransaction.save(async function (err) {
+              if (err) {
+                res.status(400).json(MessageResponse(false, "save db error"));
+              } else {
+                if (checkConnect === true) {
+                  const hidden = await HidenPostByConnect(postID, false);
+                  if (hidden === true) {
+                    res
+                      .status(201)
+                      .json(
+                        MessageResponse(true, "create transaction success")
+                      );
+                  } else {
+                    res
+                      .status(400)
+                      .json(MessageResponse(false, "save db error"));
+                  }
+                } else {
                   res
                     .status(201)
                     .json(MessageResponse(true, "create transaction success"));
-                } else {
-                  res.status(400).json(MessageResponse(false, "save db error"));
                 }
-              } else {
-                res
-                  .status(201)
-                  .json(MessageResponse(true, "create transaction success"));
               }
-            }
-          });
+            });
+          } else {
+            res
+              .status(400)
+              .json(
+                MessageResponse(
+                  false,
+                  "Sender user and Receiver user must not be the same"
+                )
+              );
+          }
         }
       }
     } catch (error) {
@@ -228,8 +244,7 @@ module.exports = {
         let isConnectTemp;
         if (isConnect == "True" || isConnect == "true") {
           isConnectTemp = true;
-        }
-        else if (isConnect == "False" || isConnect == "false") {
+        } else if (isConnect == "False" || isConnect == "false") {
           isConnectTemp = false;
         } else {
           res
@@ -264,8 +279,9 @@ module.exports = {
                   data.PostID,
                   !isConnectTemp
                 ); // isConnect = true change isDisplay = !isConnect = false
-                   // isConnect = false change isDisplay = !isConnet = true
-                if (hidden === true) { //update post successfully
+                // isConnect = false change isDisplay = !isConnet = true
+                if (hidden === true) {
+                  //update post successfully
                   res
                     .status(200)
                     .json(MessageResponse(true, "Update Success", data));
@@ -297,8 +313,7 @@ module.exports = {
         let isConfirmTemp;
         if (isConfirm == "True" || isConfirm == "true") {
           isConfirmTemp = true;
-        }
-         else {
+        } else {
           res
             .status(400)
             .json(MessageResponse(false, "The parameters are not wrong"));
@@ -310,34 +325,46 @@ module.exports = {
         if (!transactionExists) {
           res.status(404).json(MessageResponse(false, "Not Found"));
         } else {
-          //update isConfirm for Transaction
-          const newData = await Transaction.findOneAndUpdate(
-            { _id: transactionIdQuery },
-            {
-              $set: {
-                isConfirm: isConfirmTemp,
+          //transaction must connect
+          if (transactionExists.isConnect == true) {
+            //check connect
+            //update isConfirm for Transaction
+            const newData = await Transaction.findOneAndUpdate(
+              { _id: transactionIdQuery },
+              {
+                $set: {
+                  isConfirm: isConfirmTemp,
+                },
               },
-            },
-            {
-              new: true,
-            }
-          );
-          if (newData === null) {
-            res.status(400).json(MessageResponse(false, "Failed Update"));
-          } else {
-            //add id transaction to account senderId
-            const accountTransactionSenderId = await UpdateTransactionToAccount(
-              newData.SenderID,
-              newData._id
+              {
+                new: true,
+              }
             );
-            //add id transaction to account ReceiverID
-            const accountTransactionReceiverID =
-              await UpdateTransactionToAccount(newData.ReceiverID, newData._id);
-            if (!accountTransactionSenderId || !accountTransactionReceiverID) {
+            if (newData === null) {
               res.status(400).json(MessageResponse(false, "Failed Update"));
             } else {
-              res.status(200).json(MessageResponse(true, "Update Success"));
+              //add id transaction to account senderId
+              const accountTransactionSenderId =
+                await UpdateTransactionToAccount(newData.SenderID, newData._id);
+              //add id transaction to account ReceiverID
+              const accountTransactionReceiverID =
+                await UpdateTransactionToAccount(
+                  newData.ReceiverID,
+                  newData._id
+                );
+              if (
+                !accountTransactionSenderId ||
+                !accountTransactionReceiverID
+              ) {
+                res.status(400).json(MessageResponse(false, "Failed Update"));
+              } else {
+                res.status(200).json(MessageResponse(true, "Update Success"));
+              }
             }
+          } else {
+            res
+              .status(400)
+              .json(MessageResponse(false, "Transaction must connect"));
           }
         }
       }
@@ -346,5 +373,3 @@ module.exports = {
     }
   },
 };
-
-
