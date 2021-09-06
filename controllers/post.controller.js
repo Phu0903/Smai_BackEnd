@@ -242,29 +242,29 @@ module.exports = {
 
 
     //Get Post by AccountID
-    GetPostByAccountID: async (req, res) => {
-        try {
-            const SortTime = { createdAt: -1 };
-            const ID = req.accountID;
-            const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
+    // GetPostByAccountID: async (req, res) => {
+    //     try {
+    //         const SortTime = { createdAt: -1 };
+    //         const ID = req.accountID;
+    //         const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
 
-            if (!post[0]._id) {
-                res.status(201)
-                    .json({
-                        'message': 'You do not have post'
-                    })
-            }
-            else {
-                res.status(201)
-                    .json(post)
-            }
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                'message': error.message
-            });
-        }
-    },
+    //         if (!post[0]._id) {
+    //             res.status(201)
+    //                 .json({
+    //                     'message': 'You do not have post'
+    //                 })
+    //         }
+    //         else {
+    //             res.status(201)
+    //                 .json(post)
+    //         }
+    //     } catch (error) {
+    //         res.status(500).json({
+    //             success: false,
+    //             'message': error.message
+    //         });
+    //     }
+    // },
     //delete Posst 
     DeletePost: async (req, res) => {
         try {
@@ -369,9 +369,7 @@ module.exports = {
             const SortTime = { createdAt: -1 };
             const ID = req.accountID;
             const post = await Post.find({ 'AuthorID': ID }).sort(SortTime);
-            console.log(post)
             if (!post[0]) {
-                console.log("null")
                 res.status(201)
                     .json([])
             }
