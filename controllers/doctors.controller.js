@@ -13,7 +13,7 @@ const MessageResponse = (success, message, data) => {
 
 module.exports = {
   getDoctors: async (req, res) => {
-    const getDoctors = await Doctors.find();
+    const getDoctors = await Doctors.find({});
     if (!getDoctors) {
       res.status(200).json(MessageResponse(true, "Get Success", getDoctors));
     }
