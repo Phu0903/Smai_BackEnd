@@ -12,8 +12,8 @@ const MessageResponse = (success, message, data) => {
   };
 };
 //sẽ ẩn bài Post đi nếu transaction chuyển thành true
- HidenPostByConnect =  (idPost) => {
-  const data = Post.findByIdAndUpdate(
+HidenPostByConnect =async (idPost) => {
+  const data = await Post.findByIdAndUpdate(
     { _id: idPost },
     {
       $set: {
@@ -24,19 +24,19 @@ const MessageResponse = (success, message, data) => {
       new: true,
     }
   );
-  if(data === null){
-    return false
+  if (data === null) {
+    return false;
   }
   return true;
 };
 //check post có tồn tại không
-CheckExistsPost = (idPost) =>{
-   const data = Post.findOne({ _id: idPost });
-   if(data === null){
-     return false
-   }
-   return data
- }
+const CheckExistsPost = async (idPost) => {
+  const data = await Post.findOne({ _id: idPost });
+  if (data === null) {
+    return false;
+  }
+  return data;
+};
 module.exports = {
   createTransaction: async (req, res) => {
     //req body
@@ -68,13 +68,10 @@ module.exports = {
             .status(404)
             .json(MessageResponse(false, "No have SenderID"));
         }
-        const dataPost = await CheckExistsPost(postID)
-        if(!dataPost){
-          return res
-            .status(404)
-            .json(MessageResponse(false, "No have Post"));
-        }
-        else {
+        const dataPost = await CheckExistsPost(postID);
+        if (!dataPost) {
+          return res.status(404).json(MessageResponse(false, "No have Post"));
+        } else {
           //check img
           let pathImage = [];
           if (!req.files) {
@@ -116,14 +113,14 @@ module.exports = {
             } else {
               if (checkConnect === true) {
                 const hidden = await HidenPostByConnect(postID);
-                if (hidden == true) {
+                if (hidden === true) {
                   res
                     .status(201)
                     .json(MessageResponse(true, "create transaction success"));
                 } else {
                   res.status(400).json(MessageResponse(false, "save db error"));
                 }
-              }else{
+              } else {
                 res
                   .status(201)
                   .json(MessageResponse(true, "create transaction success"));
@@ -235,13 +232,19 @@ module.exports = {
             {
               new: true,
             },
-            function (error, data) {
+            async function (error, data) {
               if (error) {
                 res.status(400).json(MessageResponse(false, "Failed Update"));
               } else {
-                res
-                  .status(200)
-                  .json(MessageResponse(true, "Update Success", data));
+                //hidden post 
+                const hidden = await HidenPostByConnect(data.PostID);
+                if (hidden === true) {
+                  res
+                    .status(200)
+                    .json(MessageResponse(true, "Update Success", data));
+                } else {
+                  res.status(400).json(MessageResponse(false, "Failed HiddenPost"));
+                }
               }
             }
           );
