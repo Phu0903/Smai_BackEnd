@@ -80,6 +80,7 @@ module.exports = {
     console.log(req.body)
     try {
       if (!postID || !senderAddress || !status) {
+        console.log("1")
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
@@ -133,6 +134,7 @@ module.exports = {
               });
               dataTransaction.save(async function (err) {
                 if (err) {
+                  console.log("2");
                   res.status(400).json(MessageResponse(false, "save db error"));
                 } else {
                   //trạng thái waiting thì bài post sẽ ẩn đi
@@ -145,6 +147,7 @@ module.exports = {
                           MessageResponse(true, "create transaction success")
                         );
                     } else {
+                     console.log("3");
                       res
                         .status(400)
                         .json(MessageResponse(false, "save db error"));
@@ -159,6 +162,7 @@ module.exports = {
                 }
               });
             } else {
+             console.log("4");
               res
                 .status(400)
                 .json(
@@ -169,6 +173,7 @@ module.exports = {
                 );
             }
           } else {
+             console.log("5");
             res
               .status(400)
               .json(
