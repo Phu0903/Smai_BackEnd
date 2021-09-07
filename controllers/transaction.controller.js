@@ -77,6 +77,7 @@ module.exports = {
       // isConfirm, //isConfirm
       status,
     } = req.body;
+    console.log(req.body)
     try {
       if (!postID || !senderAddress || !status) {
         res
