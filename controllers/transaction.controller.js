@@ -311,13 +311,60 @@ module.exports = {
       if (!accountId) {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
-        const transaction = await Transaction.find({
-          $or:[{ReceiverID: mongoose.Types.ObjectId(accountId.AccountID)},
-            {SenderID:mongoose.Types.ObjectId(accountId.AccountID)}]
-        });
+        // const transaction = await Transaction.find({
+        //   $or:[{ReceiverID: mongoose.Types.ObjectId(accountId.AccountID)},
+        //     {SenderID:mongoose.Types.ObjectId(accountId.AccountID)}]
+        // });
+        const transactionbyuser = await Transaction.aggregate([
+          {
+            $match: {
+              $or: [
+                {
+                  ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
+                },
+                { SenderID: mongoose.Types.ObjectId(accountId.AccountID) },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "User",
+              localField: "SenderID",
+              foreignField: "AccountID",
+              as: "SenderUser",
+            },
+          },
+          {
+            $unwind: "$SenderUser", // this to convert the array of one object to be an object
+          },
+          {
+            $lookup: {
+              from: "User",
+              localField: "ReceiverID",
+              foreignField: "AccountID",
+              as: "ReceiverUser",
+            },
+          },
+          {
+            $unwind: "$ReceiverUser", // this to convert the array of one object to be an object
+          },
+          {
+            $lookup: {
+              from: "Post",
+              localField: "PostID",
+              foreignField: "_id",
+              as: "PostData",
+            },
+          },
+          {
+            $unwind: "$PostData",
+          },
+
+          // { $project: { SenderID: 1, stockdata: { FullName: 1 } } },
+        ]);
         res
           .status(200)
-          .json(MessageResponse(true, "Find Success", transaction));
+          .json(MessageResponse(true, "Find Success", transactionbyuser));
       }
     } catch (error) {
       res.status(500).json(MessageResponse(false, error.message));
