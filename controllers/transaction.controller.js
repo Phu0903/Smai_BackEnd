@@ -305,34 +305,19 @@ module.exports = {
   },
   //getTransaction theo status
   //get Transaction liên quan đến một bài viết
-  getTransactionPostID: async (req, res) => {
+  getTransactionByUserID: async (req, res) => {
     try {
-      //query
-      const postIdQuery = req.query.postId;
-      if (!postIdQuery) {
-        res
-          .status(400)
-          .json(MessageResponse(false, "The parameters are not enough"));
+      const accountId = await User.findOne({ AccountID: req.accountID });
+      if (!accountId) {
+        return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
-        const getIdPost = await Transaction.aggregate([
-          {
-            $match: {
-              PostID: mongoose.Types.ObjectId(postIdQuery),
-            },
-          },
-          {
-            $lookup: {
-              from: "User",
-              localField: "SenderID",
-              foreignField: "AccountID",
-              as: "usersender",
-            },
-          },
-          {
-            $unwind: "$usersender", // this to convert the array of one object to be an object
-          },
-        ]).exec();
-        res.status(200).json(MessageResponse(true, "Find Success", getIdPost));
+        const transaction = await Transaction.find({
+          $or:[{ReceiverID: mongoose.Types.ObjectId(accountId.AccountID)},
+            {SenderID:mongoose.Types.ObjectId(accountId.AccountID)}]
+        });
+        res
+          .status(200)
+          .json(MessageResponse(true, "Find Success", transaction));
       }
     } catch (error) {
       res.status(500).json(MessageResponse(false, error.message));

@@ -13,10 +13,10 @@ transaction.get(
   transactionController.getTransactionPostID
 );
 transaction.put('/update-status',verifyToken,transactionController.updateTransactionStatus)
-// transaction.put(
-//   "/update-confirm",
-//   verifyToken,
-//   transactionController.updateTransactionConfirm
-// );
+transaction.get(
+  "/get-transaction",
+  verifyToken,
+  transactionController.getTransactionByUserID
+);
 
 module.exports = transaction;
