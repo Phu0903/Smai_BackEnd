@@ -303,14 +303,49 @@ module.exports = {
       res.status(500).json(MessageResponse(false, error.message));
     }
   },
+  //getTransaction theo status
+  //get Transaction liên quan đến một bài viết
+  getTransactionPostID: async (req, res) => {
+    try {
+      //query
+      const postIdQuery = req.query.postId;
+      if (!postIdQuery) {
+        res
+          .status(400)
+          .json(MessageResponse(false, "The parameters are not enough"));
+      } else {
+        const getIdPost = await Transaction.aggregate([
+          {
+            $match: {
+              PostID: mongoose.Types.ObjectId(postIdQuery),
+            },
+          },
+          {
+            $lookup: {
+              from: "User",
+              localField: "SenderID",
+              foreignField: "AccountID",
+              as: "usersender",
+            },
+          },
+          {
+            $unwind: "$usersender", // this to convert the array of one object to be an object
+          },
+        ]).exec();
+        res.status(200).json(MessageResponse(true, "Find Success", getIdPost));
+      }
+    } catch (error) {
+      res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
   //update trạng thái connect của bài viết
   updateTransactionStatus: async (req, res) => {
     try {
-      const { status } = req.body;
+      const { status, notereceiver } = req.body;
       const transactionIdQuery = req.query.transactionId;
       console.log(req.body);
       if (!status || !transactionIdQuery) {
-        console.log("1")
+        console.log("1");
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
@@ -328,7 +363,7 @@ module.exports = {
             //trước khi hoàn thành phải connect
             if (status == "done") {
               if (transactionExists.isStatus != "waiting") {
-                console.log("2")
+                console.log("2");
                 res
                   .status(400)
                   .json(MessageResponse(false, "Transaction must connect"));
@@ -340,6 +375,7 @@ module.exports = {
               {
                 $set: {
                   isStatus: status, //update isConnect
+                  NoteReceiver: notereceiver || transactionExists.NoteReceiver,
                 },
               },
               {
@@ -348,7 +384,7 @@ module.exports = {
               }
             );
             if (!data) {
-              console.log("4")
+              console.log("4");
               res.status(400).json(MessageResponse(false, "Failed Update"));
             } else {
               //nếu trường hợp waiting => ẩn post đi
@@ -407,6 +443,8 @@ module.exports = {
       res.status(500).json(MessageResponse(false, error.message));
     }
   },
+  //
+
   //Update transactionConfirm
   // updateTransactionConfirm: async (req, res) => {
   //   try {

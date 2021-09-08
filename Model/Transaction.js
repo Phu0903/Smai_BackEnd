@@ -24,7 +24,7 @@ const Transaction = new mongoose.Schema(
       required: true,
       type: String,
     },
-    title: {
+    NoteReceiver: {  //note của người sở hữu bài viết
       type: String,
     },
     note: {
