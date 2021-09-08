@@ -2,6 +2,8 @@ const Transaction = require("../Model/Transaction");
 const User = require("../Model/User");
 const Post = require("../Model/Post");
 const Account = require("../Model/Account");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 //respone
 const MessageResponse = (success, message, data) => {
@@ -42,11 +44,28 @@ const CheckExistsPost = async (idPost) => {
 //const checkConfirm
 const CheckExistsTransaction = async (idTransaction) => {
   const data = await Transaction.findOne({ _id: idTransaction });
+  if (!data) {
+    return false;
+  }
+  return data;
+};
+//check transaction exists by post id, SenderID, ReceiverID
+const CheckExistsTransactionWithSenderIdReceiverID = async (
+  postId,
+  senderId,
+  receiverId
+) => {
+  const data = await Transaction.findOne({
+    PostID: postId,
+    SenderID: senderId,
+    ReceiverID: receiverId,
+  });
   if (data === null) {
     return false;
   }
   return data;
 };
+
 //add transactionid to account
 const UpdateTransactionToAccount = async (accountId, transactionId) => {
   const dataAccount = await Account.findOneAndUpdate(
@@ -89,12 +108,22 @@ module.exports = {
             .status(404)
             .json(MessageResponse(false, "No have SenderID"));
         }
+
         const dataPost = await CheckExistsPost(postID);
         if (!dataPost) {
           return res.status(404).json(MessageResponse(false, "No have Post"));
         } else {
-          //Sender user and Receiver user must not be the same
-          if (req.accountID != dataPost.AuthorID) {
+          //check transaction exists
+          const transactionExists =
+            await CheckExistsTransactionWithSenderIdReceiverID(
+              postID,
+              req.accountID,
+              dataPost.AuthorID
+            );
+          if (transactionExists) {
+            res.status(404).json(MessageResponse(false, "Transaction already"));
+          } else if (!transactionExists && req.accountID != dataPost.AuthorID) {
+            //Sender user and Receiver user must not be the same
             //check img
             let pathImage = [];
             if (!req.files) {
@@ -168,7 +197,7 @@ module.exports = {
                 );
             }
           } else {
-             console.log("5");
+            console.log("5");
             res
               .status(400)
               .json(
@@ -191,14 +220,12 @@ module.exports = {
       if (!accountId) {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
-        const transaction = await Transaction.find({ SenderID: accountId });
-        if (transaction.length == 0) {
-          res.status(404).json(MessageResponse(fasle, "Not Found"));
-        } else {
-          res
-            .status(200)
-            .json(MessageResponse(true, "Find Success", transaction));
-        }
+        const transaction = await Transaction.find({
+          SenderID: mongoose.Types.ObjectId(accountId.AccountID),
+        });
+        res
+          .status(200)
+          .json(MessageResponse(true, "Find Success", transaction));
       }
     } catch (error) {
       res.status(500).json(MessageResponse(false, error.message));
@@ -211,14 +238,12 @@ module.exports = {
       if (!accountId) {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
-        const transaction = await Transaction.find({ ReceiverID: accountId });
-        if (transaction.length == 0) {
-          res.status(404).json(MessageResponse(false, "Not Found"));
-        } else {
-          res
-            .status(200)
-            .json(MessageResponse(true, "Find Success", transaction));
-        }
+        const transaction = await Transaction.find({
+          ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
+        });
+        res
+          .status(200)
+          .json(MessageResponse(true, "Find Success", transaction));
       }
     } catch (error) {
       res.status(500).json(MessageResponse(false, error.message));
@@ -229,20 +254,30 @@ module.exports = {
     try {
       //query
       const postIdQuery = req.query.postId;
-      console.log(postIdQuery);
       if (!postIdQuery) {
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
       } else {
-        const getIdPost = await Transaction.find({ PostID: postIdQuery });
-        if (getIdPost.length == 0) {
-          res.status(404).json(MessageResponse(false, "Not Found"));
-        } else {
-          res
-            .status(200)
-            .json(MessageResponse(true, "Find Success", getIdPost));
-        }
+        const getIdPost = await Transaction.aggregate([
+          {
+            $match: {
+              PostID: mongoose.Types.ObjectId(postIdQuery),
+            },
+          },
+          {
+            $lookup: {
+              from: "User",
+              localField: "SenderID",
+              foreignField: "AccountID",
+              as: "usersender",
+            },
+          },
+          {
+            $unwind: "$usersender", // this to convert the array of one object to be an object
+          },
+        ]).exec();
+        res.status(200).json(MessageResponse(true, "Find Success", getIdPost));
       }
     } catch (error) {
       res.status(500).json(MessageResponse(false, error.message));
@@ -269,89 +304,76 @@ module.exports = {
           //tình trạng transaction phải chưa hoàn thành
           if (transactionExists.isStatus != "done") {
             //trước khi hoàn thành phải connect
-            if (status == "done"){
-              if(transactionExists.isStatus != "waiting"){
-                 res.status(400).json(MessageResponse(false, "Transaction must connect"));
+            if (status == "done") {
+              if (transactionExists.isStatus != "waiting") {
+                res
+                  .status(400)
+                  .json(MessageResponse(false, "Transaction must connect"));
               }
             }
-              //find and update
-             const data = await Transaction.findOneAndUpdate(
-                { _id: transactionIdQuery },
-                {
-                  $set: {
-                    isStatus: status, //update isConnect
-                  },
+            //find and update
+            const data = await Transaction.findOneAndUpdate(
+              { _id: transactionIdQuery },
+              {
+                $set: {
+                  isStatus: status, //update isConnect
                 },
-                {
-                  new: true, //return data new
-                  runValidators: true, //update nếu nằm trong enum
-                })
-                if (!data) {
-                    res
-                      .status(400)
-                      .json(MessageResponse(false, "Failed Update"));
-                  } else {
-                    //nếu trường hợp waiting => ẩn post đi
-                    if (status == "waiting") {
-                      //hidden post
-                      const hidden = await HidenPostByConnect(
-                        data.PostID,
-                        false
-                      );
-                      //ẩn bài viết đi
-                      if (hidden === false) {
-                        //failed
-                        res
-                          .status(400)
-                          .json(MessageResponse(false, "Failed HiddenPost"));
-                      }
-                    }
-                    //nếu trường hợp cancel => hiện post
-                    if (status == "cancel") {
-                      const hidden = await HidenPostByConnect(
-                        data.PostID,
-                        true
-                      );
-                      //hiện bài viết đi
-                      if (hidden === false) {
-                        //failed
-                        res
-                          .status(400)
-                          .json(MessageResponse(false, "Failed HiddenPost"));
-                      }
-                    }
-                    //trường hợp status done => cập nhật transaction vào các account
-                    if (status == "done") {
-                      //add id transaction to account senderId
-                      const accountTransactionSenderId =
-                        await UpdateTransactionToAccount(
-                          data.SenderID,
-                          data._id
-                        );
-                      //add id transaction to account ReceiverID
-                      const accountTransactionReceiverID =
-                        await UpdateTransactionToAccount(
-                          data.ReceiverID,
-                          data._id
-                        );
-                      if (
-                        !accountTransactionSenderId ||
-                        !accountTransactionReceiverID
-                      ) {
-                        res
-                          .status(400)
-                          .json(MessageResponse(false, "Failed Update"));
-                      } else {
-                        res
-                          .status(200)
-                          .json(MessageResponse(true, "Update Success", data));
-                      }
-                    } else {
-                      res
-                        .status(200)
-                        .json(MessageResponse(true, "Update Success", data));
-                    }
-                  }   
+              },
+              {
+                new: true, //return data new
+                runValidators: true, //update nếu nằm trong enum
+              }
+            );
+            if (!data) {
+              res.status(400).json(MessageResponse(false, "Failed Update"));
+            } else {
+              //nếu trường hợp waiting => ẩn post đi
+              if (status == "waiting") {
+                //hidden post
+                const hidden = await HidenPostByConnect(data.PostID, false);
+                //ẩn bài viết đi
+                if (hidden === false) {
+                  //failed
+                  res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed HiddenPost"));
+                }
+              }
+              //nếu trường hợp cancel => hiện post
+              if (status == "cancel") {
+                const hidden = await HidenPostByConnect(data.PostID, true);
+                //hiện bài viết đi
+                if (hidden === false) {
+                  //failed
+                  res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed HiddenPost"));
+                }
+              }
+              //trường hợp status done => cập nhật transaction vào các account
+              if (status == "done") {
+                //add id transaction to account senderId
+                const accountTransactionSenderId =
+                  await UpdateTransactionToAccount(data.SenderID, data._id);
+                //add id transaction to account ReceiverID
+                const accountTransactionReceiverID =
+                  await UpdateTransactionToAccount(data.ReceiverID, data._id);
+                if (
+                  !accountTransactionSenderId ||
+                  !accountTransactionReceiverID
+                ) {
+                  res.status(400).json(MessageResponse(false, "Failed Update"));
+                } else {
+                  res
+                    .status(200)
+                    .json(MessageResponse(true, "Update Success", data));
+                }
+              } else {
+                res
+                  .status(200)
+                  .json(MessageResponse(true, "Update Success", data));
+              }
+            }
           } else {
             res.status(400).json(MessageResponse(false, "Transaction done"));
           }

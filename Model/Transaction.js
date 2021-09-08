@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 //Một giao dịch được tạo ra khi một người tặng đồ cho một đối tượng, một bài viết xin đồ cụ thể. khi đó trường isConnect là true.
 //Một giao dịch sinh ra khi người xin đồ muốn xin một món đồ được đăng lên từ một người hay tổ chức khác thì isConnect là false
@@ -45,5 +45,5 @@ const Transaction = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Transaction', Transaction)
 
+module.exports = mongoose.model("Transaction", Transaction);
