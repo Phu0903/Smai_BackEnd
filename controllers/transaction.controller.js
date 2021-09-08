@@ -272,6 +272,26 @@ module.exports = {
               foreignField: "AccountID",
               as: "usersender",
             },
+            //$project: dùng để lấy chi tiết phần tử
+            // Transaction.aggregate([
+            //     {
+            //       $lookup:
+            //          {
+            //            from: "User",
+            //            localField: "SenderID",
+            //            foreignField: "AccountID",
+            //            as: "stockdata"
+            //          },
+
+            //     },
+            //      {$project:{"SenderID":1,"stockdata":{"FullName":1}}},
+            // ])
+            // { _id: ObjectId("613787325cabed00231a98ae"),
+            //   SenderID: ObjectId("61374dd6830d45002364e253"),
+            //   stockdata: [ { FullName: 'Nguyễn Bảnh' } ] }
+            // { _id: ObjectId("61381a5b3792001e9c12ef93"),
+            //   SenderID: ObjectId("611c0670a52583002233b535"),
+            //   stockdata: [ { FullName: 'NguyenDuyPhu' } ] }
           },
           {
             $unwind: "$usersender", // this to convert the array of one object to be an object
