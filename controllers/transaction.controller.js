@@ -308,7 +308,9 @@ module.exports = {
     try {
       const { status } = req.body;
       const transactionIdQuery = req.query.transactionId;
+      console.log(req)
       if (!status || !transactionIdQuery) {
+        console.log("1")
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
@@ -326,6 +328,7 @@ module.exports = {
             //trước khi hoàn thành phải connect
             if (status == "done") {
               if (transactionExists.isStatus != "waiting") {
+                console.log("2")
                 res
                   .status(400)
                   .json(MessageResponse(false, "Transaction must connect"));
@@ -345,6 +348,7 @@ module.exports = {
               }
             );
             if (!data) {
+              console.log("4")
               res.status(400).json(MessageResponse(false, "Failed Update"));
             } else {
               //nếu trường hợp waiting => ẩn post đi
