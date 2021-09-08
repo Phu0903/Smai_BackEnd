@@ -308,7 +308,7 @@ module.exports = {
     try {
       const { status } = req.body;
       const transactionIdQuery = req.query.transactionId;
-      console.log(req)
+      console.log(req.body);
       if (!status || !transactionIdQuery) {
         console.log("1")
         res
