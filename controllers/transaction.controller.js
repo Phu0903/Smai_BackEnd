@@ -3,6 +3,7 @@ const User = require("../Model/User");
 const Post = require("../Model/Post");
 const Account = require("../Model/Account");
 const mongoose = require("mongoose");
+const transaction = require("../routes/transaction.router");
 const Schema = mongoose.Schema;
 
 //respone
@@ -359,8 +360,7 @@ module.exports = {
           {
             $unwind: "$PostData",
           },
-
-          // { $project: { SenderID: 1, stockdata: { FullName: 1 } } },
+          { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
         ]);
         res
           .status(200)
@@ -375,9 +375,7 @@ module.exports = {
     try {
       const { status, notereceiver } = req.body;
       const transactionIdQuery = req.query.transactionId;
-      console.log(req.body);
       if (!status || !transactionIdQuery) {
-        console.log("1");
         res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
@@ -395,7 +393,6 @@ module.exports = {
             //trước khi hoàn thành phải connect
             if (status == "done") {
               if (transactionExists.isStatus != "waiting") {
-                console.log("2");
                 res
                   .status(400)
                   .json(MessageResponse(false, "Transaction must connect"));
@@ -416,7 +413,6 @@ module.exports = {
               }
             );
             if (!data) {
-              console.log("4");
               res.status(400).json(MessageResponse(false, "Failed Update"));
             } else {
               //nếu trường hợp waiting => ẩn post đi
@@ -475,79 +471,138 @@ module.exports = {
       res.status(500).json(MessageResponse(false, error.message));
     }
   },
-  //
+  //đổi soát
+  getTransactionSuccess: async (req, res) => {
+    try {
+      const accountId = await User.findOne({ AccountID: req.accountID });
+      if (!accountId) {
+        return res.status(400).json(MessageResponse(false, "No have SenderID"));
+      } else {
+        const transactionbyuser = await Transaction.aggregate([
+          {
+            $match: {
+              $and: [
+                {
+                  $or: [
+                  {
+                    ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
+                  },
+                  {
+                  SenderID: mongoose.Types.ObjectId(accountId.AccountID),
+                  },
+                  ],
+                },
+                // {
+                //   isStatus: "done",
+                // },
+              ],
+            },
+          },
+          { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
+          {
+            $lookup: {
+              from: "Post",
+              localField: "PostID",
+              foreignField: "_id",
+              as: "PostData",
+            },
+          },
+          {
+            $unwind: "$PostData",
+          },
+          {
+            $project: {
+              _id: 1,
+              urlImage: 1,
+              isStatus: 1,
+              SenderID: 1,
+              ReceiverID: 1,
+              PostID: 1,
+              SenderAddress: 1,
+              note: 1,
+              updatedAt:1,
+              PostData:1
+            },
+          },
+        ]);
+        let i = 0;
+       
+        let data = [];
+        //change time
+        
+          for (i in transactionbyuser) {
+            let typepost = "";
+                 if (transactionbyuser[i].PostData.TypeAuthor == "tangcongdong") {
+                   typepost = "tang";
+                 } else {
+                   typepost = "xin";
+                 }
+                 let typetransaction;
+                 //Bài đăng tặng mình là người đi xin thành công
+                 if (
+                   typepost == "tang" &&
+                   transactionbyuser[i].SenderID == req.accountID
+                 ) {
+                   typetransaction = "Đã nhận";
+                 }
+                 //Bài đăng thuộc loại xin và mình đi tặng thành công
+                 if (
+                   typepost == "xin" &&
+                   transactionbyuser[i].SenderID == req.accountID
+                 ) {
+                   typetransaction = "Đã tặng";
+                 }
+                 if (
+                   typepost == "tang" &&
+                   transactionbyuser[i].ReceiverID == req.accountID
+                 ) {
+                   typetransaction = "Đã tặng";
+                 }
+                 if (
+                   typepost == "xin" &&
+                   transactionbyuser[i].ReceiverID == req.accountID
+                 ) {
+                   typetransaction = "Đã nhận";
+                 }
+                 var pair = { typetransaction: typetransaction };
+                 obj = { ...transactionbyuser[i], ...pair };
+                 data.push(obj);
+               }
 
-  //Update transactionConfirm
-  // updateTransactionConfirm: async (req, res) => {
-  //   try {
-  //     const { isConfirm } = req.body;
-  //     const transactionIdQuery = req.query.transactionId; //transactionId
-  //     //check enough
-  //     if (!isConfirm || !transactionIdQuery) {
-  //       res
-  //         .status(400)
-  //         .json(MessageResponse(false, "The parameters are not enough"));
-  //     } else {
-  //       let isConfirmTemp;
-  //       if (isConfirm == "True" || isConfirm == "true") {
-  //         isConfirmTemp = true;
-  //       } else {
-  //         res
-  //           .status(400)
-  //           .json(MessageResponse(false, "The parameters are not wrong"));
-  //       }
-  //       //kiểm tra tồn tại
-  //       const transactionExists = await CheckExistsTransaction(
-  //         transactionIdQuery
-  //       );
-  //       if (!transactionExists) {
-  //         res.status(404).json(MessageResponse(false, "Not Found"));
-  //       } else {
-  //         //transaction must connect
-  //         if (transactionExists.isConnect == true) {
-  //           //check connect
-  //           //update isConfirm for Transaction
-  //           const newData = await Transaction.findOneAndUpdate(
-  //             { _id: transactionIdQuery },
-  //             {
-  //               $set: {
-  //                 isConfirm: isConfirmTemp,
-  //               },
-  //             },
-  //             {
-  //               new: true,
-  //             }
-  //           );
-  //           if (newData === null) {
-  //             res.status(400).json(MessageResponse(false, "Failed Update"));
-  //           } else {
-  //             //add id transaction to account senderId
-  //             const accountTransactionSenderId =
-  //               await UpdateTransactionToAccount(newData.SenderID, newData._id);
-  //             //add id transaction to account ReceiverID
-  //             const accountTransactionReceiverID =
-  //               await UpdateTransactionToAccount(
-  //                 newData.ReceiverID,
-  //                 newData._id
-  //               );
-  //             if (
-  //               !accountTransactionSenderId ||
-  //               !accountTransactionReceiverID
-  //             ) {
-  //               res.status(400).json(MessageResponse(false, "Failed Update"));
-  //             } else {
-  //               res.status(200).json(MessageResponse(true, "Update Success"));
-  //             }
-  //           }
-  //         } else {
-  //           res
-  //             .status(400)
-  //             .json(MessageResponse(false, "Transaction must connect"));
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     res.status(500).json(MessageResponse(false, error.message));
-  //   }
-  // },
+             let timedata = []
+            for (let j = 0; j < data.length; j++) {
+              const time = data[j].updatedAt.toLocaleString("en-US").split(",");
+              let temp = {
+                time:time[0],
+                data : data[j]
+              }
+              timedata.push(temp);
+            }
+         
+          
+       // group by 
+        const groupAndMerge = (arr, groupBy, mergeWith) =>
+          Array.from(
+            arr
+              .reduce(
+                (m, o) =>
+                  m.set(o[groupBy], {
+                    ...o,
+                    [mergeWith]: [
+                      ...(m.get(o[groupBy])?.[mergeWith] ?? []),
+                      o[mergeWith],
+                    ],
+                  }),
+                new Map()
+              )
+              .values()
+          );
+          const dataDone = groupAndMerge(timedata, "time", "data");
+ 
+        res.status(200).json(MessageResponse(true, "Find Success", dataDone));
+      }
+    } catch (error) {
+      res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
 };

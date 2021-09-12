@@ -18,5 +18,10 @@ transaction.get(
   verifyToken,
   transactionController.getTransactionByUserID
 );
+transaction.get(
+  "/transaction-success",
+  verifyToken,
+  transactionController.getTransactionSuccess
+);
 
 module.exports = transaction;
