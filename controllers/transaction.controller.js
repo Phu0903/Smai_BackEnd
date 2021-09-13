@@ -374,6 +374,7 @@ module.exports = {
   updateTransactionStatus: async (req, res) => {
     try {
       const { status, notereceiver } = req.body;
+      console.log(req.body)
       const transactionIdQuery = req.query.transactionId;
       if (!status || !transactionIdQuery) {
         res
@@ -492,9 +493,9 @@ module.exports = {
                     },
                   ],
                 },
-                // {
-                //   isStatus: "done",
-                // },
+                {
+                  isStatus: "done",
+                },
               ],
             },
           },
@@ -527,7 +528,7 @@ module.exports = {
         ]);
         let i = 0;
         let data = [];
-        //change time
+        //xác định loại transaction
         for (i in transactionbyuser) {
           let typepost = "";
           if (transactionbyuser[i].PostData.TypeAuthor == "tangcongdong") {
@@ -566,7 +567,7 @@ module.exports = {
           obj = {...type, ...transactionbyuser[i] };
           data.push(obj);
         }
-
+        //phần theo ngày
         let timedata = [];
         for (let j = 0; j < data.length; j++) {
           const time = data[j].updatedAt.toLocaleString("en-US").split(",");
@@ -596,6 +597,7 @@ module.exports = {
           );
         // let data
         const dataMergeTime = groupAndMerge(timedata, "time", "data");
+        //count
         let dataDone= []
         for (let i = 0; i < dataMergeTime.length; i++) {
           let transactionsend = 0;
@@ -617,6 +619,8 @@ module.exports = {
           obj = {...countTransaction, ...dataMergeTime[i]};
           dataDone.push(obj);
         }
+
+        //merge tháng
         res.status(200).json(MessageResponse(true, "Find Success", dataDone));
       }
     } catch (error) {
