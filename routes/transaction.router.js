@@ -12,7 +12,7 @@ transaction.get(
   verifyToken,
   transactionController.getTransactionPostID
 );
-transaction.put('/update-status',verifyToken,transactionController.updateTransactionStatus)
+transaction.post('/update-status',verifyToken,transactionController.updateTransactionStatus)
 transaction.get(
   "/get-transaction",
   verifyToken,
