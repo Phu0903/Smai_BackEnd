@@ -484,12 +484,12 @@ module.exports = {
               $and: [
                 {
                   $or: [
-                  {
-                    ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
-                  },
-                  {
-                  SenderID: mongoose.Types.ObjectId(accountId.AccountID),
-                  },
+                    {
+                      ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
+                    },
+                    {
+                      SenderID: mongoose.Types.ObjectId(accountId.AccountID),
+                    },
                   ],
                 },
                 // {
@@ -520,67 +520,64 @@ module.exports = {
               PostID: 1,
               SenderAddress: 1,
               note: 1,
-              updatedAt:1,
-              PostData:1
+              updatedAt: 1,
+              PostData: 1,
             },
           },
         ]);
         let i = 0;
-       
         let data = [];
         //change time
-        
-          for (i in transactionbyuser) {
-            let typepost = "";
-                 if (transactionbyuser[i].PostData.TypeAuthor == "tangcongdong") {
-                   typepost = "tang";
-                 } else {
-                   typepost = "xin";
-                 }
-                 let typetransaction;
-                 //Bài đăng tặng mình là người đi xin thành công
-                 if (
-                   typepost == "tang" &&
-                   transactionbyuser[i].SenderID == req.accountID
-                 ) {
-                   typetransaction = "Đã nhận";
-                 }
-                 //Bài đăng thuộc loại xin và mình đi tặng thành công
-                 if (
-                   typepost == "xin" &&
-                   transactionbyuser[i].SenderID == req.accountID
-                 ) {
-                   typetransaction = "Đã tặng";
-                 }
-                 if (
-                   typepost == "tang" &&
-                   transactionbyuser[i].ReceiverID == req.accountID
-                 ) {
-                   typetransaction = "Đã tặng";
-                 }
-                 if (
-                   typepost == "xin" &&
-                   transactionbyuser[i].ReceiverID == req.accountID
-                 ) {
-                   typetransaction = "Đã nhận";
-                 }
-                 var pair = { typetransaction: typetransaction };
-                 obj = { ...transactionbyuser[i], ...pair };
-                 data.push(obj);
-               }
+        for (i in transactionbyuser) {
+          let typepost = "";
+          if (transactionbyuser[i].PostData.TypeAuthor == "tangcongdong") {
+            typepost = "tang";
+          } else {
+            typepost = "xin";
+          }
+          let typetransaction;
+          //Bài đăng tặng mình là người đi xin thành công
+          if (
+            typepost == "tang" &&
+            transactionbyuser[i].SenderID == req.accountID
+          ) {
+            typetransaction = "Đã nhận";
+          }
+          //Bài đăng thuộc loại xin và mình đi tặng thành công
+          if (
+            typepost == "xin" &&
+            transactionbyuser[i].SenderID == req.accountID
+          ) {
+            typetransaction = "Đã tặng";
+          }
+          if (
+            typepost == "tang" &&
+            transactionbyuser[i].ReceiverID == req.accountID
+          ) {
+            typetransaction = "Đã tặng";
+          }
+          if (
+            typepost == "xin" &&
+            transactionbyuser[i].ReceiverID == req.accountID
+          ) {
+            typetransaction = "Đã nhận";
+          }
+          var type = { typetransaction: typetransaction };
+          obj = {...type, ...transactionbyuser[i] };
+          data.push(obj);
+        }
 
-             let timedata = []
-            for (let j = 0; j < data.length; j++) {
-              const time = data[j].updatedAt.toLocaleString("en-US").split(",");
-              let temp = {
-                time:time[0],
-                data : data[j]
-              }
-              timedata.push(temp);
-            }
-         
-          
-       // group by 
+        let timedata = [];
+        for (let j = 0; j < data.length; j++) {
+          const time = data[j].updatedAt.toLocaleString("en-US").split(",");
+          let temp = {
+            time: time[0],
+            data: data[j],
+          };
+          timedata.push(temp);
+        }
+
+        // group by
         const groupAndMerge = (arr, groupBy, mergeWith) =>
           Array.from(
             arr
@@ -597,8 +594,29 @@ module.exports = {
               )
               .values()
           );
-          const dataDone = groupAndMerge(timedata, "time", "data");
- 
+        // let data
+        const dataMergeTime = groupAndMerge(timedata, "time", "data");
+        let dataDone= []
+        for (let i = 0; i < dataMergeTime.length; i++) {
+          let transactionsend = 0;
+          let transactionreceive = 0;
+          for (let j = 0; j < dataMergeTime[i].data.length; j++) {
+            if (dataMergeTime[i].data[j].typetransaction == "Đã nhận") {
+              transactionreceive++;
+            }
+            if (dataMergeTime[i].data[j].typetransaction == "Đã tặng") {
+              transactionsend++;
+            }
+
+          }
+        
+          var countTransaction = {
+            countReceiver: transactionreceive,
+            countSend: transactionsend,
+          };
+          obj = {...countTransaction, ...dataMergeTime[i]};
+          dataDone.push(obj);
+        }
         res.status(200).json(MessageResponse(true, "Find Success", dataDone));
       }
     } catch (error) {
