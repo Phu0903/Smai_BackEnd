@@ -376,6 +376,7 @@ module.exports = {
       const { status, notereceiver } = req.body;
       console.log(req.body)
       const transactionIdQuery = req.query.transactionId;
+      console.log(transactionIdQuery);
       if (!status || !transactionIdQuery) {
         res
           .status(400)
