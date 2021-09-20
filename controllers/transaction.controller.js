@@ -473,7 +473,7 @@ module.exports = {
     }
   },
   //đổi soát
-  getTransactionGroupDay: async (req, res) => {
+  getTransactionConnect: async (req, res) => {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
       if (!accountId) {
@@ -482,12 +482,29 @@ module.exports = {
         const transactionbyuser = await Transaction.aggregate([
           {
             $match: {
-              $or: [
+              $and: [
                 {
-                  ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
+                  $or: [
+                    {
+                      ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
+                    },
+                    {
+                      SenderID: mongoose.Types.ObjectId(accountId.AccountID),
+                    },
+                  ],
                 },
                 {
-                  SenderID: mongoose.Types.ObjectId(accountId.AccountID),
+                  $or: [
+                    {
+                      isStatus: "done",
+                    },
+                    {
+                      isStatus: "waiting",
+                    },
+                    {
+                      isStatus: "cancel",
+                    },
+                  ],
                 },
               ],
             },
@@ -524,54 +541,93 @@ module.exports = {
         //xác định loại transaction
         for (i in transactionbyuser) {
           let typepost = "";
+          //loại bài viết là tặng
           if (transactionbyuser[i].PostData.TypeAuthor == "tangcongdong") {
             typepost = "tang";
+            //loại bài viết xin
           } else {
             typepost = "xin";
           }
           let typetransaction;
-          //Bài đăng tặng mình là người đi xin thành công
+          //Bài đăng tặng mình là người đi xin 
           if (
             typepost == "tang" &&
             transactionbyuser[i].SenderID == req.accountID
           ) {
-            typetransaction = "Đã nhận";
+            if (transactionbyuser[i].isStatus == "done") {
+              typetransaction = "Đã nhận";
+            }
+            if (transactionbyuser[i].isStatus == "waiting") {
+              typetransaction = "Chưa nhận";
+            }
+            if (transactionbyuser[i].isStatus == "cancel") {
+              typetransaction = "Hủy nhận";
+            }
           }
-          //Bài đăng thuộc loại xin và mình đi tặng thành công
+          //Bài đăng thuộc loại xin và mình đi tặng 
           if (
             typepost == "xin" &&
             transactionbyuser[i].SenderID == req.accountID
           ) {
-            typetransaction = "Đã tặng";
+            if (transactionbyuser[i].isStatus == "done") {
+              typetransaction = "Đã tặng";
+            }
+            if (transactionbyuser[i].isStatus == "waiting") {
+              typetransaction = "Chưa tặng";
+            }
+            if (transactionbyuser[i].isStatus == "cancel") {
+              typetransaction = "Hủy tặng";
+            }
           }
+          //Bài đăng thuộc loại tặng và mình là chủ bài đăng
           if (
             typepost == "tang" &&
             transactionbyuser[i].ReceiverID == req.accountID
           ) {
-            typetransaction = "Đã tặng";
+            if (transactionbyuser[i].isStatus == "done") {
+              typetransaction = "Đã tặng";
+            }
+            if (transactionbyuser[i].isStatus == "waiting") {
+              typetransaction = "Chưa tặng";
+            }
+            if (transactionbyuser[i].isStatus == "cancel") {
+              typetransaction = "Hủy tặng";
+            }
           }
+          //Bài đăng thuộc loại xin và mình là chủ bài đăng
           if (
             typepost == "xin" &&
             transactionbyuser[i].ReceiverID == req.accountID
           ) {
-            typetransaction = "Đã nhận";
+            if (transactionbyuser[i].isStatus == "done") {
+              typetransaction = "Đã nhận";
+            }
+            if (transactionbyuser[i].isStatus == "waiting") {
+              typetransaction = "Chưa nhận";
+            }
+            if (transactionbyuser[i].isStatus == "cancel") {
+              typetransaction = "Hủy nhận";
+            }
           }
           var type = { typetransaction: typetransaction };
-          obj = {...type, ...transactionbyuser[i] };
+          obj = { ...type, ...transactionbyuser[i] };
           data.push(obj);
         }
         //phần theo ngày
         let timedata = [];
         for (let j = 0; j < data.length; j++) {
+          //cắt 
           const time = data[j].updatedAt.toLocaleString("en-US").split(",");
+          //lấy tháng
+          const month = time[0].split("/")
           let temp = {
-            time: time[0],
+            title: month[0], //lấy tháng theo yêu cầu frontend 
             data: data[j],
           };
           timedata.push(temp);
         }
 
-        // group by
+        // group by day
         const groupAndMerge = (arr, groupBy, mergeWith) =>
           Array.from(
             arr
@@ -589,25 +645,47 @@ module.exports = {
               .values()
           );
         // let data
-        const dataMergeTime = groupAndMerge(timedata, "time", "data");
+        const dataMergeTime = groupAndMerge(timedata, "title", "data");
         //count
         let dataDone= []
         for (let i = 0; i < dataMergeTime.length; i++) {
-          let transactionsend = 0;
-          let transactionreceive = 0;
+          let transactionSended = 0;
+          let transactionReceived = 0;
+          let transactionWaitingSend = 0;
+          let transactionWaitingReceive = 0;
+          let transactionCancelSend = 0;
+          let transactionCancelReceive = 0;
+          let transaction
           for (let j = 0; j < dataMergeTime[i].data.length; j++) {
             if (dataMergeTime[i].data[j].typetransaction == "Đã nhận") {
-              transactionreceive++;
+              transactionReceived++;
             }
             if (dataMergeTime[i].data[j].typetransaction == "Đã tặng") {
-              transactionsend++;
+              transactionSended++;
             }
+            if (dataMergeTime[i].data[j].typetransaction == "Chưa nhận") {
+              transactionWaitingReceive++;
+            }
+            if (dataMergeTime[i].data[j].typetransaction == "Chưa tặng") {
+              transactionWaitingSend++;
+            }
+            if (dataMergeTime[i].data[j].typetransaction == "Hủy nhận") {
+              transactionCancelReceive++;
+            }
+            if (dataMergeTime[i].data[j].typetransaction == "Hủy tặng") {
+              transactionCancelSend++;
+            }
+            
 
           }
         
           var countTransaction = {
-            countReceiver: transactionreceive,
-            countSend: transactionsend,
+            countReceived: transactionReceived,
+            countSended: transactionSended,
+            countWaitingReceive: transactionWaitingReceive,
+            countWaitingSend: transactionWaitingSend,
+            countCancelReceive: transactionCancelReceive,
+            countCancelSend: transactionCancelSend,
           };
           obj = {...countTransaction, ...dataMergeTime[i]};
           dataDone.push(obj);
