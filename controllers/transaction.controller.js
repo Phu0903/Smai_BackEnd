@@ -312,18 +312,17 @@ module.exports = {
       if (!accountId) {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
-        // const transaction = await Transaction.find({
-        //   $or:[{ReceiverID: mongoose.Types.ObjectId(accountId.AccountID)},
-        //     {SenderID:mongoose.Types.ObjectId(accountId.AccountID)}]
-        // });
+
         const transactionbyuser = await Transaction.aggregate([
           {
             $match: {
               $or: [
                 {
+                  SenderID: mongoose.Types.ObjectId(accountId.AccountID),
+                },
+                {
                   ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
                 },
-                { SenderID: mongoose.Types.ObjectId(accountId.AccountID) },
               ],
             },
           },
@@ -474,28 +473,21 @@ module.exports = {
     }
   },
   //đổi soát
-  getTransactionSuccess: async (req, res) => {
+  getTransactionGroupDay: async (req, res) => {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
       if (!accountId) {
-        return res.status(400).json(MessageResponse(false, "No have SenderID"));
+        return res.status(400).json(MessageResponse(false, "No have Id User"));
       } else {
         const transactionbyuser = await Transaction.aggregate([
           {
             $match: {
-              $and: [
+              $or: [
                 {
-                  $or: [
-                    {
-                      ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
-                    },
-                    {
-                      SenderID: mongoose.Types.ObjectId(accountId.AccountID),
-                    },
-                  ],
+                  ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
                 },
                 {
-                  isStatus: "done",
+                  SenderID: mongoose.Types.ObjectId(accountId.AccountID),
                 },
               ],
             },

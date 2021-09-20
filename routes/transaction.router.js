@@ -19,9 +19,9 @@ transaction.get(
   transactionController.getTransactionByUserID
 );
 transaction.get(
-  "/transaction-success",
+  "/transaction-day",
   verifyToken,
-  transactionController.getTransactionSuccess
+  transactionController.getTransactionGroupDay
 );
 
 module.exports = transaction;
