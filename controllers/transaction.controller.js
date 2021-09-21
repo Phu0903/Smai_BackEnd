@@ -512,6 +512,28 @@ module.exports = {
           { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
           {
             $lookup: {
+              from: "User",
+              localField: "SenderID",
+              foreignField: "AccountID",
+              as: "SenderUser",
+            },
+          },
+          {
+            $unwind: "$SenderUser", // this to convert the array of one object to be an object
+          },
+          {
+            $lookup: {
+              from: "User",
+              localField: "ReceiverID",
+              foreignField: "AccountID",
+              as: "ReceiverUser",
+            },
+          },
+          {
+            $unwind: "$ReceiverUser", // this to convert the array of one object to be an object
+          },
+          {
+            $lookup: {
               from: "Post",
               localField: "PostID",
               foreignField: "_id",
@@ -533,6 +555,8 @@ module.exports = {
               note: 1,
               updatedAt: 1,
               PostData: 1,
+              SenderUser: 1,
+              ReceiverUser:1
             },
           },
         ]);
@@ -619,9 +643,12 @@ module.exports = {
           //cắt 
           const time = data[j].updatedAt.toLocaleString("en-US").split(",");
           //lấy tháng
-          const month = time[0].split("/")
+          const timeSplit = time[0].split("/")
+          const year = timeSplit[2]
+          const month = timeSplit[0]
+          const dataTime = "Tháng " + month + "-" + year;
           let temp = {
-            title: month[0], //lấy tháng theo yêu cầu frontend 
+            title: dataTime, //lấy tháng theo yêu cầu frontend
             data: data[j],
           };
           timedata.push(temp);
