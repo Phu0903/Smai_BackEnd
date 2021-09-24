@@ -536,13 +536,13 @@ module.exports = {
               isStatus: 1,
               SenderID: 1,
               ReceiverID: 1,
-              PostID: 1,
               SenderAddress: 1,
               note: 1,
               updatedAt: 1,
               PostData: 1,
               SenderUser: 1,
-              ReceiverUser:1
+              ReceiverUser: 1,
+              PostID: 1,
             },
           },
         ]);
