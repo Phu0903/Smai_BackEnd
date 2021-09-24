@@ -29,6 +29,7 @@ var userRouter = require('./routes/user.router');
 var postRouter = require('./routes/post.router')
 var transactionRouter = require('./routes/transaction.router')
 var doctorRouter = require('./routes/doctors.router')
+var pushTokenRouter = require('./routes/pushToken.router')
 var app = express();
 
 // view engine setup
@@ -46,8 +47,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/account', accountRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
-app.use("/transaction", transactionRouter);
-app.use("/doctor", doctorRouter);
+app.use('/transaction', transactionRouter);
+app.use('/doctor', doctorRouter);
+app.use("/push", pushTokenRouter);
 
 
 

@@ -22,7 +22,8 @@ const Account = new mongoose.Schema({
     updateAt: {
         type: Schema.Types.Date
     },
-    Transaction: []//Lưu các giao dịch đã được thực hiện thành công và chờ xác thực
+    Transaction: [],//Lưu các giao dịch đã được thực hiện thành công và chờ xác thực
+    TokenDevice:[]
 }, {
     collection: 'Account',
     timestamps: true,

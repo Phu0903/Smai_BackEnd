@@ -3,9 +3,8 @@ const User = require("../Model/User");
 const Post = require("../Model/Post");
 const Account = require("../Model/Account");
 const mongoose = require("mongoose");
-const transaction = require("../routes/transaction.router");
+const PushNotification = require("../controllers/pushToken.controller")
 const Schema = mongoose.Schema;
-
 //respone
 const MessageResponse = (success, message, data) => {
   return {
@@ -109,7 +108,6 @@ module.exports = {
             .status(404)
             .json(MessageResponse(false, "No have SenderID"));
         }
-
         const dataPost = await CheckExistsPost(postID);
         if (!dataPost) {
           return res.status(404).json(MessageResponse(false, "No have Post"));
@@ -134,20 +132,6 @@ module.exports = {
                 pathImage.push(files.path);
               });
             }
-            //check true false
-            // let checkConnect, checkConfirm;
-            // if (isConnect == "True" || isConnect == "true") {
-            //   checkConnect = true;
-            // }
-            // if (isConnect == "False" || isConnect == "false") {
-            //   checkConnect = false;
-            // }
-            // if (isConfirm == "True" || isConfirm == "true") {
-            //   checkConfirm = true;
-            // }
-            // if (isConfirm == "False" || isConfirm == "false") {
-            //   checkConfirm = false;
-            // }
             //lưu vào db Transaction
             //when u create transaction, status must only one of 2 case is null or waiting
             if (status == "null" || status == "waiting") {
@@ -160,26 +144,28 @@ module.exports = {
                 isStatus: status,
                 urlImage: pathImage,
               });
-              dataTransaction.save(async function (err) {
+              dataTransaction.save(async function (err,data) {
                 if (err) {
                   res.status(400).json(MessageResponse(false, "save db error"));
                 } else {
+                  //bắn notification
+                   PushNotification.PushNotification(data);
                   //trạng thái waiting thì bài post sẽ ẩn đi
                   if (status == "waiting") {
                     const hidden = await HidenPostByConnect(postID, false);
                     if (hidden) {
-                      res
+                     return res
                         .status(201)
                         .json(
                           MessageResponse(true, "create transaction success")
                         );
                     } else {
-                      res
+                      return res
                         .status(400)
                         .json(MessageResponse(false, "save db error"));
                     }
                   } else {
-                    res
+                    return res
                       .status(201)
                       .json(
                         MessageResponse(true, "create transaction success")
@@ -188,7 +174,7 @@ module.exports = {
                 }
               });
             } else {
-              res
+              return res
                 .status(400)
                 .json(
                   MessageResponse(
@@ -199,7 +185,7 @@ module.exports = {
             }
           } else {
             console.log("5");
-            res
+            return res
               .status(400)
               .json(
                 MessageResponse(
@@ -211,7 +197,7 @@ module.exports = {
         }
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(MessageResponse(false, error.message));
     }
   },
   //get Transaction mà mình quan tâm
@@ -682,7 +668,6 @@ module.exports = {
           let transactionWaitingReceive = 0;
           let transactionCancelSend = 0;
           let transactionCancelReceive = 0;
-          let transaction
           for (let j = 0; j < dataMergeTime[i].data.length; j++) {
             if (dataMergeTime[i].data[j].typetransaction == "Đã nhận") {
               transactionReceived++;
