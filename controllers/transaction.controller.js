@@ -298,7 +298,6 @@ module.exports = {
       if (!accountId) {
         return res.status(400).json(MessageResponse(false, "No have SenderID"));
       } else {
-
         const transactionbyuser = await Transaction.aggregate([
           {
             $match: {
