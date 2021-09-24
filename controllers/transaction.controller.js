@@ -503,18 +503,12 @@ module.exports = {
             },
           },
           {
-            $unwind: "$SenderUser", // this to convert the array of one object to be an object
-          },
-          {
             $lookup: {
               from: "User",
               localField: "ReceiverID",
               foreignField: "AccountID",
               as: "ReceiverUser",
             },
-          },
-          {
-            $unwind: "$ReceiverUser", // this to convert the array of one object to be an object
           },
           {
             $lookup: {
