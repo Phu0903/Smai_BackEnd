@@ -495,7 +495,6 @@ module.exports = {
               ],
             },
           },
-          { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
           {
             $lookup: {
               from: "User",
@@ -545,6 +544,7 @@ module.exports = {
               PostID: 1,
             },
           },
+          { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
         ]);
         let i = 0;
         let data = [];
