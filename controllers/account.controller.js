@@ -1,6 +1,7 @@
 const argon2d = require("argon2");
 const Account = require("../Model/Account");
 const User = require("../Model/User");
+const DevicePushTokenModel = require("../Model/PushToken");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 module.exports = {
@@ -164,4 +165,19 @@ module.exports = {
       });
     }
   },
+
+  //Logout delete token device
+  Logout: async(req,res) =>{
+    try {
+      const {TokenDevice} = req.body
+      const ExistsTokenDevice = await DevicePushTokenModel.findOne({
+        TokenDevice: PushToken,
+      }); 
+      if(ExistsTokenDevice){
+        
+      }
+    } catch (error) {
+      
+    }
+  }
 };
