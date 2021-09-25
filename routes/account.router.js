@@ -2,6 +2,7 @@ const express = require('express');
 const account = express.Router();
 const controller = require('../controllers/account.controller');
 const CORS = require('../middleware/CORS')
+const verifyToken = require("../middleware/auth");
 
 /* GET users listing. */
 /*Register Account User*/
@@ -17,6 +18,8 @@ account.post('/getPhone',CORS,controller.getPhone)
 
 account.post('/Forgot',CORS,controller.FogotPassword)
 
+//logout 
+account.post("/Logout", verifyToken,controller.LogoutAccount);
 
 //reset Pasword
 //account.post('/ResetPassword',CORS,controller.ResetPassword)

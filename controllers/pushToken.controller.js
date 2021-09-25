@@ -22,21 +22,19 @@ module.exports = {
       const ExistsPushToken = await DevicePushTokenModel.findOne({
         TokenDevice: PushToken,
       });
+      //if Token already
       if (!ExistsPushToken) {
         const deviceToken = new DevicePushTokenModel({
           TokenDevice: PushToken,
         });
-        // deviceToken
-        //   .save()
-        //   .then((data) => {
-        //     res.status(201).json(MessageResponse(true, "Create success", data));
-        //   })
-        //   .catch((err) => res.status(400).json(MessageResponse(false, err)));
+        //save new toke to db
         deviceToken.save(async function (err, data) {
           if (err) {
             return res.status(400).json(MessageResponse(false, err));
           }
-          return res.status(201).json(MessageResponse(true, "Create success", data));
+          return res
+            .status(201)
+            .json(MessageResponse(true, "Create success", data));
         });
       } else {
         return res.status(404).json(MessageResponse(false, "Device already"));
@@ -47,7 +45,7 @@ module.exports = {
   },
 
   //push notification
-  PushNotification: async(data)=>{
+  PushNotification: async (title,body, data) => {
     // Create the messages that you want to send to clents
     let notifications = [];
     // for (let pushToken of savedPushTokens) {
@@ -61,13 +59,16 @@ module.exports = {
 
     // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
     // ExponentPushToken[v05HDrHOULW2jodQNWOG5B];
-    //ExponentPushToken[CoTCwHPar8Y0RJrAfPQZ8C]
+    //ExponentPushToken[CoTCwHPar8Y0RJrAfPQZ8C];
+    //ExponentPushToken[KgFQPgGRR_MewYiwlXGZoA];
+    //ExponentPushToken[JzC_tPNb--jMjLihPq_jLs]
+
     notifications.push({
-      to: "ExponentPushToken[sa8SANE44TXgGVp2i4GT7Z]",
+      to: "ExponentPushToken[JzC_tPNb--jMjLihPq_jLs]",
       sound: "default",
-      title: "Phu",
-      body: "phu",
-      data:  data ,
+      title: title,
+      body: body,
+      data: data[0],
     });
     // }
 
@@ -91,5 +92,5 @@ module.exports = {
         }
       }
     })();
-  }
+  },
 };

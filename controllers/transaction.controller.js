@@ -3,7 +3,8 @@ const User = require("../Model/User");
 const Post = require("../Model/Post");
 const Account = require("../Model/Account");
 const mongoose = require("mongoose");
-const PushNotification = require("../controllers/pushToken.controller")
+const PushNotification = require("../controllers/pushToken.controller");
+const { Console } = require("winston/lib/winston/transports");
 const Schema = mongoose.Schema;
 //respone
 const MessageResponse = (success, message, data) => {
@@ -85,6 +86,87 @@ const UpdateTransactionToAccount = async (accountId, transactionId) => {
     return dataAccount;
   }
 };
+// ///load data user for notification
+const transactionNotification = async (transactionID) => {
+  try {
+    const transaction = await Transaction.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId(transactionID),
+        },
+      },
+      {
+        $lookup: {
+          from: "User",
+          localField: "SenderID",
+          foreignField: "AccountID",
+          as: "SenderUser",
+        },
+      },
+      {
+        $lookup: {
+          from: "User",
+          localField: "ReceiverID",
+          foreignField: "AccountID",
+          as: "ReceiverUser",
+        },
+      },
+      {
+        $lookup: {
+          from: "Post",
+          localField: "PostID",
+          foreignField: "_id",
+          as: "PostData",
+        },
+      },
+      {
+        $unwind: "$PostData",
+      },
+      { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
+    ]);
+    return transaction;
+  } catch (error) {
+    return error;
+  }
+};
+//create detail notification
+const CreateNotificationData = async (transactionID) => {
+  try {
+    //function data transaction
+    const data = await transactionNotification(transactionID);
+    //get token device
+    const TokenDevice = await Account.findOne({
+      _id: data[0].ReceiverUser[0].AccountID,
+    });
+    //kiểm tra xem arry null
+    if (TokenDevice.TokenDevice.length) {
+      let title;
+      let tokenDevice;
+      let body;
+      console.log(data[0]);
+      //data
+      //title
+      //if status is null
+      if (data[0].isStatus == "null") {
+        console.log("null");
+        title = data[0].SenderUser[0].FullName + " đã gửi bạn một lời nhắn";
+        body = "Bài viết của bạn: " + data[0].PostData.title;
+      }
+      if (data[0].isStatus == "waiting") {
+        title =
+          data[0].SenderUser[0].FullName +
+          " gửi bạn hỗ trợ vui lòng xác nhận !";
+        body = "Bài viết của bạn: " + data[0].PostData.title;
+      }
+      await PushNotification.PushNotification(title, body, data);
+    } else {
+      console.log("No have token device");
+    }
+  } catch (error) {
+    return error;
+  }
+};
+// const Notification = async()
 module.exports = {
   createTransaction: async (req, res) => {
     //req body
@@ -144,17 +226,18 @@ module.exports = {
                 isStatus: status,
                 urlImage: pathImage,
               });
-              dataTransaction.save(async function (err,data) {
+              dataTransaction.save(async function (err, data) {
                 if (err) {
                   res.status(400).json(MessageResponse(false, "save db error"));
                 } else {
                   //bắn notification
-                   PushNotification.PushNotification(data);
+                  await CreateNotificationData(data._id);
+                  // PushNotification.PushNotification(data);
                   //trạng thái waiting thì bài post sẽ ẩn đi
                   if (status == "waiting") {
                     const hidden = await HidenPostByConnect(postID, false);
                     if (hidden) {
-                     return res
+                      return res
                         .status(201)
                         .json(
                           MessageResponse(true, "create transaction success")
@@ -358,11 +441,11 @@ module.exports = {
   updateTransactionStatus: async (req, res) => {
     try {
       const { status, notereceiver } = req.body;
-      console.log(req.body)
+      console.log(req.body);
       const transactionIdQuery = req.query.transactionId;
       console.log(transactionIdQuery);
       if (!status || !transactionIdQuery) {
-        res
+        return res
           .status(400)
           .json(MessageResponse(false, "The parameters are not enough"));
       } else {
@@ -372,14 +455,14 @@ module.exports = {
         );
         //if Transaction don't have already
         if (!transactionExists) {
-          res.status(404).json(MessageResponse(false, "Not Found"));
+          return res.status(404).json(MessageResponse(false, "Not Found"));
         } else {
           //tình trạng transaction phải chưa hoàn thành
           if (transactionExists.isStatus != "done") {
             //trước khi hoàn thành phải connect
             if (status == "done") {
               if (transactionExists.isStatus != "waiting") {
-                res
+                return res
                   .status(400)
                   .json(MessageResponse(false, "Transaction must connect"));
               }
@@ -399,7 +482,9 @@ module.exports = {
               }
             );
             if (!data) {
-              res.status(400).json(MessageResponse(false, "Failed Update"));
+              return res
+                .status(400)
+                .json(MessageResponse(false, "Failed Update"));
             } else {
               //nếu trường hợp waiting => ẩn post đi
               if (status == "waiting") {
@@ -408,9 +493,13 @@ module.exports = {
                 //ẩn bài viết đi
                 if (hidden === false) {
                   //failed
-                  res
+                  return res
                     .status(400)
                     .json(MessageResponse(false, "Failed HiddenPost"));
+                } else {
+                  //notification
+                  console.log(data);
+                  CreateNotificationData(data._id);
                 }
               }
               //nếu trường hợp cancel => hiện post
@@ -419,9 +508,13 @@ module.exports = {
                 //hiện bài viết đi
                 if (hidden === false) {
                   //failed
-                  res
+                  return res
                     .status(400)
                     .json(MessageResponse(false, "Failed HiddenPost"));
+                } else {
+                  //notification
+                  console.log(data);
+                  CreateNotificationData(data._id);
                 }
               }
               //trường hợp status done => cập nhật transaction vào các account
@@ -436,25 +529,29 @@ module.exports = {
                   !accountTransactionSenderId ||
                   !accountTransactionReceiverID
                 ) {
-                  res.status(400).json(MessageResponse(false, "Failed Update"));
+                  return res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed Update"));
                 } else {
-                  res
+                  return res
                     .status(200)
                     .json(MessageResponse(true, "Update Success", data));
                 }
               } else {
-                res
+                return res
                   .status(200)
                   .json(MessageResponse(true, "Update Success", data));
               }
             }
           } else {
-            res.status(400).json(MessageResponse(false, "Transaction done"));
+            return res
+              .status(400)
+              .json(MessageResponse(false, "Transaction done"));
           }
         }
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(MessageResponse(false, error.message));
     }
   },
   //đổi soát
@@ -552,7 +649,7 @@ module.exports = {
             typepost = "xin";
           }
           let typetransaction;
-          //Bài đăng tặng mình là người đi xin 
+          //Bài đăng tặng mình là người đi xin
           if (
             typepost == "tang" &&
             transactionbyuser[i].SenderID == req.accountID
@@ -567,7 +664,7 @@ module.exports = {
               typetransaction = "Hủy nhận";
             }
           }
-          //Bài đăng thuộc loại xin và mình đi tặng 
+          //Bài đăng thuộc loại xin và mình đi tặng
           if (
             typepost == "xin" &&
             transactionbyuser[i].SenderID == req.accountID
@@ -619,12 +716,12 @@ module.exports = {
         //phần theo ngày
         let timedata = [];
         for (let j = 0; j < data.length; j++) {
-          //cắt 
+          //cắt
           const time = data[j].updatedAt.toLocaleString("en-US").split(",");
           //lấy tháng
-          const timeSplit = time[0].split("/")
-          const year = timeSplit[2]
-          const month = timeSplit[0]
+          const timeSplit = time[0].split("/");
+          const year = timeSplit[2];
+          const month = timeSplit[0];
           const dataTime = "Tháng " + month + "-" + year;
           let temp = {
             title: dataTime, //lấy tháng theo yêu cầu frontend
@@ -653,7 +750,7 @@ module.exports = {
         // let data
         const dataMergeTime = groupAndMerge(timedata, "title", "data");
         //count
-        let dataDone= []
+        let dataDone = [];
         for (let i = 0; i < dataMergeTime.length; i++) {
           let transactionSended = 0;
           let transactionReceived = 0;
@@ -680,10 +777,8 @@ module.exports = {
             if (dataMergeTime[i].data[j].typetransaction == "Hủy tặng") {
               transactionCancelSend++;
             }
-            
-
           }
-        
+
           var countTransaction = {
             countReceived: transactionReceived,
             countSended: transactionSended,
@@ -692,7 +787,7 @@ module.exports = {
             countCancelReceive: transactionCancelReceive,
             countCancelSend: transactionCancelSend,
           };
-          obj = {...countTransaction, ...dataMergeTime[i]};
+          obj = { ...countTransaction, ...dataMergeTime[i] };
           dataDone.push(obj);
         }
 

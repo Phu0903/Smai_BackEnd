@@ -29,15 +29,15 @@ module.exports = {
       //update token device to Account db
       //$addtoSet + upsert : Check exsits and push
       if (TokenDevice) {
-       await Account.updateOne(
-         { _id: user._id },
-         {
-           $addToSet: {
-             TokenDevice: TokenDevice,
-           },
-         },
-         { upsert: true }
-       );
+        await Account.updateOne(
+          { _id: user._id },
+          {
+            $addToSet: {
+              TokenDevice: TokenDevice,
+            },
+          },
+          { upsert: true }
+        );
       }
       //create token authentication
       const accessToken = jwt.sign(
@@ -45,7 +45,7 @@ module.exports = {
         process.env.ACCESS_TOKEN_SECRET
       );
       //respone
-      return res.json({
+      return res.status(201).json({
         success: true,
         message: "OK",
         accessToken: accessToken,
@@ -167,18 +167,37 @@ module.exports = {
   },
 
   //Logout delete token device
-  Logout: async(req,res) =>{
+  LogoutAccount: async (req, res) => {
     try {
-      const {TokenDevice} = req.body
-      const ExistsTokenDevice = await DevicePushTokenModel.findOne({
-        TokenDevice: PushToken,
-      }); 
-      if(ExistsTokenDevice){
-        
-
+      //Token device
+      const { TokenDevice } = req.body;
+      //find user
+      const accountUser = await Account.findOne({ _id: req.accountID });
+      if (accountUser) {
+        const data = await Account.findOneAndUpdate(
+          { _id: req.accountID },
+          {
+            $pull: {
+              TokenDevice: TokenDevice, //xóa khỏi array
+            },
+          },
+          { new: true }
+        );
+        return res.status(201).json({
+          success: true,
+          message: "OK",
+          data: data,
+        });
       }
+      return res.status(400).json({
+        success: false,
+        message: "There are no users in the database",
+      });
     } catch (error) {
-      
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
     }
-  }
+  },
 };
