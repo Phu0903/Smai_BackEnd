@@ -130,35 +130,91 @@ const transactionNotification = async (transactionID) => {
   }
 };
 //create detail notification
-const CreateNotificationData = async (transactionID) => {
+const CreateNotificationData = async (typeFunction, transactionID,accountID) => {
   try {
     //function data transaction
     const data = await transactionNotification(transactionID);
-    //get token device
-    const TokenDevice = await Account.findOne({
-      _id: data[0].ReceiverUser[0].AccountID,
-    });
-    //kiểm tra xem arry null
+    //get token device from user
+    //xác định ai là người tạo action
+    //suy ra ai là người nhận notification
+    console.log(data[0]);
+    //Người thực hiện action
+    let FullNameUserAction;
+    //Token app của người nhận
+    let TokenDevice;
+    if (data[0].SenderID == accountID) {
+      console.log("User sender thực hiện việc gửi");
+      TokenDevice = await Account.findOne({
+        _id: data[0].ReceiverID,
+      });
+      FullNameUserAction = data[0].SenderUser[0].FullName
+    }
+    if (data[0].ReceiverID == accountID) {
+      console.log("User receiver thực hiện việc gửi");
+      TokenDevice = await Account.findOne({
+        _id: data[0].SenderID,
+      });
+      FullNameUserAction = data[0].ReceiverUser[0].FullName;
+    }
     if (TokenDevice.TokenDevice.length) {
+      //kiểm tra xem arry null
       let title;
-      let tokenDevice;
       let body;
-      console.log(data[0]);
-      //data
-      //title
-      //if status is null
-      if (data[0].isStatus == "null") {
+      //if status is null, create transaction
+      if (typeFunction == "create-transaction" && data[0].isStatus == "null") {
         console.log("null");
-        title = data[0].SenderUser[0].FullName + " đã gửi bạn một lời nhắn";
+        title = FullNameUserAction + " đã gửi bạn một lời nhắn";
         body = "Bài viết của bạn: " + data[0].PostData.title;
       }
-      if (data[0].isStatus == "waiting") {
-        title =
-          data[0].SenderUser[0].FullName +
-          " gửi bạn hỗ trợ vui lòng xác nhận !";
+      //if stastus waiting, create transaction
+      if (
+        typeFunction == "create-transaction" &&
+        data[0].isStatus == "waiting"
+      ) {
+        console.log("create + waiting");
+        title = FullNameUserAction + " gửi bạn hỗ trợ, vui lòng xác nhận !";
         body = "Bài viết của bạn: " + data[0].PostData.title;
       }
-      await PushNotification.PushNotification(title, body, data);
+      //Người chủ tin tặng xác nhận gửi cho người xin
+      //chuyển sang trạng thái waiting
+      //Notification cho người xin
+      if (
+        typeFunction == "update-transaction" &&
+        data[0].isStatus == "waiting"
+      ) {
+        console.log("update-transaction + waiting");
+        title = FullNameUserAction + " gửi bạn hỗ trợ, vui lòng xác nhận";
+        body = "Bài viết bạn xin hỗ trợ: " + data[0].PostData.title;
+      }
+      //Trạng thái bài viết hoàn thành
+      //xác định được ai là người tạo sự kiện để gửi tới người còn lại
+      if (typeFunction == "update-transaction" && data[0].isStatus == "done") {
+        //if user create action is SenderID,
+          title = FullNameUserAction + " xác nhận hoàn thành giao dịch với bạn";
+          body = "Bài viết liên quan" + data[0].PostData.title;
+      }
+      //Trạng thái hủy
+      //xác định ai là người action từ đó gửi notification cho người còn lại
+      if (typeFunction)
+        if (
+          typeFunction == "update-transaction" &&
+          data[0].isStatus == "cancel"
+        ) {
+          //if user create action is SenderID,
+          //User recived notification is ReceiverID
+            title = FullNameUserAction + " hủy giao dịch với bạn";
+            body = "Bài viết liên quan" + data[0].PostData.title;
+        }
+
+      //data to PushNotification
+      console.log("title "+ title)
+      console.log("body " + body)
+      await PushNotification.PushNotification(
+        title,
+        body,
+        data,
+        TokenDevice.TokenDevice
+      );
     } else {
       console.log("No have token device");
     }
@@ -231,7 +287,11 @@ module.exports = {
                   res.status(400).json(MessageResponse(false, "save db error"));
                 } else {
                   //bắn notification
-                  await CreateNotificationData(data._id);
+                  await CreateNotificationData(
+                    "create-transaction",
+                    data._id,
+                    req.accountID
+                  );
                   // PushNotification.PushNotification(data);
                   //trạng thái waiting thì bài post sẽ ẩn đi
                   if (status == "waiting") {
@@ -240,7 +300,7 @@ module.exports = {
                       return res
                         .status(201)
                         .json(
-                          MessageResponse(true, "create transaction success")
+                          MessageResponse(true, "create transaction success",data)
                         );
                     } else {
                       return res
@@ -251,7 +311,7 @@ module.exports = {
                     return res
                       .status(201)
                       .json(
-                        MessageResponse(true, "create transaction success")
+                        MessageResponse(true, "create transaction success",data)
                       );
                   }
                 }
@@ -276,6 +336,135 @@ module.exports = {
                   "Sender user and Receiver user must not be the same"
                 )
               );
+          }
+        }
+      }
+    } catch (error) {
+      return res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
+  //update trạng thái connect của bài viết
+  updateTransactionStatus: async (req, res) => {
+    try {
+      const { status, notereceiver } = req.body;
+      const transactionIdQuery = req.query.transactionId;
+      if (!status || !transactionIdQuery) {
+        return res
+          .status(400)
+          .json(MessageResponse(false, "The parameters are not enough"));
+      } else {
+        //check exists Transaction
+        const transactionExists = await CheckExistsTransaction(
+          transactionIdQuery
+        );
+        //if Transaction don't have already
+        if (!transactionExists) {
+          return res.status(404).json(MessageResponse(false, "Not Found"));
+        } else {
+          //tình trạng transaction phải chưa hoàn thành
+          if (transactionExists.isStatus != "done") {
+            //trước khi hoàn thành phải connect
+            if (status == "done") {
+              if (transactionExists.isStatus != "waiting") {
+                return res
+                  .status(400)
+                  .json(MessageResponse(false, "Transaction must connect"));
+              }
+            }
+            //find and update
+            const data = await Transaction.findOneAndUpdate(
+              { _id: transactionIdQuery },
+              {
+                $set: {
+                  isStatus: status, //update isConnect
+                  NoteReceiver: notereceiver || transactionExists.NoteReceiver,
+                },
+              },
+              {
+                new: true, //return data new
+                runValidators: true, //update nếu nằm trong enum
+              }
+            );
+            if (!data) {
+              return res
+                .status(400)
+                .json(MessageResponse(false, "Failed Update"));
+            } else {
+              //nếu trường hợp waiting => ẩn post đi
+              if (status == "waiting") {
+                //hidden post
+                const hidden = await HidenPostByConnect(data.PostID, false);
+                //ẩn bài viết đi
+                if (hidden === false) {
+                  //failed
+                  return res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed HiddenPost"));
+                } else {
+                  
+                  //notification
+                  CreateNotificationData(
+                    "update-transaction",
+                    data._id,
+                    req.accountID
+                  );
+                }
+              }
+              //nếu trường hợp cancel => hiện post
+              if (status == "cancel") {
+                const hidden = await HidenPostByConnect(data.PostID, true);
+                //hiện bài viết đi
+                if (hidden === false) {
+                  //failed
+                  return res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed HiddenPost"));
+                } else {
+                  //notification
+                  CreateNotificationData(
+                    "update-transaction",
+                    data._id,
+                    req.accountID
+                  );
+                }
+              }
+              //trường hợp status done => cập nhật transaction vào các account
+              if (status == "done") {
+
+                //add id transaction to account senderId
+                const accountTransactionSenderId =
+                  await UpdateTransactionToAccount(data.SenderID, data._id);
+                //add id transaction to account ReceiverID
+                const accountTransactionReceiverID =
+                  await UpdateTransactionToAccount(data.ReceiverID, data._id);
+                if (
+                  !accountTransactionSenderId ||
+                  !accountTransactionReceiverID
+                ) {
+                  return res
+                    .status(400)
+                    .json(MessageResponse(false, "Failed Update"));
+                } else {
+                  //notification
+                  CreateNotificationData("update-transaction",
+                  data._id,
+                  req.accountID
+                  );
+                  //res data
+                  return res
+                    .status(200)
+                    .json(MessageResponse(true, "Update Success", data));
+                }
+              } else {
+                return res
+                  .status(200)
+                  .json(MessageResponse(true, "Update Success", data));
+              }
+            }
+          } else {
+            return res
+              .status(400)
+              .json(MessageResponse(false, "Transaction done"));
           }
         }
       }
@@ -403,9 +592,6 @@ module.exports = {
             },
           },
           {
-            $unwind: "$SenderUser", // this to convert the array of one object to be an object
-          },
-          {
             $lookup: {
               from: "User",
               localField: "ReceiverID",
@@ -413,9 +599,9 @@ module.exports = {
               as: "ReceiverUser",
             },
           },
-          {
-            $unwind: "$ReceiverUser", // this to convert the array of one object to be an object
-          },
+          // {
+          //   $unwind: "$ReceiverUser", // this to convert the array of one object to be an object
+          // },
           {
             $lookup: {
               from: "Post",
@@ -437,123 +623,7 @@ module.exports = {
       res.status(500).json(MessageResponse(false, error.message));
     }
   },
-  //update trạng thái connect của bài viết
-  updateTransactionStatus: async (req, res) => {
-    try {
-      const { status, notereceiver } = req.body;
-      console.log(req.body);
-      const transactionIdQuery = req.query.transactionId;
-      console.log(transactionIdQuery);
-      if (!status || !transactionIdQuery) {
-        return res
-          .status(400)
-          .json(MessageResponse(false, "The parameters are not enough"));
-      } else {
-        //check exists Transaction
-        const transactionExists = await CheckExistsTransaction(
-          transactionIdQuery
-        );
-        //if Transaction don't have already
-        if (!transactionExists) {
-          return res.status(404).json(MessageResponse(false, "Not Found"));
-        } else {
-          //tình trạng transaction phải chưa hoàn thành
-          if (transactionExists.isStatus != "done") {
-            //trước khi hoàn thành phải connect
-            if (status == "done") {
-              if (transactionExists.isStatus != "waiting") {
-                return res
-                  .status(400)
-                  .json(MessageResponse(false, "Transaction must connect"));
-              }
-            }
-            //find and update
-            const data = await Transaction.findOneAndUpdate(
-              { _id: transactionIdQuery },
-              {
-                $set: {
-                  isStatus: status, //update isConnect
-                  NoteReceiver: notereceiver || transactionExists.NoteReceiver,
-                },
-              },
-              {
-                new: true, //return data new
-                runValidators: true, //update nếu nằm trong enum
-              }
-            );
-            if (!data) {
-              return res
-                .status(400)
-                .json(MessageResponse(false, "Failed Update"));
-            } else {
-              //nếu trường hợp waiting => ẩn post đi
-              if (status == "waiting") {
-                //hidden post
-                const hidden = await HidenPostByConnect(data.PostID, false);
-                //ẩn bài viết đi
-                if (hidden === false) {
-                  //failed
-                  return res
-                    .status(400)
-                    .json(MessageResponse(false, "Failed HiddenPost"));
-                } else {
-                  //notification
-                  console.log(data);
-                  CreateNotificationData(data._id);
-                }
-              }
-              //nếu trường hợp cancel => hiện post
-              if (status == "cancel") {
-                const hidden = await HidenPostByConnect(data.PostID, true);
-                //hiện bài viết đi
-                if (hidden === false) {
-                  //failed
-                  return res
-                    .status(400)
-                    .json(MessageResponse(false, "Failed HiddenPost"));
-                } else {
-                  //notification
-                  console.log(data);
-                  CreateNotificationData(data._id);
-                }
-              }
-              //trường hợp status done => cập nhật transaction vào các account
-              if (status == "done") {
-                //add id transaction to account senderId
-                const accountTransactionSenderId =
-                  await UpdateTransactionToAccount(data.SenderID, data._id);
-                //add id transaction to account ReceiverID
-                const accountTransactionReceiverID =
-                  await UpdateTransactionToAccount(data.ReceiverID, data._id);
-                if (
-                  !accountTransactionSenderId ||
-                  !accountTransactionReceiverID
-                ) {
-                  return res
-                    .status(400)
-                    .json(MessageResponse(false, "Failed Update"));
-                } else {
-                  return res
-                    .status(200)
-                    .json(MessageResponse(true, "Update Success", data));
-                }
-              } else {
-                return res
-                  .status(200)
-                  .json(MessageResponse(true, "Update Success", data));
-              }
-            }
-          } else {
-            return res
-              .status(400)
-              .json(MessageResponse(false, "Transaction done"));
-          }
-        }
-      }
-    } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
-    }
-  },
+
   //đổi soát
   getTransactionConnect: async (req, res) => {
     try {

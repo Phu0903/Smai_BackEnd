@@ -27,7 +27,7 @@ module.exports = {
         const deviceToken = new DevicePushTokenModel({
           TokenDevice: PushToken,
         });
-        //save new toke to db
+        //save new token to DB
         deviceToken.save(async function (err, data) {
           if (err) {
             return res.status(400).json(MessageResponse(false, err));
@@ -45,32 +45,36 @@ module.exports = {
   },
 
   //push notification
-  PushNotification: async (title,body, data) => {
+  PushNotification: async (title, body, data, tokenDevices) => {
     // Create the messages that you want to send to clents
     let notifications = [];
-    // for (let pushToken of savedPushTokens) {
-    //   // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+    console.log(tokenDevices);
+     for (let pushToken of tokenDevices) {
+       //   // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 
-    //   // Check that all your push tokens appear to be valid Expo push tokens
-    //   if (!Expo.isExpoPushToken(pushToken)) {
-    //     console.error(`Push token ${pushToken} is not a valid Expo push token`);
-    //     continue;
-    //   }
+       // Check that all your push tokens appear to be valid Expo push tokens
+       if (!Expo.isExpoPushToken(pushToken)) {
+         console.error(
+           `Push token ${pushToken} is not a valid Expo push token`
+         );
+         continue;
+       }
 
-    // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
-    // ExponentPushToken[v05HDrHOULW2jodQNWOG5B];
-    //ExponentPushToken[CoTCwHPar8Y0RJrAfPQZ8C];
-    //ExponentPushToken[KgFQPgGRR_MewYiwlXGZoA];
-    //ExponentPushToken[JzC_tPNb--jMjLihPq_jLs]
+       // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
+       // ExponentPushToken[v05HDrHOULW2jodQNWOG5B];
+       //ExponentPushToken[CoTCwHPar8Y0RJrAfPQZ8C];
+       //ExponentPushToken[KgFQPgGRR_MewYiwlXGZoA];
+       //ExponentPushToken[JzC_tPNb--jMjLihPq_jLs]
+       //ExponentPushToken[4uOYpfMnC01_vsZW0p4koH]
 
-    notifications.push({
-      to: "ExponentPushToken[JzC_tPNb--jMjLihPq_jLs]",
-      sound: "default",
-      title: title,
-      body: body,
-      data: data[0],
-    });
-    // }
+       notifications.push({
+         to: pushToken,
+         sound: "default",
+         title: title,
+         body: body,
+         data: data[0],
+       });
+     }
 
     // The Expo push notification service accepts batches of notifications so
     // that you don't need to send 1000 requests to send 1000 notifications. We
