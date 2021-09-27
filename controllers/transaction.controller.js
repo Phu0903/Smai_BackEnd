@@ -130,7 +130,11 @@ const transactionNotification = async (transactionID) => {
   }
 };
 //create detail notification
-const CreateNotificationData = async (typeFunction, transactionID,accountID) => {
+const CreateNotificationData = async (
+  typeFunction,
+  transactionID,
+  accountID
+) => {
   try {
     //function data transaction
     const data = await transactionNotification(transactionID);
@@ -147,7 +151,7 @@ const CreateNotificationData = async (typeFunction, transactionID,accountID) => 
       TokenDevice = await Account.findOne({
         _id: data[0].ReceiverID,
       });
-      FullNameUserAction = data[0].SenderUser[0].FullName
+      FullNameUserAction = data[0].SenderUser[0].FullName;
     }
     if (data[0].ReceiverID == accountID) {
       console.log("User receiver thực hiện việc gửi");
@@ -156,59 +160,54 @@ const CreateNotificationData = async (typeFunction, transactionID,accountID) => 
       });
       FullNameUserAction = data[0].ReceiverUser[0].FullName;
     }
-    if (TokenDevice.TokenDevice.length) {
-      //kiểm tra xem arry null
-      let title;
-      let body;
-      //if status is null, create transaction
-      if (typeFunction == "create-transaction" && data[0].isStatus == "null") {
-        console.log("null");
-        title = FullNameUserAction + " đã gửi bạn một lời nhắn";
-        body = "Bài viết của bạn: " + data[0].PostData.title;
-      }
-      //if stastus waiting, create transaction
-      if (
-        typeFunction == "create-transaction" &&
-        data[0].isStatus == "waiting"
-      ) {
-        console.log("create + waiting");
-        title = FullNameUserAction + " gửi bạn hỗ trợ, vui lòng xác nhận !";
-        body = "Bài viết của bạn: " + data[0].PostData.title;
-      }
-      //Người chủ tin tặng xác nhận gửi cho người xin
-      //chuyển sang trạng thái waiting
-      //Notification cho người xin
+
+    //kiểm tra xem arry null
+    let title;
+    let body;
+    //if status is null, create transaction
+    if (typeFunction == "create-transaction" && data[0].isStatus == "null") {
+      console.log("null");
+      title = FullNameUserAction + " đã gửi bạn một lời nhắn";
+      body = "Bài viết của bạn: " + data[0].PostData.title;
+    }
+    //if stastus waiting, create transaction
+    if (typeFunction == "create-transaction" && data[0].isStatus == "waiting") {
+      console.log("create + waiting");
+      title = FullNameUserAction + " gửi bạn hỗ trợ, vui lòng xác nhận !";
+      body = "Bài viết của bạn: " + data[0].PostData.title;
+    }
+    //Người chủ tin tặng xác nhận gửi cho người xin
+    //chuyển sang trạng thái waiting
+    //Notification cho người xin
+    if (typeFunction == "update-transaction" && data[0].isStatus == "waiting") {
+      console.log("update-transaction + waiting");
+      title = FullNameUserAction + " gửi bạn hỗ trợ, vui lòng xác nhận";
+      body = "Bài viết bạn xin hỗ trợ: " + data[0].PostData.title;
+    }
+    //Trạng thái bài viết hoàn thành
+    //xác định được ai là người tạo sự kiện để gửi tới người còn lại
+    if (typeFunction == "update-transaction" && data[0].isStatus == "done") {
+      //if user create action is SenderID,
+      title = FullNameUserAction + " xác nhận hoàn thành giao dịch với bạn";
+      body = "Bài viết liên quan" + data[0].PostData.title;
+    }
+    //Trạng thái hủy
+    //xác định ai là người action từ đó gửi notification cho người còn lại
+    if (typeFunction)
       if (
         typeFunction == "update-transaction" &&
-        data[0].isStatus == "waiting"
+        data[0].isStatus == "cancel"
       ) {
-        console.log("update-transaction + waiting");
-        title = FullNameUserAction + " gửi bạn hỗ trợ, vui lòng xác nhận";
-        body = "Bài viết bạn xin hỗ trợ: " + data[0].PostData.title;
-      }
-      //Trạng thái bài viết hoàn thành
-      //xác định được ai là người tạo sự kiện để gửi tới người còn lại
-      if (typeFunction == "update-transaction" && data[0].isStatus == "done") {
         //if user create action is SenderID,
-          title = FullNameUserAction + " xác nhận hoàn thành giao dịch với bạn";
-          body = "Bài viết liên quan" + data[0].PostData.title;
+        //User recived notification is ReceiverID
+        title = FullNameUserAction + " hủy giao dịch với bạn";
+        body = "Bài viết liên quan" + data[0].PostData.title;
       }
-      //Trạng thái hủy
-      //xác định ai là người action từ đó gửi notification cho người còn lại
-      if (typeFunction)
-        if (
-          typeFunction == "update-transaction" &&
-          data[0].isStatus == "cancel"
-        ) {
-          //if user create action is SenderID,
-          //User recived notification is ReceiverID
-            title = FullNameUserAction + " hủy giao dịch với bạn";
-            body = "Bài viết liên quan" + data[0].PostData.title;
-        }
 
-      //data to PushNotification
-      console.log("title "+ title)
-      console.log("body " + body)
+    //data to PushNotification
+    console.log("title " + title);
+    console.log("body " + body);
+    if (TokenDevice.TokenDevice.length) {
       await PushNotification.PushNotification(
         title,
         body,
@@ -218,6 +217,14 @@ const CreateNotificationData = async (typeFunction, transactionID,accountID) => 
     } else {
       console.log("No have token device");
     }
+    //save data notification
+    await PushNotification.StroreNotificationToDB(
+      title,
+      body,
+      transactionID,
+      "user",
+      TokenDevice._id
+    );
   } catch (error) {
     return error;
   }
@@ -300,7 +307,11 @@ module.exports = {
                       return res
                         .status(201)
                         .json(
-                          MessageResponse(true, "create transaction success",data)
+                          MessageResponse(
+                            true,
+                            "create transaction success",
+                            data
+                          )
                         );
                     } else {
                       return res
@@ -311,7 +322,11 @@ module.exports = {
                     return res
                       .status(201)
                       .json(
-                        MessageResponse(true, "create transaction success",data)
+                        MessageResponse(
+                          true,
+                          "create transaction success",
+                          data
+                        )
                       );
                   }
                 }
@@ -401,7 +416,6 @@ module.exports = {
                     .status(400)
                     .json(MessageResponse(false, "Failed HiddenPost"));
                 } else {
-                  
                   //notification
                   CreateNotificationData(
                     "update-transaction",
@@ -430,7 +444,6 @@ module.exports = {
               }
               //trường hợp status done => cập nhật transaction vào các account
               if (status == "done") {
-
                 //add id transaction to account senderId
                 const accountTransactionSenderId =
                   await UpdateTransactionToAccount(data.SenderID, data._id);
@@ -446,9 +459,10 @@ module.exports = {
                     .json(MessageResponse(false, "Failed Update"));
                 } else {
                   //notification
-                  CreateNotificationData("update-transaction",
-                  data._id,
-                  req.accountID
+                  CreateNotificationData(
+                    "update-transaction",
+                    data._id,
+                    req.accountID
                   );
                   //res data
                   return res
@@ -563,7 +577,7 @@ module.exports = {
     }
   },
   //getTransaction theo status
-  //get Transaction liên quan đến một bài viết
+  //get Transaction liên quan đến User
   getTransactionByUserID: async (req, res) => {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
@@ -866,6 +880,16 @@ module.exports = {
       }
     } catch (error) {
       res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
+  //getTransction by TransactionID
+  getTransactionID: async (req, res) => {
+    try {
+      const { transactionID } = req.query;
+      const data = await transactionNotification(transactionID);
+      return res.status(201).json(MessageResponse(true, "Success", data));
+    } catch (error) {
+      return res.status(500).json(MessageResponse(false, error.message));
     }
   },
 };

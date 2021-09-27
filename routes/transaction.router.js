@@ -40,5 +40,10 @@ transaction.get(
   verifyToken,
   transactionController.getTransactionConnect
 );
+transaction.get(
+  "/get-transactionID",
+  verifyToken,
+  transactionController.getTransactionID
+);
 
 module.exports = transaction;
