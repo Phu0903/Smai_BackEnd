@@ -87,8 +87,9 @@ const UpdateTransactionToAccount = async (accountId, transactionId) => {
   }
 };
 // ///load data user for notification
-const transactionNotification = async (transactionID) => {
+const transactionNotification = async (transactionID, accountID) => {
   try {
+    console.log(accountID);
     const transaction = await Transaction.aggregate([
       {
         $match: {
@@ -124,7 +125,72 @@ const transactionNotification = async (transactionID) => {
       },
       { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
     ]);
-    return transaction;
+    let i = 0;
+    let data = [];
+    //xác định loại transaction
+    for (i in transaction) {
+      let typepost = "";
+      //loại bài viết là tặng
+      if (transaction[i].PostData.TypeAuthor == "tangcongdong") {
+        typepost = "tang";
+        //loại bài viết xin
+      } else {
+        typepost = "xin";
+      }
+      let typetransaction;
+      //Bài đăng tặng mình là người đi xin
+      if (typepost == "tang" && transaction[i].SenderID == accountID) {
+        if (transactionbyuser[i].isStatus == "done") {
+          typetransaction = "Đã nhận";
+        }
+        if (transaction[i].isStatus == "waiting") {
+          typetransaction = "Chưa nhận";
+        }
+        if (transaction[i].isStatus == "cancel") {
+          typetransaction = "Hủy nhận";
+        }
+      }
+      //Bài đăng thuộc loại xin và mình đi tặng
+      if (typepost == "xin" && transaction[i].SenderID == accountID) {
+        if (transaction[i].isStatus == "done") {
+          typetransaction = "Đã tặng";
+        }
+        if (transaction[i].isStatus == "waiting") {
+          typetransaction = "Chưa tặng";
+        }
+        if (transaction[i].isStatus == "cancel") {
+          typetransaction = "Hủy tặng";
+        }
+      }
+      //Bài đăng thuộc loại tặng và mình là chủ bài đăng
+      if (typepost == "tang" && transaction[i].ReceiverID == accountID) {
+        if (transaction[i].isStatus == "done") {
+          typetransaction = "Đã tặng";
+        }
+        if (transaction[i].isStatus == "waiting") {
+          typetransaction = "Chưa tặng";
+        }
+        if (transaction[i].isStatus == "cancel") {
+          typetransaction = "Hủy tặng";
+        }
+      }
+      //Bài đăng thuộc loại xin và mình là chủ bài đăng
+      if (typepost == "xin" && transaction[i].ReceiverID == accountID) {
+        if (transaction[i].isStatus == "done") {
+          typetransaction = "Đã nhận";
+        }
+        if (transaction[i].isStatus == "waiting") {
+          typetransaction = "Chưa nhận";
+        }
+        if (transaction[i].isStatus == "cancel") {
+          typetransaction = "Hủy nhận";
+        }
+      }
+      var type = { typetransaction: typetransaction };
+      obj = { ...type, ...transaction[i] };
+      data.push(obj);
+    }
+    return data;
   } catch (error) {
     return error;
   }
@@ -137,7 +203,7 @@ const CreateNotificationData = async (
 ) => {
   try {
     //function data transaction
-    const data = await transactionNotification(transactionID);
+    const data = await transactionNotification(transactionID, accountID);
     //get token device from user
     //xác định ai là người tạo action
     //suy ra ai là người nhận notification
@@ -886,7 +952,7 @@ module.exports = {
   getTransactionID: async (req, res) => {
     try {
       const { transactionID } = req.query;
-      const data = await transactionNotification(transactionID);
+      const data = await transactionNotification(transactionID,req.accountID);
       return res.status(201).json(MessageResponse(true, "Success", data));
     } catch (error) {
       return res.status(500).json(MessageResponse(false, error.message));
