@@ -141,7 +141,63 @@ module.exports = {
       return res.status(500).json(MessageResponse(false, error.message));
     }
   },
+  NotificationSystem: async (req, res) => {
+    try {
+      let notifications = [];
+      const { title, body, dataNotification } = req.body;
+      const tokenDevice = await DevicePushTokenModel.find({});
+      for (let pushToken of tokenDevice) {
+        //   // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+        console.log(pushToken.TokenDevice);
+        // Check that all your push tokens appear to be valid Expo push tokens
+        if (!Expo.isExpoPushToken(pushToken.TokenDevice)) {
+          console.error(
+            `Push token ${pushToken.TokenDevice} is not a valid Expo push token`
+          );
+          continue;
+        }
 
+        // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
+
+        notifications.push({
+          to: pushToken.TokenDevice,
+          sound: "default",
+          title: title,
+          body: body,
+          data: { data: dataNotification },
+        });
+      }
+
+      // The Expo push notification service accepts batches of notifications so
+      // that you don't need to send 1000 requests to send 1000 notifications. We
+      // recommend you batch your notifications to reduce the number of requests
+      // and to compress them (notifications with similar content will get
+      // compressed).
+      let chunks = expo.chunkPushNotifications(notifications);
+
+      (async () => {
+        // Send the chunks to the Expo push notification service. There are
+        // different strategies you could use. A simple one is to send one chunk at a
+        // time, which nicely spreads the load out over time:
+        for (let chunk of chunks) {
+          try {
+            let receipts = await expo.sendPushNotificationsAsync(chunk);
+            return res
+              .status(201)
+              .json(
+                MessageResponse(true, "Push notification success", receipts)
+              );
+          } catch (error) {
+            return res
+              .status(400)
+              .json(MessageResponse(false, "Push notification false", error));
+          }
+        }
+      })();
+    } catch (error) {
+      return res.status(500).json(MessageResponse(false, error.message));
+    }
+  },
   //push notification
   PushNotification: async (title, body, data, tokenDevices) => {
     // Create the messages that you want to send to clents

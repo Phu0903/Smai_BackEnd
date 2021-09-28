@@ -93,7 +93,7 @@ const transactionNotification = async (transactionID, accountID) => {
     const transaction = await Transaction.aggregate([
       {
         $match: {
-          _id: mongoose.Types.ObjectId(transactionID),
+          _id: transactionID,
         },
       },
       {
@@ -140,7 +140,7 @@ const transactionNotification = async (transactionID, accountID) => {
       let typetransaction;
       //Bài đăng tặng mình là người đi xin
       if (typepost == "tang" && transaction[i].SenderID == accountID) {
-        if (transactionbyuser[i].isStatus == "done") {
+        if (transaction[i].isStatus == "done") {
           typetransaction = "Đã nhận";
         }
         if (transaction[i].isStatus == "waiting") {
