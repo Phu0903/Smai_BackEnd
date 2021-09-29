@@ -68,16 +68,12 @@ module.exports = {
           typeNotification: "system",
         });
       }
-      return res.status(201).json({
-        success: true,
-        message: "OK",
-        notificationData: notificationData, //Respone token for client user
-      });
+        return res
+          .status(201)
+          .json(messageResponse(true, "Find success", dataNotification));
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
+        return res.status(500).json(messageResponse(false, error.message));
+
     }
   },
 
