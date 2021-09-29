@@ -1,7 +1,7 @@
 const { model } = require("mongoose");
 const Doctors = require("../Model/Doctors");
 
-const MessageResponse = (success, message, data) => {
+const messageResponse = (success, message, data) => {
   return {
     data: {
       success,
@@ -15,9 +15,9 @@ module.exports = {
   getDoctors: async (req, res) => {
     const getDoctors = await Doctors.find({});
     if (getDoctors) {
-      res.status(200).json(MessageResponse(true, "Get Success", getDoctors));
+      res.status(200).json(messageResponse(true, "Get Success", getDoctors));
     }else{
-      res.status(404).json(MessageResponse(false, "Not Found"));
+      res.status(404).json(messageResponse(false, "Not Found"));
 
     }
   },
@@ -26,7 +26,7 @@ module.exports = {
     if (!nameDoctor || !department || !phoneNumber || timeWork.length == 0) {
       res
         .status(200)
-        .json(MessageResponse(false, "The parameters are not enough"));
+        .json(messageResponse(false, "The parameters are not enough"));
     } else {
       const dataDoctors = await new Doctors({
         NameDoctor: nameDoctor,
@@ -36,11 +36,11 @@ module.exports = {
       });
       dataDoctors.save(async (err, data) => {
         if (err) {
-          res.status(400).json(MessageResponse(false, "save db error"));
+          res.status(400).json(messageResponse(false, "save db error"));
         } else {
           res
             .status(201)
-            .json(MessageResponse(true, "create doctors success", data));
+            .json(messageResponse(true, "create doctors success", data));
         }
       });
     }

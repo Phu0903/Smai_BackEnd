@@ -48,7 +48,7 @@ module.exports = {
 
     },
     //Update profile usser
-    UpdateProfile: async (req, res) => {
+    updateProfile: async (req, res) => {
         //const { FullName, PasswordReset } = req.body
         //const Id = req.accountID;
         try {
@@ -124,7 +124,7 @@ module.exports = {
         }
     },
     //Update History
-    HistoryPost: async (req, res) => {
+    historyPost: async (req, res) => {
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID })
             const IdPost = req.body.IdPost
@@ -195,7 +195,7 @@ module.exports = {
     },
 
     //getHistoryPost for user by AccountId
-    GetHistoryPost: async (req, res) => {
+    getHistoryPost: async (req, res) => {
         try {
             const UserInfo = await User.findOne({ 'AccountID': req.accountID })
             if (!UserInfo) {

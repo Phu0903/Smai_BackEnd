@@ -125,7 +125,7 @@ module.exports = {
   },
 
   //fogot Password
-  FogotPassword: async (req, res) => {
+  fogotPassword: async (req, res) => {
     try {
       const password = req.body.Password;
       const accountUser = await Account.findOne({
@@ -166,7 +166,7 @@ module.exports = {
   },
 
   //Logout delete token device
-  LogoutAccount: async (req, res) => {
+  logoutAccount: async (req, res) => {
     try {
       //Token device
       const { TokenDevice } = req.body;

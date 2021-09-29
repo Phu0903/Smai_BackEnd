@@ -8,23 +8,23 @@ var upload = multer({ dest: 'uploads/' })
 const fileUploader = require('../configs/cloudinary.config');
 
 ///Create post
-baipost.post('/CreatePost', verifyToken, fileUploader.array('productImage'), CORS, controller.AddPost)
+baipost.post('/CreatePost', verifyToken, fileUploader.array('productImage'), CORS, controller.addPost)
 //updatePost
-baipost.post('/UpdatePost', fileUploader.array('productImage'), CORS, controller.UpdateProductInPost);
+baipost.post('/UpdatePost', fileUploader.array('productImage'), CORS, controller.updateProductInPost);
 //Get post
-baipost.get('/getFullPost', CORS, controller.GetInfoFullPost);
+baipost.get('/getFullPost', CORS, controller.getInfoFullPost);
 //Get post by AccountID
-baipost.get('/getPostByAccountId', verifyToken, CORS, controller.GetPostByAccountID);
+baipost.get('/getPostByAccountId', verifyToken, CORS, controller.getPostByAccountID);
 //Get Post by Location
-baipost.get('/getFullPostByLocation', CORS, controller.GetDetailPostByAddress);
+baipost.get('/getFullPostByLocation', CORS, controller.getDetailPostByAddress);
 //Get Post by TypeAuthor
-baipost.get('/getPostByTypeAuthor', CORS, controller.GetPostByTypeAuthor);
+baipost.get('/getPostByTypeAuthor', CORS, controller.getPostByTypeAuthor);
 //TestUpload
-baipost.get('/getNewPost', CORS, controller.GetNewPost);
+baipost.get('/getNewPost', CORS, controller.getNewPost);
 //delete Post
-baipost.delete('/deletePostbyUser',CORS,controller.DeletePost);
+baipost.delete('/deletePostbyUser',CORS,controller.deletePost);
 //find
-baipost.get('/find',CORS,controller.FindId);
+baipost.get('/find',CORS,controller.findId);
 //Find Post 
 baipost.get('/searchPost',CORS,controller.searchPost);
 

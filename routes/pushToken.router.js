@@ -3,15 +3,15 @@ const pushToken = express.Router();
 const pushTokenController = require("../controllers/pushToken.controller");
 const verifyToken = require("../middleware/auth");
 
-pushToken.post("/create-push-token", pushTokenController.CreateTokenDevice);
-pushToken.get("/get-notification", pushTokenController.GetNotification);
+pushToken.post("/create-push-token", pushTokenController.createTokenDevice);
+pushToken.get("/get-notification", pushTokenController.getNotification);
 pushToken.put(
   "/update-notification",
   verifyToken,
-  pushTokenController.UpdateExmainedForUser
+  pushTokenController.updateExmainedForUser
 );
 pushToken.post(
   "/create-notification-token",
-  pushTokenController.NotificationSystem
+  pushTokenController.notificationSystem
 );
 module.exports = pushToken;

@@ -16,10 +16,10 @@ account.post('/getPhone',CORS,controller.getPhone)
 
 //Forgot password
 
-account.post('/Forgot',CORS,controller.FogotPassword)
+account.post('/Forgot',CORS,controller.fogotPassword)
 
 //logout 
-account.post("/Logout", verifyToken,controller.LogoutAccount);
+account.post("/Logout", verifyToken,controller.logoutAccount);
 
 //reset Pasword
 //account.post('/ResetPassword',CORS,controller.ResetPassword)

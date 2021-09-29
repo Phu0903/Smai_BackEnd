@@ -13,16 +13,16 @@ users.get('/getInForUserByTokenId', verifyToken, CORS, usercontroller.getInfoUse
 //get profile User by userName
 users.get('/getInfoUser', CORS, usercontroller.getInfoUser)
 //Update profile User 
-users.post('/profileUser', verifyToken, fileUploader.single('imageUser'),CORS, usercontroller.UpdateProfile)
+users.post('/profileUser', verifyToken, fileUploader.single('imageUser'),CORS, usercontroller.updateProfile)
 //Get address user
 users.get('/getAddress', verifyToken, CORS, userController.getAddress);
 users.get('/getAddress',verifyToken,userController.getAddress);
 //Get PhoneNumber User
 users.get("/getInfoAuthor", userController.getInfoAuthor);
 //put history user
-users.put('/updateHistory',verifyToken,userController.HistoryPost)
+users.put('/updateHistory',verifyToken,userController.historyPost)
 //get history
-users.get('/getHistoryPost',verifyToken,userController.GetHistoryPost)
+users.get('/getHistoryPost',verifyToken,userController.getHistoryPost)
 
 
 

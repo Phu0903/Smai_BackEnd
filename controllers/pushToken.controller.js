@@ -7,7 +7,7 @@ const expo = new Expo();
 const mongoose = require("mongoose");
 
 //respone
-const MessageResponse = (success, message, data) => {
+const messageResponse = (success, message, data) => {
   return {
     data: {
       success,
@@ -18,7 +18,7 @@ const MessageResponse = (success, message, data) => {
 };
 module.exports = {
   //Store Notification for User in transaction
-  StroreNotificationToDB: async (
+  stroreNotificationToDB: async (
     title,
     body,
     idData,
@@ -44,7 +44,7 @@ module.exports = {
     });
   },
   //get Notification
-  GetNotification: async (req, res) => {
+  getNotification: async (req, res) => {
     try {
       let notificationData;
       //if user login
@@ -82,7 +82,7 @@ module.exports = {
   },
 
   //Update examined
-  UpdateExmainedForUser: async (req, res) => {
+  updateExmainedForUser: async (req, res) => {
     try {
       const { idNotification } = req.query;
       if (idNotification) {
@@ -103,18 +103,18 @@ module.exports = {
         if (dataNotification) {
           return res
             .status(201)
-            .json(MessageResponse(true, "Update success", dataNotification));
+            .json(messageResponse(true, "Update success", dataNotification));
         }
       }
-      return res.status(404).json(MessageResponse(false, "Update failed"));
+      return res.status(404).json(messageResponse(false, "Update failed"));
     } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(messageResponse(false, error.message));
     }
   },
   //update token device to send notification
   //Global Device
   // when install the app, global device updated
-  CreateTokenDevice: async (req, res) => {
+  createTokenDevice: async (req, res) => {
     try {
       const { PushToken } = req.body;
       const ExistsPushToken = await DevicePushTokenModel.findOne({
@@ -128,20 +128,20 @@ module.exports = {
         //save new token to DB
         deviceToken.save(async function (err, data) {
           if (err) {
-            return res.status(400).json(MessageResponse(false, err));
+            return res.status(400).json(messageResponse(false, err));
           }
           return res
             .status(201)
-            .json(MessageResponse(true, "Create success", data));
+            .json(messageResponse(true, "Create success", data));
         });
       } else {
-        return res.status(404).json(MessageResponse(false, "Device already"));
+        return res.status(404).json(messageResponse(false, "Device already"));
       }
     } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(messageResponse(false, error.message));
     }
   },
-  NotificationSystem: async (req, res) => {
+  notificationSystem: async (req, res) => {
     try {
       let notifications = [];
       const { title, body, dataNotification } = req.body;
@@ -185,21 +185,21 @@ module.exports = {
             return res
               .status(201)
               .json(
-                MessageResponse(true, "Push notification success", receipts)
+                messageResponse(true, "Push notification success", receipts)
               );
           } catch (error) {
             return res
               .status(400)
-              .json(MessageResponse(false, "Push notification false", error));
+              .json(messageResponse(false, "Push notification false", error));
           }
         }
       })();
     } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(messageResponse(false, error.message));
     }
   },
   //push notification
-  PushNotification: async (title, body, data, tokenDevices) => {
+  pushNotification: async (title, body, data, tokenDevices) => {
     // Create the messages that you want to send to clents
     let notifications = [];
     console.log(tokenDevices);

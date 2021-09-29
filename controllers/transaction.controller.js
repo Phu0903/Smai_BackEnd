@@ -7,7 +7,7 @@ const PushNotification = require("../controllers/pushToken.controller");
 const { Console } = require("winston/lib/winston/transports");
 const Schema = mongoose.Schema;
 //respone
-const MessageResponse = (success, message, data) => {
+const messageResponse = (success, message, data) => {
   return {
     data: {
       success,
@@ -17,7 +17,7 @@ const MessageResponse = (success, message, data) => {
   };
 };
 //sẽ ẩn bài Post đi nếu transaction chuyển thành true
-const HidenPostByConnect = async (idPost, status) => {
+const hidenPostByConnect = async (idPost, status) => {
   const data = await Post.findByIdAndUpdate(
     { _id: idPost },
     {
@@ -35,7 +35,7 @@ const HidenPostByConnect = async (idPost, status) => {
   return true;
 };
 //check post có tồn tại không
-const CheckExistsPost = async (idPost) => {
+const checkExistsPost = async (idPost) => {
   const data = await Post.findOne({ _id: idPost });
   if (data === null) {
     return false;
@@ -43,7 +43,7 @@ const CheckExistsPost = async (idPost) => {
   return data;
 };
 //const checkConfirm
-const CheckExistsTransaction = async (idTransaction) => {
+const checkExistsTransaction = async (idTransaction) => {
   const data = await Transaction.findOne({ _id: idTransaction });
   if (!data) {
     return false;
@@ -51,7 +51,7 @@ const CheckExistsTransaction = async (idTransaction) => {
   return data;
 };
 //check transaction exists by post id, SenderID, ReceiverID
-const CheckExistsTransactionWithSenderIdReceiverID = async (
+const checkExistsTransactionWithSenderIdReceiverID = async (
   postId,
   senderId,
   receiverId
@@ -68,7 +68,7 @@ const CheckExistsTransactionWithSenderIdReceiverID = async (
 };
 
 //add transactionid to account
-const UpdateTransactionToAccount = async (accountId, transactionId) => {
+const updateTransactionToAccount = async (accountId, transactionId) => {
   const dataAccount = await Account.findOneAndUpdate(
     { _id: accountId },
     {
@@ -274,7 +274,7 @@ const CreateNotificationData = async (
     console.log("title " + title);
     console.log("body " + body);
     if (TokenDevice.TokenDevice.length) {
-      await PushNotification.PushNotification(
+      await PushNotification.pushNotification(
         title,
         body,
         data,
@@ -284,7 +284,7 @@ const CreateNotificationData = async (
       console.log("No have token device");
     }
     //save data notification
-    await PushNotification.StroreNotificationToDB(
+    await PushNotification.stroreNotificationToDB(
       title,
       body,
       transactionID,
@@ -311,27 +311,27 @@ module.exports = {
       if (!postID || !senderAddress || !status) {
         res
           .status(400)
-          .json(MessageResponse(false, "The parameters are not enough"));
+          .json(messageResponse(false, "The parameters are not enough"));
       } else {
         const senderID = await User.findOne({ AccountID: req.accountID });
         if (!senderID) {
           return res
             .status(404)
-            .json(MessageResponse(false, "No have SenderID"));
+            .json(messageResponse(false, "No have SenderID"));
         }
-        const dataPost = await CheckExistsPost(postID);
+        const dataPost = await checkExistsPost(postID);
         if (!dataPost) {
-          return res.status(404).json(MessageResponse(false, "No have Post"));
+          return res.status(404).json(messageResponse(false, "No have Post"));
         } else {
           //check transaction exists
           const transactionExists =
-            await CheckExistsTransactionWithSenderIdReceiverID(
+            await checkExistsTransactionWithSenderIdReceiverID(
               postID,
               req.accountID,
               dataPost.AuthorID
             );
           if (transactionExists) {
-            res.status(404).json(MessageResponse(false, "Transaction already"));
+            res.status(404).json(messageResponse(false, "Transaction already"));
           } else if (!transactionExists && req.accountID != dataPost.AuthorID) {
             //Sender user and Receiver user must not be the same
             //check img
@@ -357,7 +357,7 @@ module.exports = {
               });
               dataTransaction.save(async function (err, data) {
                 if (err) {
-                  res.status(400).json(MessageResponse(false, "save db error"));
+                  res.status(400).json(messageResponse(false, "save db error"));
                 } else {
                   //bắn notification
                   await CreateNotificationData(
@@ -368,12 +368,12 @@ module.exports = {
                   // PushNotification.PushNotification(data);
                   //trạng thái waiting thì bài post sẽ ẩn đi
                   if (status == "waiting") {
-                    const hidden = await HidenPostByConnect(postID, false);
+                    const hidden = await hidenPostByConnect(postID, false);
                     if (hidden) {
                       return res
                         .status(201)
                         .json(
-                          MessageResponse(
+                          messageResponse(
                             true,
                             "create transaction success",
                             data
@@ -382,13 +382,13 @@ module.exports = {
                     } else {
                       return res
                         .status(400)
-                        .json(MessageResponse(false, "save db error"));
+                        .json(messageResponse(false, "save db error"));
                     }
                   } else {
                     return res
                       .status(201)
                       .json(
-                        MessageResponse(
+                        messageResponse(
                           true,
                           "create transaction success",
                           data
@@ -401,7 +401,7 @@ module.exports = {
               return res
                 .status(400)
                 .json(
-                  MessageResponse(
+                  messageResponse(
                     false,
                     "when u create transaction, status must only one of 2 case is null or waiting "
                   )
@@ -412,7 +412,7 @@ module.exports = {
             return res
               .status(400)
               .json(
-                MessageResponse(
+                messageResponse(
                   false,
                   "Sender user and Receiver user must not be the same"
                 )
@@ -421,7 +421,7 @@ module.exports = {
         }
       }
     } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(messageResponse(false, error.message));
     }
   },
   //update trạng thái connect của bài viết
@@ -432,15 +432,15 @@ module.exports = {
       if (!status || !transactionIdQuery) {
         return res
           .status(400)
-          .json(MessageResponse(false, "The parameters are not enough"));
+          .json(messageResponse(false, "The parameters are not enough"));
       } else {
         //check exists Transaction
-        const transactionExists = await CheckExistsTransaction(
+        const transactionExists = await checkExistsTransaction(
           transactionIdQuery
         );
         //if Transaction don't have already
         if (!transactionExists) {
-          return res.status(404).json(MessageResponse(false, "Not Found"));
+          return res.status(404).json(messageResponse(false, "Not Found"));
         } else {
           //tình trạng transaction phải chưa hoàn thành
           if (transactionExists.isStatus != "done") {
@@ -449,7 +449,7 @@ module.exports = {
               if (transactionExists.isStatus != "waiting") {
                 return res
                   .status(400)
-                  .json(MessageResponse(false, "Transaction must connect"));
+                  .json(messageResponse(false, "Transaction must connect"));
               }
             }
             //find and update
@@ -469,18 +469,18 @@ module.exports = {
             if (!data) {
               return res
                 .status(400)
-                .json(MessageResponse(false, "Failed Update"));
+                .json(messageResponse(false, "Failed Update"));
             } else {
               //nếu trường hợp waiting => ẩn post đi
               if (status == "waiting") {
                 //hidden post
-                const hidden = await HidenPostByConnect(data.PostID, false);
+                const hidden = await hidenPostByConnect(data.PostID, false);
                 //ẩn bài viết đi
                 if (hidden === false) {
                   //failed
                   return res
                     .status(400)
-                    .json(MessageResponse(false, "Failed HiddenPost"));
+                    .json(messageResponse(false, "Failed HiddenPost"));
                 } else {
                   //notification
                   CreateNotificationData(
@@ -492,13 +492,13 @@ module.exports = {
               }
               //nếu trường hợp cancel => hiện post
               if (status == "cancel") {
-                const hidden = await HidenPostByConnect(data.PostID, true);
+                const hidden = await hidenPostByConnect(data.PostID, true);
                 //hiện bài viết đi
                 if (hidden === false) {
                   //failed
                   return res
                     .status(400)
-                    .json(MessageResponse(false, "Failed HiddenPost"));
+                    .json(messageResponse(false, "Failed HiddenPost"));
                 } else {
                   //notification
                   CreateNotificationData(
@@ -512,17 +512,17 @@ module.exports = {
               if (status == "done") {
                 //add id transaction to account senderId
                 const accountTransactionSenderId =
-                  await UpdateTransactionToAccount(data.SenderID, data._id);
+                  await updateTransactionToAccount(data.SenderID, data._id);
                 //add id transaction to account ReceiverID
                 const accountTransactionReceiverID =
-                  await UpdateTransactionToAccount(data.ReceiverID, data._id);
+                  await updateTransactionToAccount(data.ReceiverID, data._id);
                 if (
                   !accountTransactionSenderId ||
                   !accountTransactionReceiverID
                 ) {
                   return res
                     .status(400)
-                    .json(MessageResponse(false, "Failed Update"));
+                    .json(messageResponse(false, "Failed Update"));
                 } else {
                   //notification
                   CreateNotificationData(
@@ -533,23 +533,23 @@ module.exports = {
                   //res data
                   return res
                     .status(200)
-                    .json(MessageResponse(true, "Update Success", data));
+                    .json(messageResponse(true, "Update Success", data));
                 }
               } else {
                 return res
                   .status(200)
-                  .json(MessageResponse(true, "Update Success", data));
+                  .json(messageResponse(true, "Update Success", data));
               }
             }
           } else {
             return res
               .status(400)
-              .json(MessageResponse(false, "Transaction done"));
+              .json(messageResponse(false, "Transaction done"));
           }
         }
       }
     } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(messageResponse(false, error.message));
     }
   },
   //get Transaction mà mình quan tâm
@@ -557,17 +557,17 @@ module.exports = {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
       if (!accountId) {
-        return res.status(400).json(MessageResponse(false, "No have SenderID"));
+        return res.status(400).json(messageResponse(false, "No have SenderID"));
       } else {
         const transaction = await Transaction.find({
           SenderID: mongoose.Types.ObjectId(accountId.AccountID),
         });
         res
           .status(200)
-          .json(MessageResponse(true, "Find Success", transaction));
+          .json(messageResponse(true, "Find Success", transaction));
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      res.status(500).json(messageResponse(false, error.message));
     }
   },
   //get Transaction mà mình được quan tâm
@@ -575,17 +575,17 @@ module.exports = {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
       if (!accountId) {
-        return res.status(400).json(MessageResponse(false, "No have SenderID"));
+        return res.status(400).json(messageResponse(false, "No have SenderID"));
       } else {
         const transaction = await Transaction.find({
           ReceiverID: mongoose.Types.ObjectId(accountId.AccountID),
         });
         res
           .status(200)
-          .json(MessageResponse(true, "Find Success", transaction));
+          .json(messageResponse(true, "Find Success", transaction));
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      res.status(500).json(messageResponse(false, error.message));
     }
   },
   //get Transaction liên quan đến một bài viết
@@ -596,7 +596,7 @@ module.exports = {
       if (!postIdQuery) {
         res
           .status(400)
-          .json(MessageResponse(false, "The parameters are not enough"));
+          .json(messageResponse(false, "The parameters are not enough"));
       } else {
         const getIdPost = await Transaction.aggregate([
           {
@@ -636,10 +636,10 @@ module.exports = {
             $unwind: "$usersender", // this to convert the array of one object to be an object
           },
         ]).exec();
-        res.status(200).json(MessageResponse(true, "Find Success", getIdPost));
+        res.status(200).json(messageResponse(true, "Find Success", getIdPost));
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      res.status(500).json(messageResponse(false, error.message));
     }
   },
   //getTransaction theo status
@@ -648,7 +648,7 @@ module.exports = {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
       if (!accountId) {
-        return res.status(400).json(MessageResponse(false, "No have SenderID"));
+        return res.status(400).json(messageResponse(false, "No have SenderID"));
       } else {
         const transactionbyuser = await Transaction.aggregate([
           {
@@ -697,10 +697,10 @@ module.exports = {
         ]);
         res
           .status(200)
-          .json(MessageResponse(true, "Find Success", transactionbyuser));
+          .json(messageResponse(true, "Find Success", transactionbyuser));
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      res.status(500).json(messageResponse(false, error.message));
     }
   },
 
@@ -709,7 +709,7 @@ module.exports = {
     try {
       const accountId = await User.findOne({ AccountID: req.accountID });
       if (!accountId) {
-        return res.status(400).json(MessageResponse(false, "No have Id User"));
+        return res.status(400).json(messageResponse(false, "No have Id User"));
       } else {
         const transactionbyuser = await Transaction.aggregate([
           {
@@ -942,10 +942,10 @@ module.exports = {
         }
 
         //merge tháng
-        res.status(200).json(MessageResponse(true, "Find Success", dataDone));
+        res.status(200).json(messageResponse(true, "Find Success", dataDone));
       }
     } catch (error) {
-      res.status(500).json(MessageResponse(false, error.message));
+      res.status(500).json(messageResponse(false, error.message));
     }
   },
   //getTransction by TransactionID
@@ -953,9 +953,9 @@ module.exports = {
     try {
       const { transactionID } = req.query;
       const data = await transactionNotification(transactionID,req.accountID);
-      return res.status(201).json(MessageResponse(true, "Success", data));
+      return res.status(201).json(messageResponse(true, "Success", data));
     } catch (error) {
-      return res.status(500).json(MessageResponse(false, error.message));
+      return res.status(500).json(messageResponse(false, error.message));
     }
   },
 };

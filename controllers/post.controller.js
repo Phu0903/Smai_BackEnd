@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 module.exports = {
-  AddPost: async (req, res) => {
+  addPost: async (req, res) => {
     const { title, note, NameProduct, TypeAuthor, NameAuthor, address } =
       req.body;
     try {
@@ -69,7 +69,7 @@ module.exports = {
     }
   },
   //Update Product in Post
-  UpdateProductInPost: async (req, res) => {
+  updateProductInPost: async (req, res) => {
     try {
       const PostNew = await Post.findOne({ _id: req.header.IDPost });
       if (!req.headers.idpost) {
@@ -103,7 +103,7 @@ module.exports = {
   },
 
   //Get Info Post
-  GetInfoFullPost: async (req, res) => {
+  getInfoFullPost: async (req, res) => {
     try {
       const post = await Post.find({ confirm: true });
       if (!post) {
@@ -123,7 +123,7 @@ module.exports = {
   },
 
   //Get Post by Location/Address
-  GetDetailPostByAddress: async (req, res) => {
+  getDetailPostByAddress: async (req, res) => {
     try {
       const PostByAddress = await Post.find({ address: req.query.address });
 
@@ -148,7 +148,7 @@ module.exports = {
 
   //Get Post by type Author
 
-  GetPostByTypeAuthor: async (req, res) => {
+  getPostByTypeAuthor: async (req, res) => {
     try {
       if (req.query.typeauthor == "tangcongdong") {
         typeauthor = "tangcongdong";
@@ -183,7 +183,7 @@ module.exports = {
     }
   },
   //get new post
-  GetNewPost: async (req, res) => {
+  getNewPost: async (req, res) => {
     try {
       const SortTime = { createdAt: -1 };
       Post.find({ TypeAuthor: "tangcongdong" })
@@ -205,7 +205,7 @@ module.exports = {
   },
 
   //delete Posst
-  DeletePost: async (req, res) => {
+  deletePost: async (req, res) => {
     try {
       //ID from client
       const id = req.query._id;
@@ -276,7 +276,7 @@ module.exports = {
     }
   },
   //Find Post by id
-  FindId: async (req, res) => {
+  findId: async (req, res) => {
     try {
       const id = req.query.ID;
       //find News by ID
@@ -306,7 +306,7 @@ module.exports = {
     }
   },
   //Get Post by AccountID
-  GetPostByAccountID: async (req, res) => {
+  getPostByAccountID: async (req, res) => {
     try {
       const SortTime = { createdAt: -1 };
       const ID = req.accountID;
