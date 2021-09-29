@@ -48,10 +48,11 @@ module.exports = {
     try {
       let notificationData;
       //if user login
-      const { tokenUser } = req.body;
+      const tokenUser  = req.header("Authorization");
+      const token = tokenUser && tokenUser.split(" ")[1];
       console.log(tokenUser);
       if (tokenUser) {
-        const decoded = jwt.verify(tokenUser, process.env.ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         const account = await AccountModel.findOne({ _id: decoded.accountID });
         console.log(account);
         if (account) {
