@@ -89,11 +89,12 @@ const updateTransactionToAccount = async (accountId, transactionId) => {
 // ///load data user for notification
 const transactionNotification = async (transactionID, accountID) => {
   try {
-    console.log(accountID);
+
+
     const transaction = await Transaction.aggregate([
       {
         $match: {
-          _id: transactionID,
+          _id: mongoose.Types.ObjectId(transactionID),
         },
       },
       {
@@ -125,6 +126,7 @@ const transactionNotification = async (transactionID, accountID) => {
       },
       { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
     ]);
+    console.log(transaction);
     let i = 0;
     let data = [];
     //xác định loại transaction
