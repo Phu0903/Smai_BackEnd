@@ -70,7 +70,7 @@ module.exports = {
       }
         return res
           .status(201)
-          .json(messageResponse(true, "Find success", dataNotification));
+          .json(messageResponse(true, "Find success", notificationData));
     } catch (error) {
         return res.status(500).json(messageResponse(false, error.message));
 
