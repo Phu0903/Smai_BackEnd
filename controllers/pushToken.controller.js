@@ -46,6 +46,7 @@ module.exports = {
   //get Notification
   getNotification: async (req, res) => {
     try {
+      const SortTime = { createdAt: -1 };
       let notificationData;
       //if user login
       const tokenUser  = req.header("Authorization");
@@ -58,17 +59,17 @@ module.exports = {
         if (account) {
           notificationData = await NotificationModel.find({
             "ownerID.ownerID": mongoose.Types.ObjectId(account._id),
-          });
+          }).sort(SortTime);
           console.log(notificationData);
         } else {
           notificationData = await NotificationModel.find({
             typeNotification: "system",
-          });
+          }).sort(SortTime);
         }
       } else {
         notificationData = await NotificationModel.find({
           typeNotification: "system",
-        });
+        }).sort(SortTime);
       }
         return res
           .status(201)

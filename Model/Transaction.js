@@ -26,7 +26,7 @@ const Transaction = new mongoose.Schema(
     },
     NoteReceiver: {
       //note của người sở hữu bài viết
-      type: String,
+      type: Object,
     },
     note: {
       type: String,
@@ -37,6 +37,9 @@ const Transaction = new mongoose.Schema(
       type: String,
       default: "null",
       enum: ["null", "waiting", "done", "cancel"],
+    },
+    NoteFinish: {
+      type: Object,
     },
   },
   {

@@ -89,8 +89,6 @@ const updateTransactionToAccount = async (accountId, transactionId) => {
 // ///load data user for notification
 const transactionNotification = async (transactionID, accountID) => {
   try {
-
-
     const transaction = await Transaction.aggregate([
       {
         $match: {
@@ -429,7 +427,7 @@ module.exports = {
   //update trạng thái connect của bài viết
   updateTransactionStatus: async (req, res) => {
     try {
-      const { status, notereceiver } = req.body;
+      const { status, notereceiver, notefinish } = req.body;
       const transactionIdQuery = req.query.transactionId;
       if (!status || !transactionIdQuery) {
         return res
@@ -446,6 +444,15 @@ module.exports = {
         } else {
           //tình trạng transaction phải chưa hoàn thành
           if (transactionExists.isStatus != "done") {
+            let noteFinish, noteReceiver;
+            //get time
+            let date = new Date();
+            console.log(date.toLocaleString("en-US"));
+            timeFinish = date.toLocaleString("en-US");
+            //find inforUser để tạo lời nhắn kết thúc
+            const userModel = await User.findOne({
+              AccountID: req.accountID,
+            });
             //trước khi hoàn thành phải connect
             if (status == "done") {
               if (transactionExists.isStatus != "waiting") {
@@ -453,14 +460,34 @@ module.exports = {
                   .status(400)
                   .json(messageResponse(false, "Transaction must connect"));
               }
+              if (notefinish) {
+                noteFinish = {
+                  id: req.accountID,
+                  name: userModel.FullName,
+                  time: timeFinish,
+                  text: notefinish,
+                };
+              }
             }
+            if (status == "waiting") {
+              if (notereceiver) {
+                noteReceiver = {
+                  id: req.accountID,
+                  name: userModel.FullName,
+                  time: timeFinish,
+                  text: notereceiver,
+                };
+              }
+            }
+
             //find and update
             const data = await Transaction.findOneAndUpdate(
               { _id: transactionIdQuery },
               {
                 $set: {
                   isStatus: status, //update isConnect
-                  NoteReceiver: notereceiver || transactionExists.NoteReceiver,
+                  NoteReceiver: noteReceiver || transactionExists.NoteReceiver,
+                  NoteFinish: noteFinish || transactionExists.NoteFinish,
                 },
               },
               {
@@ -502,7 +529,7 @@ module.exports = {
                     .status(400)
                     .json(messageResponse(false, "Failed HiddenPost"));
                 } else {
-                  //notification
+                  //notification - thông bao
                   CreateNotificationData(
                     "update-transaction",
                     data._id,
@@ -954,7 +981,7 @@ module.exports = {
   getTransactionID: async (req, res) => {
     try {
       const { transactionID } = req.query;
-      const data = await transactionNotification(transactionID,req.accountID);
+      const data = await transactionNotification(transactionID, req.accountID);
       return res.status(201).json(messageResponse(true, "Success", data));
     } catch (error) {
       return res.status(500).json(messageResponse(false, error.message));
