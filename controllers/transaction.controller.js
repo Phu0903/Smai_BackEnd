@@ -447,8 +447,8 @@ module.exports = {
             let noteFinish, noteReceiver;
             //get time
             let date = new Date();
-            console.log(date.toLocaleString());
-            timeFinish = date.toLocaleString();
+            console.log(date.toLocaleString("id-ID"));
+            timeFinish = date.toLocaleString('id - ID');
             //find inforUser để tạo lời nhắn kết thúc
             const userModel = await User.findOne({
               AccountID: req.accountID,
