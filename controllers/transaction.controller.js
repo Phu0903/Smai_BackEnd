@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const PushNotification = require("../controllers/pushToken.controller");
 const { Console } = require("winston/lib/winston/transports");
 const Schema = mongoose.Schema;
+var moment = require("moment-timezone");
 //respone
 const messageResponse = (success, message, data) => {
   return {
@@ -445,10 +446,12 @@ module.exports = {
           //tình trạng transaction phải chưa hoàn thành
           if (transactionExists.isStatus != "done") {
             let noteFinish, noteReceiver;
-            //get time
             let date = new Date();
-            console.log(date.toLocaleString('id-ID'));
-            timeFinish = date.toLocaleString('id - ID');
+
+            var jun = moment(date);
+            console.log(jun)
+            console.log(jun.tz('Asia/Ho_Chi_Minh').format());
+            timeFinish = jun.tz('Asia/Ho_Chi_Minh').format(); 
             //find inforUser để tạo lời nhắn kết thúc
             const userModel = await User.findOne({
               AccountID: req.accountID,
@@ -812,7 +815,7 @@ module.exports = {
               ReceiverUser: 1,
               PostID: 1,
               NoteFinish: 1,
-              NoteReceiver:1,
+              NoteReceiver: 1,
             },
           },
           { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
