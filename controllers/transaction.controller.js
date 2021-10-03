@@ -255,7 +255,7 @@ const CreateNotificationData = async (
     if (typeFunction == "update-transaction" && data[0].isStatus == "done") {
       //if user create action is SenderID,
       title = FullNameUserAction + " xác nhận hoàn thành giao dịch với bạn";
-      body = "Bài viết liên quan" + data[0].PostData.title;
+      body = "Bài viết liên quan " + data[0].PostData.title;
     }
     //Trạng thái hủy
     //xác định ai là người action từ đó gửi notification cho người còn lại
@@ -267,7 +267,7 @@ const CreateNotificationData = async (
         //if user create action is SenderID,
         //User recived notification is ReceiverID
         title = FullNameUserAction + " hủy giao dịch với bạn";
-        body = "Bài viết liên quan" + data[0].PostData.title;
+        body = "Bài viết liên quan " + data[0].PostData.title;
       }
 
     //data to PushNotification
@@ -447,8 +447,8 @@ module.exports = {
             let noteFinish, noteReceiver;
             //get time
             let date = new Date();
-            console.log(date.toLocaleString("en-US"));
-            timeFinish = date.toLocaleString("en-US");
+            console.log(date.toLocaleString());
+            timeFinish = date.toLocaleString();
             //find inforUser để tạo lời nhắn kết thúc
             const userModel = await User.findOne({
               AccountID: req.accountID,
@@ -463,6 +463,7 @@ module.exports = {
               if (notefinish) {
                 noteFinish = {
                   id: req.accountID,
+                  urlImage:userModel.urlIamge,
                   name: userModel.FullName,
                   time: timeFinish,
                   text: notefinish,
@@ -473,6 +474,7 @@ module.exports = {
               if (notereceiver) {
                 noteReceiver = {
                   id: req.accountID,
+                  urlImage: userModel.urlIamge,
                   name: userModel.FullName,
                   time: timeFinish,
                   text: notereceiver,
