@@ -811,6 +811,8 @@ module.exports = {
               SenderUser: 1,
               ReceiverUser: 1,
               PostID: 1,
+              NoteFinish: 1,
+              NoteReceiver:1,
             },
           },
           { $sort: { updatedAt: -1 } }, //sắp xếp thời gian
