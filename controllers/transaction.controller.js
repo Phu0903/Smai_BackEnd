@@ -463,7 +463,6 @@ module.exports = {
               if (notefinish) {
                 noteFinish = {
                   id: req.accountID,
-                  urlImage:userModel.urlIamge,
                   name: userModel.FullName,
                   time: timeFinish,
                   text: notefinish,
@@ -474,7 +473,6 @@ module.exports = {
               if (notereceiver) {
                 noteReceiver = {
                   id: req.accountID,
-                  urlImage: userModel.urlIamge,
                   name: userModel.FullName,
                   time: timeFinish,
                   text: notereceiver,
