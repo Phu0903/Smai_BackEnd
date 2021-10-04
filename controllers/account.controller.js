@@ -59,7 +59,7 @@ module.exports = {
 
   //register
   register: async (req, res) => {
-    const { Password, PhoneNumber, FullName } = req.body;
+    const { Password, PhoneNumber, FullName, TokenDevice } = req.body;
     if (!PhoneNumber || !Password) {
       return res.status(400).json({
         success: false,
@@ -90,13 +90,25 @@ module.exports = {
           { accountID: data._id },
           process.env.ACCESS_TOKEN_SECRET
         );
-        data.save(function (err) {
-          UserDetail.save(),
-            res.status(201).json({
-              success: true,
-              message: "OK",
-              accessToken: accessToken, //Respone token for client user
-            });
+        data.save(async (err, data) => {
+          console.log(data);
+          if (TokenDevice) {
+            await Account.updateOne(
+              { _id: data._id },
+              {
+                $addToSet: {
+                  TokenDevice: TokenDevice,
+                },
+              },
+              { upsert: true }
+            );
+          }
+          await UserDetail.save();
+          await res.status(201).json({
+            success: true,
+            message: "OK",
+            accessToken: accessToken, //Respone token for client user
+          });
         });
       }
     } catch (err) {
