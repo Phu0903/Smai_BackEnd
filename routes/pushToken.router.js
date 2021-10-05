@@ -11,7 +11,7 @@ pushToken.put(
   pushTokenController.updateExmainedForUser
 );
 pushToken.post(
-  "/create-notification-token",
+  "/notification-system",
   pushTokenController.notificationSystem
 );
 module.exports = pushToken;

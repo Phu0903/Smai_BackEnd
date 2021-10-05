@@ -482,6 +482,16 @@ module.exports = {
                 };
               }
             }
+            if(status == "cancel"){
+               if (notefinish) {
+                 noteFinish = {
+                   id: req.accountID,
+                   name: userModel.FullName,
+                   time: timeFinish,
+                   text: notefinish,
+                 };
+               }
+            }
 
             //find and update
             const data = await Transaction.findOneAndUpdate(
