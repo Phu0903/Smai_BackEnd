@@ -368,24 +368,24 @@ module.exports = {
                   );
                   // PushNotification.PushNotification(data);
                   //trạng thái waiting thì bài post sẽ ẩn đi
-                  if (status == "waiting") {
-                    const hidden = await hidenPostByConnect(postID, false);
-                    if (hidden) {
-                      return res
-                        .status(201)
-                        .json(
-                          messageResponse(
-                            true,
-                            "create transaction success",
-                            data
-                          )
-                        );
-                    } else {
-                      return res
-                        .status(400)
-                        .json(messageResponse(false, "save db error"));
-                    }
-                  } else {
+                  // if (status == "waiting") {
+                  //   const hidden = await hidenPostByConnect(postID, false);
+                  //   if (hidden) {
+                  //     return res
+                  //       .status(201)
+                  //       .json(
+                  //         messageResponse(
+                  //           true,
+                  //           "create transaction success",
+                  //           data
+                  //         )
+                  //       );
+                  //   } else {
+                  //     return res
+                  //       .status(400)
+                  //       .json(messageResponse(false, "save db error"));
+                  //   }
+                  // } else {
                     return res
                       .status(201)
                       .json(
@@ -395,7 +395,7 @@ module.exports = {
                           data
                         )
                       );
-                  }
+                  // }
                 }
               });
             } else {
@@ -516,39 +516,39 @@ module.exports = {
               //nếu trường hợp waiting => ẩn post đi
               if (status == "waiting") {
                 //hidden post
-                const hidden = await hidenPostByConnect(data.PostID, false);
-                //ẩn bài viết đi
-                if (hidden === false) {
-                  //failed
-                  return res
-                    .status(400)
-                    .json(messageResponse(false, "Failed HiddenPost"));
-                } else {
+                // const hidden = await hidenPostByConnect(data.PostID, false);
+                // //ẩn bài viết đi
+                // if (hidden === false) {
+                //   //failed
+                //   return res
+                //     .status(400)
+                //     .json(messageResponse(false, "Failed HiddenPost"));
+                // } else {
                   //notification
                   CreateNotificationData(
                     "update-transaction",
                     data._id,
                     req.accountID
                   );
-                }
+                // }
               }
               //nếu trường hợp cancel => hiện post
               if (status == "cancel") {
-                const hidden = await hidenPostByConnect(data.PostID, true);
-                //hiện bài viết đi
-                if (hidden === false) {
-                  //failed
-                  return res
-                    .status(400)
-                    .json(messageResponse(false, "Failed HiddenPost"));
-                } else {
+                // const hidden = await hidenPostByConnect(data.PostID, true);
+                // //hiện bài viết đi
+                // if (hidden === false) {
+                //   //failed
+                //   return res
+                //     .status(400)
+                //     .json(messageResponse(false, "Failed HiddenPost"));
+                // } else {
                   //notification - thông bao
                   CreateNotificationData(
                     "update-transaction",
                     data._id,
                     req.accountID
-                  );
-                }
+                   );
+                // }
               }
               //trường hợp status done => cập nhật transaction vào các account
               if (status == "done") {
@@ -578,6 +578,7 @@ module.exports = {
                     .json(messageResponse(true, "Update Success", data));
                 }
               } else {
+                console.log("1")
                 return res
                   .status(200)
                   .json(messageResponse(true, "Update Success", data));

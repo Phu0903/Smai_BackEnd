@@ -105,7 +105,7 @@ module.exports = {
   //Get Info Post
   getInfoFullPost: async (req, res) => {
     try {
-      const post = await Post.find({ confirm: true });
+      const post = await Post.find({ confirm: true, isDisplay: true });
       if (!post) {
         return res.status(400).json({
           success: false,
@@ -166,6 +166,7 @@ module.exports = {
       const PostByAuthor = await Post.find({
         TypeAuthor: typeauthor,
         confirm: true,
+        isDisplay: true,
       })
         .sort(SortTime)
         .limit(30);
@@ -186,7 +187,7 @@ module.exports = {
   getNewPost: async (req, res) => {
     try {
       const SortTime = { createdAt: -1 };
-      Post.find({ TypeAuthor: "tangcongdong" })
+      Post.find({ TypeAuthor: "tangcongdong", isDisplay: true })
         .sort(SortTime)
         .limit(12)
         .exec(function (err, docs) {
@@ -246,27 +247,26 @@ module.exports = {
         });
         //delete transaction liên quan đến bài viết
         console.log(post._id);
-        await TransactionModel.deleteMany({ PostID: post._id }, function (err, _) {
-          if (err) {
-            res.status(201).json({
-              message: "Delete post do not successful",
+        await TransactionModel.deleteMany(
+          { PostID: post._id },
+          function (err, _) {
+            if (err) {
+              res.status(201).json({
+                message: "Delete post do not successful",
+              });
+            }
+            //xóa tin đăng
+            post.remove(function (err, data) {
+              if (err) {
+                res.status(201).json({
+                  message: "Delete post do not successful",
+                });
+              } else {
+                res.status(201).json("Delete successful");
+              }
             });
           }
-          //xóa tin đăng
-          post.remove(function (err, data) {
-              if (err) {
-                  res.status(201).json({
-                      message: 'Delete post do not successful'
-                  })
-              }
-              else {
-
-                  res.status(201).json("Delete successful")
-              }
-          })
-        });
-       
-   
+        );
       }
     } catch (error) {
       res.status(500).json({
@@ -319,6 +319,69 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+  //hiden Post
+  //bad Post 
+  //check bad Post
+  updatePost: async (req, res) => {
+    try {
+      idPost = req.query.idpost;
+      badPost = req.body.badpost;
+      let data
+      if (idPost && !badPost) {
+        data = await Post.findByIdAndUpdate(
+          { _id: mongoose.Types.ObjectId(idPost) },
+          {
+            $set: {
+              isDisplay: false,
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+      if (badPost == "1" && idPost) {
+        data = await Post.findByIdAndUpdate(
+          { _id: mongoose.Types.ObjectId(idPost) },
+          {
+            $inc: { countBadPost: 1 },
+          },
+          {
+            new: true,
+          }
+        );
+        //check bad post
+        if(data.countBadPost >= 5){
+           data = await Post.findByIdAndUpdate(
+             { _id: mongoose.Types.ObjectId(idPost) },
+             {
+               $set: {
+                 confirm: false,
+               },
+             },
+             {
+               new: true,
+             }
+           );
+        }
+      }
+      if (data == null) {
+        return res.status(404).json({
+          success: true,
+          message: "error update",
+        });
+      }
+      return res.status(201).json({
+        success: true,
+        message: data,
+      });
+    } catch (error) {
+      return res.status(500).json({
         success: false,
         message: error.message,
       });
@@ -403,5 +466,4 @@ module.exports = {
         }
 
     },*/
-
 };

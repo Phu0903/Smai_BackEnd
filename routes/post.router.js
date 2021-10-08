@@ -31,4 +31,6 @@ baipost.get('/searchPost',CORS,controller.searchPost);
 baipost.post('/upload', upload.single('productImage'),(req , res) => {
     console.log(req.file)
   });
+baipost.put("/update-post", CORS, controller.updatePost);
+
 module.exports = baipost;
