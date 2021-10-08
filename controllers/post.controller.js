@@ -330,6 +330,7 @@ module.exports = {
   updatePost: async (req, res) => {
     try {
       idPost = req.query.idpost;
+      statusDisplay = req.body.statusdiplay
       badPost = req.body.badpost;
       let data
       if (idPost && !badPost) {
@@ -337,7 +338,7 @@ module.exports = {
           { _id: mongoose.Types.ObjectId(idPost) },
           {
             $set: {
-              isDisplay: false,
+              isDisplay: statusDisplay,
             },
           },
           {
