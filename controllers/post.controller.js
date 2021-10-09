@@ -1,6 +1,7 @@
 const Post = require("../Model/Post");
 const User = require("../Model/User");
 const TransactionModel = require("../Model/Transaction");
+const NotificationModel = require("../Model/Notification")
 const cloudinary_detele = require("../configs/cloudinary.delete");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -79,7 +80,7 @@ module.exports = {
           message: "don't have Post",
         });
       } else {
-        Post.updateOne(
+       await Post.updateOne(
           { _id: req.headers.idpost },
           {
             $set: {
@@ -94,7 +95,6 @@ module.exports = {
         );
       }
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         success: false,
         message: error.message,
@@ -221,7 +221,7 @@ module.exports = {
         //xóa bài đăng trong lịch sử của họ
         const UserHistory = await User.find({});
         for (let i in UserHistory) {
-          const UserInfor = await User.findOneAndUpdate(
+          await User.findOneAndUpdate(
             { _id: UserHistory[i]._id },
             {
               $pull: {
@@ -325,14 +325,14 @@ module.exports = {
     }
   },
   //hiden Post
-  //bad Post 
+  //bad Post
   //check bad Post
   updatePost: async (req, res) => {
     try {
       idPost = req.query.idpost;
-      statusDisplay = req.body.statusdiplay
+      statusDisplay = req.body.statusdiplay;
       badPost = req.body.badpost;
-      let data
+      let data;
       if (idPost && !badPost) {
         data = await Post.findByIdAndUpdate(
           { _id: mongoose.Types.ObjectId(idPost) },
@@ -357,18 +357,18 @@ module.exports = {
           }
         );
         //check bad post
-        if(data.countBadPost >= 5){
-           data = await Post.findByIdAndUpdate(
-             { _id: mongoose.Types.ObjectId(idPost) },
-             {
-               $set: {
-                 confirm: false,
-               },
-             },
-             {
-               new: true,
-             }
-           );
+        if (data.countBadPost >= 5) {
+          data = await Post.findByIdAndUpdate(
+            { _id: mongoose.Types.ObjectId(idPost) },
+            {
+              $set: {
+                confirm: false,
+              },
+            },
+            {
+              new: true,
+            }
+          );
         }
       }
       if (data == null) {
@@ -388,7 +388,87 @@ module.exports = {
       });
     }
   },
+  //delete All Post with Admin
+  deletePostAdmin: async (req, res) => {
+    try {
+      typeAuthor = req.body.typeAuthor;
+      //find News by ID
+      const post = await Post.find({ TypeAuthor: typeAuthor });
+      
+      if (!post) {
+       return res.status(400).json({
+          success: false,
+          message: "do not have Post in data",
+        });
+      } else {
+        for (let j in post) {
+          //xóa bài đăng trong lịch sử của họ
+          const UserHistory = await User.find({});
+          for (let i in UserHistory) {
+             await User.findOneAndUpdate(
+              { _id: UserHistory[i]._id },
+              {
+                $pull: {
+                  History: post[j]._id,
+                },
+              },
+              {
+                new: true,
+              }
+            );
+          }
+          // //xóa ảnh trong cloundinary
+          await post[j].urlImage.map(function (url) {
+            //delete image
 
+            //Tách chuỗi lấy id
+            const image_type = url.split(/[/,.]/);
+            //lấy tách ID
+            const imageId = image_type[image_type.length - 2];
+
+            //xóa ảnh
+            cloudinary_detele.uploader.destroy(imageId);
+          });
+          //notification 
+          transactionData =await TransactionModel.find({ PostID: post[j]._id });
+          for(let k in transactionData){
+            await NotificationModel.deleteMany({idTransaction: transactionData[k]._id},function(err){
+              if(err){
+                  return res.status(401).json({
+                  message: "Delete post do not successful",
+                });
+              }
+            })
+          }
+          //delete transaction liên quan đến bài viết
+          await TransactionModel.deleteMany(
+            { PostID: post[j]._id },
+            function (err) {
+              if (err) {
+                return res.status(401).json({
+                  message: "Delete post do not successful",
+                });
+              }
+              //xóa tin đăng
+              post[j].remove(function (err, data) {
+                if (err) {
+                  return res.status(401).json({
+                    message: "Delete post do not successful",
+                  });
+                }
+              });
+            }
+          );
+        }
+      }
+      return res.status(201).json("Delete successful");
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
   //create Post
   /*createPost: async (req, res) => {
         const {

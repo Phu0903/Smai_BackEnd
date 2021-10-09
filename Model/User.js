@@ -3,9 +3,9 @@ const Account = require('./Account');
 const Schema = mongoose.Schema
 
 var User = new mongoose.Schema({
-    UserName: {
-        type: String,
-    },
+    // UserName: {
+    //     type: String,
+    // },
     FullName: {
         type: String,
     },
@@ -18,10 +18,10 @@ var User = new mongoose.Schema({
     Gender: {
         type: String,
     },
-    PhoneNumber: {
-        type: Number,
-        ref: 'Account'
-    },
+    // PhoneNumber: {
+    //     type: Number,
+    //     ref: 'Account'
+    // },
     urlIamge:{
        type: String,
     },

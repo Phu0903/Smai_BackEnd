@@ -19,7 +19,7 @@ module.exports = {
           success: false,
           message: "PhoneNumber error.",
         });
-      const passwordValid = await argon2d.verify(user.Password, Password);
+      const passwordValid =await argon2d.verify(user.Password, Password);
       if (!user || !passwordValid)
         return res.status(400).json({
           success: false,
