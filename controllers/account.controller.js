@@ -28,7 +28,7 @@ module.exports = {
       //update token device to Account db
       //$addtoSet + upsert : Check exsits and push
       if (TokenDevice) {
-        await Account.updateOne(
+         Account.updateOne(
           { _id: user._id },
           {
             $addToSet: {

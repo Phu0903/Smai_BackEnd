@@ -203,6 +203,8 @@ const CreateNotificationData = async (
   accountID
 ) => {
   try {
+
+
     //function data transaction
     const data = await transactionNotification(transactionID, accountID);
     //get token device from user
@@ -233,7 +235,7 @@ const CreateNotificationData = async (
     let body;
     //if status is null, create transaction
     if (typeFunction == "create-transaction" && data[0].isStatus == "null") {
-      console.log("null");
+     
       title = FullNameUserAction + " đã gửi bạn một lời nhắn";
       body = "Bài viết của bạn: " + data[0].PostData.title;
     }
@@ -272,8 +274,7 @@ const CreateNotificationData = async (
       }
 
     //data to PushNotification
-    console.log("title " + title);
-    console.log("body " + body);
+  
     if (TokenDevice.TokenDevice.length) {
       await PushNotification.pushNotification(
         title,
@@ -340,7 +341,7 @@ module.exports = {
             if (!req.files) {
               pathImage = [];
             } else {
-              req.files.map(function (files) {
+              await req.files.map(function (files) {
                 pathImage.push(files.path);
               });
             }
@@ -447,10 +448,7 @@ module.exports = {
           if (transactionExists.isStatus != "done") {
             let noteFinish, noteReceiver;
             let date = new Date();
-
             var jun = moment(date);
-            console.log(jun)
-            console.log(jun.tz('Asia/Ho_Chi_Minh').format());
             timeFinish = jun.tz('Asia/Ho_Chi_Minh').format(); 
             //find inforUser để tạo lời nhắn kết thúc
             const userModel = await User.findOne({
@@ -552,22 +550,19 @@ module.exports = {
               }
               //trường hợp status done => cập nhật transaction vào các account
               if (status == "done") {
-                //add id transaction to account senderId
-                const accountTransactionSenderId =
-                  await updateTransactionToAccount(data.SenderID, data._id);
+                const updateAccount = await Promise.all([
+                 //add id transaction to account senderId
+                   updateTransactionToAccount(data.SenderID, data._id),
                 //add id transaction to account ReceiverID
-                const accountTransactionReceiverID =
-                  await updateTransactionToAccount(data.ReceiverID, data._id);
-                if (
-                  !accountTransactionSenderId ||
-                  !accountTransactionReceiverID
-                ) {
+                   updateTransactionToAccount(data.ReceiverID, data._id),
+                ])
+                if (!updateAccount) {
                   return res
                     .status(400)
                     .json(messageResponse(false, "Failed Update"));
                 } else {
                   //notification
-                  CreateNotificationData(
+                   CreateNotificationData(
                     "update-transaction",
                     data._id,
                     req.accountID
@@ -578,7 +573,6 @@ module.exports = {
                     .json(messageResponse(true, "Update Success", data));
                 }
               } else {
-                console.log("1")
                 return res
                   .status(200)
                   .json(messageResponse(true, "Update Success", data));

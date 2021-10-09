@@ -1,7 +1,7 @@
 const Post = require("../Model/Post");
 const User = require("../Model/User");
 const TransactionModel = require("../Model/Transaction");
-const NotificationModel = require("../Model/Notification")
+const NotificationModel = require("../Model/Notification");
 const cloudinary_detele = require("../configs/cloudinary.delete");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -51,7 +51,6 @@ module.exports = {
                 }*/
         dataPost.save(function (error, data) {
           if (error) {
-            console.log(error);
             res.status(400).json(error);
           } else {
             res.status(201).json({
@@ -72,15 +71,13 @@ module.exports = {
   //Update Product in Post
   updateProductInPost: async (req, res) => {
     try {
-      const PostNew = await Post.findOne({ _id: req.header.IDPost });
       if (!req.headers.idpost) {
-        console.log(1);
         return res.status(400).json({
           success: false,
           message: "don't have Post",
         });
       } else {
-       await Post.updateOne(
+        await Post.updateOne(
           { _id: req.headers.idpost },
           {
             $set: {
@@ -219,6 +216,7 @@ module.exports = {
         });
       } else {
         //xóa bài đăng trong lịch sử của họ
+        await Promise.all([]);
         const UserHistory = await User.find({});
         for (let i in UserHistory) {
           await User.findOneAndUpdate(
@@ -233,8 +231,9 @@ module.exports = {
             }
           );
         }
+
         //xóa ảnh trong cloundinary
-        post.urlImage.map(function (url) {
+        const deleteClodinary = await post.urlImage.map(function (url) {
           //delete image
 
           //Tách chuỗi lấy id
@@ -245,8 +244,10 @@ module.exports = {
           //xóa ảnh
           cloudinary_detele.uploader.destroy(imageId);
         });
+        await Promise.all(deleteClodinary).catch((e) =>
+          console.log(`Error in sending email for the batch ${i} - ${e}`)
+        );
         //delete transaction liên quan đến bài viết
-        console.log(post._id);
         await TransactionModel.deleteMany(
           { PostID: post._id },
           function (err, _) {
@@ -357,7 +358,7 @@ module.exports = {
           }
         );
         //check bad post
-        if (data.countBadPost >= 5) {
+        if (data.countBadPost >= 3) {
           data = await Post.findByIdAndUpdate(
             { _id: mongoose.Types.ObjectId(idPost) },
             {
@@ -394,9 +395,9 @@ module.exports = {
       typeAuthor = req.body.typeAuthor;
       //find News by ID
       const post = await Post.find({ TypeAuthor: typeAuthor });
-      
+
       if (!post) {
-       return res.status(400).json({
+        return res.status(400).json({
           success: false,
           message: "do not have Post in data",
         });
@@ -405,7 +406,7 @@ module.exports = {
           //xóa bài đăng trong lịch sử của họ
           const UserHistory = await User.find({});
           for (let i in UserHistory) {
-             await User.findOneAndUpdate(
+            await User.findOneAndUpdate(
               { _id: UserHistory[i]._id },
               {
                 $pull: {
@@ -429,16 +430,21 @@ module.exports = {
             //xóa ảnh
             cloudinary_detele.uploader.destroy(imageId);
           });
-          //notification 
-          transactionData =await TransactionModel.find({ PostID: post[j]._id });
-          for(let k in transactionData){
-            await NotificationModel.deleteMany({idTransaction: transactionData[k]._id},function(err){
-              if(err){
+          //notification
+          transactionData = await TransactionModel.find({
+            PostID: post[j]._id,
+          });
+          for (let k in transactionData) {
+            await NotificationModel.deleteMany(
+              { idTransaction: transactionData[k]._id },
+              function (err) {
+                if (err) {
                   return res.status(401).json({
-                  message: "Delete post do not successful",
-                });
+                    message: "Delete post do not successful",
+                  });
+                }
               }
-            })
+            );
           }
           //delete transaction liên quan đến bài viết
           await TransactionModel.deleteMany(
