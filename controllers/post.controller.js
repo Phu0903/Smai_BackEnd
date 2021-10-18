@@ -28,7 +28,7 @@ module.exports = {
         if (TypeAuthor == "tangcongdong") {
           Confirm = true;
         } else {
-          Confirm = false;
+          Confirm = true;
         }
         const dataPost = await new Post({
           AuthorID: req.accountID,

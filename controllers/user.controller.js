@@ -160,7 +160,7 @@ module.exports = {
                 // Vì Set chỉ cho phép giá trị duy nhất, tất cả trùng lặp sẽ bị xoá
                 const uniqueSet = new Set(id_arr);
                 //Bây giờ các giá trị trùng lặp đã bị mất, c
-                //húng ta sẽ hoán đổi lại sang một mảng bằng cách sử dụng phép toán "..."
+                //chúng ta sẽ hoán đổi lại sang một mảng bằng cách sử dụng phép toán "..."
                 const backToArray = [...uniqueSet];
                  //cập nhật  
                 User.updateOne({ _id: UserInfo._id },
