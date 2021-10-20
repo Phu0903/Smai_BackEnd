@@ -362,7 +362,7 @@ module.exports = {
           }
         );
         //check bad post
-        if (data.textReport.length >= 3) {
+        if (data.noteBad.length >= 3) {
           data = await Post.findByIdAndUpdate(
             { _id: mongoose.Types.ObjectId(idPost) },
             {
