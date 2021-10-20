@@ -333,6 +333,7 @@ module.exports = {
       idPost = req.query.idpost;
       statusDisplay = req.body.statusdiplay;
       badPost = req.body.badpost;
+      noteBadTemp = req.body.noteBad;
       let data;
       if (idPost && !badPost) {
         data = await Post.findByIdAndUpdate(
@@ -351,14 +352,17 @@ module.exports = {
         data = await Post.findByIdAndUpdate(
           { _id: mongoose.Types.ObjectId(idPost) },
           {
-            $inc: { countBadPost: 1 },
+            // $inc: { totalReport: 1 },
+            $push: {
+              noteBad: noteBadTemp,
+            },
           },
           {
             new: true,
           }
         );
         //check bad post
-        if (data.countBadPost >= 3) {
+        if (data.textReport.length >= 3) {
           data = await Post.findByIdAndUpdate(
             { _id: mongoose.Types.ObjectId(idPost) },
             {

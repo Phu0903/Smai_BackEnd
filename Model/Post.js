@@ -46,10 +46,13 @@ const Post = new mongoose.Schema(
       default: true, //là true
     },
     Transaction: [], //Đối với bài viết xin thì trong đây chỉ chứa một phần tử, đối với bài viết tặng thì chứa nhiều phần tử
-    countBadPost: {
-      default: 0,
-      type: Number
-    }
+    // totalReport: {
+    //   default: 0,
+    //   type: Number
+    // },
+    noteBad: {
+      type: [String],
+    },
   },
   {
     collection: "Post",
