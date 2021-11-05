@@ -10,7 +10,7 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  allowedFormats: ['jpg','png','heic','.jpeg'],
+  allowedFormats: ['jpg','png','heic','jpeg'],
   filename: function (req, file, cb) {
     cb(null, file.originalname); 
   }

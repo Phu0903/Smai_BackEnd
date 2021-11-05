@@ -203,8 +203,6 @@ const CreateNotificationData = async (
   accountID
 ) => {
   try {
-
-
     //function data transaction
     const data = await transactionNotification(transactionID, accountID);
     //get token device from user
@@ -235,7 +233,6 @@ const CreateNotificationData = async (
     let body;
     //if status is null, create transaction
     if (typeFunction == "create-transaction" && data[0].isStatus == "null") {
-     
       title = FullNameUserAction + " đã gửi bạn một lời nhắn";
       body = "Bài viết của bạn: " + data[0].PostData.title;
     }
@@ -274,7 +271,7 @@ const CreateNotificationData = async (
       }
 
     //data to PushNotification
-  
+
     if (TokenDevice.TokenDevice.length) {
       await PushNotification.pushNotification(
         title,
@@ -326,15 +323,16 @@ module.exports = {
           return res.status(404).json(messageResponse(false, "No have Post"));
         } else {
           //check transaction exists
-          const transactionExists =
-            await checkExistsTransactionWithSenderIdReceiverID(
-              postID,
-              req.accountID,
-              dataPost.AuthorID
-            );
-          if (transactionExists) {
-            res.status(404).json(messageResponse(false, "Transaction already"));
-          } else if (!transactionExists && req.accountID != dataPost.AuthorID) {
+          // const transactionExists =
+          //   await checkExistsTransactionWithSenderIdReceiverID(
+          //     postID,
+          //     req.accountID,
+          //     dataPost.AuthorID
+          //   );
+          // if (transactionExists) {
+          //   res.status(404).json(messageResponse(false, "Transaction already"));
+          // } else if (!transactionExists && req.accountID != dataPost.AuthorID) {
+          if (req.accountID != dataPost.AuthorID) {
             //Sender user and Receiver user must not be the same
             //check img
             let pathImage = [];
@@ -387,15 +385,11 @@ module.exports = {
                   //       .json(messageResponse(false, "save db error"));
                   //   }
                   // } else {
-                    return res
-                      .status(201)
-                      .json(
-                        messageResponse(
-                          true,
-                          "create transaction success",
-                          data
-                        )
-                      );
+                  return res
+                    .status(201)
+                    .json(
+                      messageResponse(true, "create transaction success", data)
+                    );
                   // }
                 }
               });
@@ -449,7 +443,7 @@ module.exports = {
             let noteFinish, noteReceiver;
             let date = new Date();
             var jun = moment(date);
-            timeFinish = jun.tz('Asia/Ho_Chi_Minh').format(); 
+            timeFinish = jun.tz("Asia/Ho_Chi_Minh").format();
             //find inforUser để tạo lời nhắn kết thúc
             const userModel = await User.findOne({
               AccountID: req.accountID,
@@ -480,15 +474,15 @@ module.exports = {
                 };
               }
             }
-            if(status == "cancel"){
-               if (notefinish) {
-                 noteFinish = {
-                   id: req.accountID,
-                   name: userModel.FullName,
-                   time: timeFinish,
-                   text: notefinish,
-                 };
-               }
+            if (status == "cancel") {
+              if (notefinish) {
+                noteFinish = {
+                  id: req.accountID,
+                  name: userModel.FullName,
+                  time: timeFinish,
+                  text: notefinish,
+                };
+              }
             }
 
             //find and update
@@ -522,12 +516,12 @@ module.exports = {
                 //     .status(400)
                 //     .json(messageResponse(false, "Failed HiddenPost"));
                 // } else {
-                  //notification
-                  CreateNotificationData(
-                    "update-transaction",
-                    data._id,
-                    req.accountID
-                  );
+                //notification
+                CreateNotificationData(
+                  "update-transaction",
+                  data._id,
+                  req.accountID
+                );
                 // }
               }
               //nếu trường hợp cancel => hiện post
@@ -540,29 +534,29 @@ module.exports = {
                 //     .status(400)
                 //     .json(messageResponse(false, "Failed HiddenPost"));
                 // } else {
-                  //notification - thông bao
-                  CreateNotificationData(
-                    "update-transaction",
-                    data._id,
-                    req.accountID
-                   );
+                //notification - thông bao
+                CreateNotificationData(
+                  "update-transaction",
+                  data._id,
+                  req.accountID
+                );
                 // }
               }
               //trường hợp status done => cập nhật transaction vào các account
               if (status == "done") {
                 const updateAccount = await Promise.all([
-                 //add id transaction to account senderId
-                   updateTransactionToAccount(data.SenderID, data._id),
-                //add id transaction to account ReceiverID
-                   updateTransactionToAccount(data.ReceiverID, data._id),
-                ])
+                  //add id transaction to account senderId
+                  updateTransactionToAccount(data.SenderID, data._id),
+                  //add id transaction to account ReceiverID
+                  updateTransactionToAccount(data.ReceiverID, data._id),
+                ]);
                 if (!updateAccount) {
                   return res
                     .status(400)
                     .json(messageResponse(false, "Failed Update"));
                 } else {
                   //notification
-                   CreateNotificationData(
+                  CreateNotificationData(
                     "update-transaction",
                     data._id,
                     req.accountID

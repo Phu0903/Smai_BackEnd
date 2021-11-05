@@ -28,9 +28,14 @@ baipost.get('/find',CORS,controller.findId);
 //Find Post 
 baipost.get('/searchPost',CORS,controller.searchPost);
 
-baipost.post('/upload', upload.single('productImage'),(req , res) => {
-    console.log(req.file)
-  });
+baipost.post("/upload", fileUploader.single("productImage"), (req, res) => {
+   if (!req.file) {
+     next(new Error("No file uploaded!"));
+     return;
+   }
+
+   res.json({ secure_url: req.file.path });
+});
 baipost.put("/update-post", CORS, controller.updatePost);
 
 
