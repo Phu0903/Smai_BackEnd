@@ -517,7 +517,7 @@ module.exports = {
                 //     .json(messageResponse(false, "Failed HiddenPost"));
                 // } else {
                 //notification
-                CreateNotificationData(
+                await CreateNotificationData(
                   "update-transaction",
                   data._id,
                   req.accountID
@@ -535,7 +535,7 @@ module.exports = {
                 //     .json(messageResponse(false, "Failed HiddenPost"));
                 // } else {
                 //notification - thông bao
-                CreateNotificationData(
+                await CreateNotificationData(
                   "update-transaction",
                   data._id,
                   req.accountID
@@ -556,7 +556,7 @@ module.exports = {
                     .json(messageResponse(false, "Failed Update"));
                 } else {
                   //notification
-                  CreateNotificationData(
+                  await CreateNotificationData(
                     "update-transaction",
                     data._id,
                     req.accountID
