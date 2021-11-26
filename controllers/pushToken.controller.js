@@ -201,7 +201,6 @@ module.exports = {
   pushNotification: async (title, body, data, tokenDevices) => {
     // Create the messages that you want to send to clents
     let notifications = [];
-    console.log(tokenDevices);
     for (let pushToken of tokenDevices) {
       //   // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 

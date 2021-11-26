@@ -180,7 +180,7 @@ module.exports = {
       });
     }
   },
-  //get new post
+  //get new post for "Tặng công đồng"
   getNewPost: async (req, res) => {
     try {
       const SortTime = { createdAt: -1 };
@@ -201,7 +201,29 @@ module.exports = {
       });
     }
   },
-
+  //get 10 post for "Người khó khăn" in home page
+  getPostUserNeedHelp: async (req, res) => {
+    try {
+      const SortTime = { createdAt: -1 };
+      const post = await Post.find({
+        TypeAuthor: { $ne: "tangcongdong" },
+        confirm: true,
+        isDisplay: true,
+      }) //Not have "tangcongdong"
+        .sort(SortTime)
+        .limit(10);
+      res.status(200).json({
+        success: true,
+        message: "Oke",
+        data: post,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
   //delete Posst
   deletePost: async (req, res) => {
     try {

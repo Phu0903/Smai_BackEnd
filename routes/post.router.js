@@ -38,7 +38,7 @@ baipost.post("/upload", fileUploader.single("productImage"), (req, res) => {
 });
 baipost.put("/update-post", CORS, controller.updatePost);
 
-
+baipost.get("/post-need-help",controller.getPostUserNeedHelp)
 ///Admin 
 baipost.delete("/delete-all-post",controller.deletePostAdmin)
 module.exports = baipost;

@@ -208,20 +208,17 @@ const CreateNotificationData = async (
     //get token device from user
     //xác định ai là người tạo action
     //suy ra ai là người nhận notification
-    console.log(data[0]);
     //Người thực hiện action
     let FullNameUserAction;
     //Token app của người nhận
     let TokenDevice;
     if (data[0].SenderID == accountID) {
-      console.log("User sender thực hiện việc gửi");
       TokenDevice = await Account.findOne({
         _id: data[0].ReceiverID,
       });
       FullNameUserAction = data[0].SenderUser[0].FullName;
     }
     if (data[0].ReceiverID == accountID) {
-      console.log("User receiver thực hiện việc gửi");
       TokenDevice = await Account.findOne({
         _id: data[0].SenderID,
       });
